@@ -100,7 +100,7 @@ return [
     'lock' => [
         'provider' => 'db',
         'config' => [
-            'prefix' => null
+            'prefix' => ''
         ]
     ],
     'directories' => [
@@ -127,6 +127,6 @@ return [
         'magento2.test'
     ],
     'install' => [
-        'date' => 'Tue, 26 Jan 2021 18:40:27 +0000'
+        'date' => 'Wed, 27 Jan 2021 08:46:33 +0000'
     ]
 ];
