@@ -12,9 +12,13 @@ magento 2.4
 ### create sample data
 `sudo bin/magento sampledata:deploy`
 after
-`bin/magento setup:upgrade`
+`sudo bin/restart`
+
+`bin/magento setup:upgrade`   // run update code
 
 ### referent
+https://devdocs.magento.com/videos/fundamentals/create-a-new-page/
+https://www.youtube.com/channel/UCZeJjcZ0_rnvL-pp7p4Aq3A
 
 1:  https://github.com/markshust/docker-magento
 2:  https://github.com/magento/magento2-sample-data
@@ -38,6 +42,25 @@ admin
 
 ### run
 
-``` bash
+```bash
 sudo bin/setup magento2.test
-open https://magento2.test/```
+open https://magento2.test/ 
+```
+
+### start server
+`
+sudo bin/restart
+sudo lsof -i -P -n | grep LISTEN
+sudo pkill mariadbd
+sudo bin/restart
+sudo lsof -i -P -n | grep LISTEN
+sudo pkill teamviewe
+sudo pkill navicatmo
+sudo pkill docker-pr
+sudo pkill nginx
+sudo bin/restart
+`
+
+### cheat
+
+sudo chmod -R ugo+rw int3506

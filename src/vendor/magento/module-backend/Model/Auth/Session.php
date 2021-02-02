@@ -245,9 +245,25 @@ class Session extends \Magento\Framework\Session\SessionManager implements \Mage
      *
      * @return \Magento\Backend\Model\Auth\Session
      */
+    // public function processLogin()
+    // {
+    //     if ($this->getUser()) {
+    //         $this->regenerateId();
+
+    //         if ($this->_backendUrl->useSecretKey()) {
+    //             $this->_backendUrl->renewSecretUrls();
+    //         }
+
+    //         $this->setIsFirstPageAfterLogin(true);
+    //         $this->setAcl($this->_aclBuilder->getAcl());
+    //         $this->setUpdatedAt(time());
+    //     }
+    //     return $this;
+    // }
+
     public function processLogin()
     {
-        if ($this->getUser()) {
+//        if ($this->getUser()) {
             $this->regenerateId();
 
             if ($this->_backendUrl->useSecretKey()) {
@@ -257,9 +273,10 @@ class Session extends \Magento\Framework\Session\SessionManager implements \Mage
             $this->setIsFirstPageAfterLogin(true);
             $this->setAcl($this->_aclBuilder->getAcl());
             $this->setUpdatedAt(time());
-        }
+//        }
         return $this;
     }
+
 
     /**
      * Process of configuring of current auth storage when logout was performed
