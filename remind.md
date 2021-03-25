@@ -52,8 +52,7 @@ open https://magento2.test/
 sudo bin/restart
 sudo lsof -i -P -n | grep LISTEN
 sudo pkill mariadbd
-sudo bin/restart
-sudo lsof -i -P -n | grep LISTEN
+
 sudo pkill teamviewe
 sudo pkill navicatmo
 sudo pkill docker-pr
