@@ -63,3 +63,7 @@ sudo bin/restart
 ### cheat
 
 sudo chmod -R ugo+rw int3506
+
+### dump database
+
+sudo bin/mysqldump > backups/magento.sql
