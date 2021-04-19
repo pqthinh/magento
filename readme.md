@@ -6,7 +6,6 @@
 -docker
 -mysql 7. | mariadb 10.
 
-
 ```
 
 2: Magento
@@ -15,3 +14,10 @@
 
 
 3: Implement
+
+### Ref
+#### 1: git command : 
+`https://github.com/pqthinh/magento.test/blob/main/gitcommand.md`
+
+#### 2: note in implement magento2
+`https://github.com/pqthinh/magento.test/blob/main/remind.md`
