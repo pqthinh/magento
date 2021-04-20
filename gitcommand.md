@@ -27,3 +27,16 @@ git add .
 git commit --amend --no-edit
 git push -f
 ```
+
+6: Remote 
+
+kiem tra git tren project 
+```git remote -v```
+
+Xoa remote
+```git remote -rm```
+
+Them remote
+
+```git rmeote add origin 'linkgit'```
+
