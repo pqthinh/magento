@@ -33,9 +33,9 @@ git push -f
 `git remote -v`
 
 <!-- Them remote -->
-`git remote add origin (name remote) urlgithub `
+`git remote add origin (name_remote) urlgithub `
 
 <!-- Xoa remote cu -->
-`git remote -rm`
+`git remote rm namer_emote`
 
 <!-- oke -->
