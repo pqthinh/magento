@@ -1,2 +1,8 @@
 {
+ "http-basic": {
+        "magento2.test": {
+            "username": "30a3904e50da8aad4ecf2d8f0965a61b",
+            "password": "2e19f422276483dbaa75762ca9e03b7f"
+        }
+    }
 }
