@@ -75,7 +75,7 @@ class KpConfigProvider implements ConfigProviderInterface
             ]
         ];
 
-        if (!$this->session->canSendRequest()) {
+        if (!$this->config->isPaymentConfigFlag('active', $store, Kp::METHOD_CODE)) {
             $paymentConfig['payment']['klarna_kp']['message'] = __('Klarna Payments is not enabled');
             return $paymentConfig;
         }

@@ -22,10 +22,10 @@ class CcTypeTest extends \PHPUnit\Framework\TestCase
      */
     private $helper;
 
-    /** @var \PayPal\Braintree\Model\Adminhtml\Source\CcType|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var \PayPal\Braintree\Model\Adminhtml\Source\CcType|\PHPUnit_Framework_MockObject_MockObject */
     private $ccTypeSource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 

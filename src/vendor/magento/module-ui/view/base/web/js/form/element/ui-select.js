@@ -292,13 +292,6 @@ define([
         },
 
         /**
-         * Return empty options html
-         */
-        getEmptyOptionsUnsanitizedHtml: function () {
-            return this.emptyOptionsHtml;
-        },
-
-        /**
          * Check options length and set to cache
          * if some options is added
          *
@@ -756,6 +749,11 @@ define([
         },
 
         /**
+         * @deprecated
+         */
+        onMousemove: function () {},
+
+        /**
          * Handles hover on list items.
          *
          * @param {Object} event - mousemove event
@@ -1169,7 +1167,7 @@ define([
                 return;
             }
 
-            if (currentPage === 1) {
+            if (searchKey !== this.lastSearchKey) {
                 this.options([]);
             }
             this.processRequest(searchKey, currentPage);

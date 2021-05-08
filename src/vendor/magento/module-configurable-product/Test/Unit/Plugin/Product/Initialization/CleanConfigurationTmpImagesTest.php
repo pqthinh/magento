@@ -64,7 +64,7 @@ class CleanConfigurationTmpImagesTest extends TestCase
     /**
      * @var Json|MockObject
      */
-    private $serializer;
+    private $seralizer;
 
     /**
      * @var ProductInitializationHelper|MockObject
@@ -87,7 +87,7 @@ class CleanConfigurationTmpImagesTest extends TestCase
         $this->writeFolder = $this->getMockBuilder(Write::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->seralizer = $this->getMockBuilder(Json::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->subjectMock = $this->getMockBuilder(ProductInitializationHelper::class)
@@ -106,7 +106,7 @@ class CleanConfigurationTmpImagesTest extends TestCase
                 'fileStorageDb' => $this->fileStorageDb,
                 'mediaConfig' => $this->mediaConfig,
                 'filesystem' => $this->filesystem,
-                'serializer' => $this->serializer
+                'seralizer' => $this->seralizer
             ]
         );
     }

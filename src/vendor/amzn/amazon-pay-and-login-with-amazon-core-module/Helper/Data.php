@@ -59,7 +59,7 @@ class Data extends AbstractHelper
     private $moduleStatusFactory;
 
     /**
-     * @var AmazonConfig
+     * @var Config
      */
     private $config;
 
@@ -611,9 +611,7 @@ class Data extends AbstractHelper
      */
     public function isCurrentCurrencySupportedByAmazon()
     {
-        $regionCurrency = $this->getCurrencyCode();
-        $currentCurrency = $this->config->getPresentmentCurrency();
-        return $currentCurrency === $regionCurrency || $this->config->canUseCurrency($currentCurrency);
+        return $this->config->getBaseCurrencyCode() == $this->getCurrencyCode();
     }
 
     /**

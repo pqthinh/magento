@@ -23,17 +23,6 @@
             <actionGroup ref="EnabledWYSIWYGActionGroup" stepKey="enableWYSIWYG"/>
             <actionGroup ref="SwitchToVersion4ActionGroup" stepKey="switchToTinyMCE4" />
         </before>
-        <after>
-            <actionGroup ref="NavigateToMediaGalleryActionGroup" stepKey="navigateToMediaGallery"/>
-            <actionGroup ref="DeleteFolderActionGroup" stepKey="DeleteCreatedFolder">
-                <argument name="ImageFolder" value="ImageFolder"/>
-            </actionGroup>
-            <actionGroup ref="DisabledWYSIWYGActionGroup" stepKey="disableWYSIWYGFirst"/>
-            <deleteData createDataKey="createCMSPage" stepKey="deletePreReqCMSPage" />
-            <actionGroup ref="DisabledWYSIWYGActionGroup" stepKey="disableWYSIWYG"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
-        </after>
-        
         <actionGroup ref="NavigateToCreatedCMSPageActionGroup" stepKey="navigateToCreatedCMSPage">
             <argument name="CMSPage" value="$$createCMSPage$$"/>
         </actionGroup>
@@ -43,9 +32,6 @@
         <waitForPageLoad stepKey="waitForPageLoad" />
         <actionGroup ref="ClickBrowseBtnOnUploadPopupActionGroup" stepKey="clickBrowserBtn"/>
         <actionGroup ref="VerifyMediaGalleryStorageActionsActionGroup" stepKey="VerifyMediaGalleryStorageBtn"/>
-        <actionGroup ref="NavigateToMediaFolderActionGroup" stepKey="navigateToFolder">
-             <argument name="FolderName" value="Storage Root"/>
-        </actionGroup>
         <actionGroup ref="CreateImageFolderActionGroup" stepKey="CreateImageFolder">
             <argument name="ImageFolder" value="ImageFolder"/>
         </actionGroup>
@@ -68,5 +54,11 @@
         <waitForPageLoad  stepKey="wait4"/>
         <seeElement selector="{{StorefrontCMSPageSection.mediaDescription}}" stepKey="assertMediaDescription"/>
         <seeElementInDOM selector="{{StorefrontCMSPageSection.imageSource(ImageUpload3.fileName)}}" stepKey="assertMediaSource"/>
+        <after>
+            <actionGroup ref="DisabledWYSIWYGActionGroup" stepKey="disableWYSIWYGFirst"/>
+            <deleteData createDataKey="createCMSPage" stepKey="deletePreReqCMSPage" />
+            <actionGroup ref="DisabledWYSIWYGActionGroup" stepKey="disableWYSIWYG"/>
+            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+        </after>
     </test>
 </tests>

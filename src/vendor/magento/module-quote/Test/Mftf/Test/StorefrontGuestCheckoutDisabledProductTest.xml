@@ -87,7 +87,7 @@
             <deleteData createDataKey="createConfigChildProduct1" stepKey="deleteConfigChildProduct1"/>
             <deleteData createDataKey="createConfigChildProduct2" stepKey="deleteConfigChildProduct2"/>
             <deleteData createDataKey="createConfigProductAttribute" stepKey="deleteConfigProductAttribute"/>
-            <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="navigateToProductListing"/>
+            <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="navigateToProductListing"/>
             <actionGroup ref="ResetProductGridToDefaultViewActionGroup" stepKey="resetGridToDefaultKeywordSearch"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
@@ -107,12 +107,13 @@
         <openNewTab stepKey="openNewTab"/>
         <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
         <!-- Find the first simple product that we just created using the product grid and go to its page-->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="visitAdminProductPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPage"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="findCreatedProduct">
             <argument name="product" value="$$createConfigChildProduct1$$"/>
         </actionGroup>
         <waitForPageLoad stepKey="waitForFiltersToBeApplied"/>
-        <actionGroup ref="AdminProductGridSectionClickFirstRowActionGroup" stepKey="clickOnProductPage"/>
+        <click selector="{{AdminProductGridSection.firstRow}}" stepKey="clickOnProductPage"/>
+        <waitForPageLoad stepKey="waitForProductPageLoad"/>
         <!-- Disabled child configurable product -->
         <click selector="{{AdminProductFormSection.enableProductAttributeLabel}}" stepKey="clickDisableProduct"/>
         <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveProduct"/>
@@ -138,11 +139,12 @@
         <!-- Disabled via admin panel -->
         <openNewTab stepKey="openNewTab2"/>
         <!-- Find the first simple product that we just created using the product grid and go to its page -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="visitAdminProductPage2"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPage2"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="findCreatedProduct2">
             <argument name="product" value="$$createSimpleProduct2$$"/>
         </actionGroup>
-        <actionGroup ref="AdminProductGridSectionClickFirstRowActionGroup" stepKey="clickOnProductPage2"/>
+        <click selector="{{AdminProductGridSection.firstRow}}" stepKey="clickOnProductPage2"/>
+        <waitForPageLoad stepKey="waitForProductPageLoad2"/>
         <!-- Disabled simple product from grid -->
         <actionGroup ref="ChangeStatusProductUsingProductGridActionGroup" stepKey="disabledProductFromGrid2">
             <argument name="product" value="$$createSimpleProduct2$$"/>

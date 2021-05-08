@@ -152,11 +152,7 @@ class PaymentMethodGateway
 
     public static function createSignature()
     {
-        $signature = array_merge(self::baseSignature(), [
-            'customerId',
-            'paypalRefreshToken',
-            CreditCardGateway::threeDSecurePassThruSignature()
-        ]);
+        $signature = array_merge(self::baseSignature(), ['customerId', 'paypalRefreshToken', 'paypalVaultWithoutUpgrade']);
         return $signature;
     }
 
@@ -168,22 +164,11 @@ class PaymentMethodGateway
                 'updateExisting'
             ]
         ]);
-        $threeDSPassThruSignature = [
-            'authenticationResponse',
-            'cavv',
-            'cavvAlgorithm',
-            'directoryResponse',
-            'dsTransactionId',
-            'eciFlag',
-            'threeDSecureVersion',
-            'xid'
-        ];
         $signature = array_merge(self::baseSignature(), [
             'deviceSessionId',
             'venmoSdkPaymentMethodCode',
             'fraudMerchantId',
-            ['billingAddress' => $billingAddressSignature],
-            ['threeDSecurePassThru' => $threeDSPassThruSignature]
+            ['billingAddress' => $billingAddressSignature]
         ]);
         return $signature;
     }
@@ -333,3 +318,4 @@ class PaymentMethodGateway
         }
     }
 }
+class_alias('Braintree\PaymentMethodGateway', 'Braintree_PaymentMethodGateway');

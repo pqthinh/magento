@@ -22,11 +22,11 @@ class TransferFactoryTest extends \PHPUnit\Framework\TestCase
     private $transferMock;
 
     /**
-     * @var TransferBuilder|\PHPUnit\Framework\MockObject\MockObject
+     * @var TransferBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $transferBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->transferBuilder = $this->createMock(TransferBuilder::class);
         $this->transferMock = $this->createMock(TransferInterface::class);

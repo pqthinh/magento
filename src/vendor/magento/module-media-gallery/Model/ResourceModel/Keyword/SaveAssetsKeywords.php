@@ -93,16 +93,18 @@ class SaveAssetsKeywords implements SaveAssetsKeywordsInterface
             $data[] = $keyword->getKeyword();
         }
 
-        if (!empty($data)) {
-            /** @var Mysql $connection */
-            $connection = $this->resourceConnection->getConnection();
-            $connection->insertArray(
-                $this->resourceConnection->getTableName(self::TABLE_KEYWORD),
-                [self::KEYWORD],
-                $data,
-                AdapterInterface::INSERT_IGNORE
-            );
+        if (empty($data)) {
+            return;
         }
+
+        /** @var Mysql $connection */
+        $connection = $this->resourceConnection->getConnection();
+        $connection->insertArray(
+            $this->resourceConnection->getTableName(self::TABLE_KEYWORD),
+            [self::KEYWORD],
+            $data,
+            AdapterInterface::INSERT_IGNORE
+        );
 
         $this->saveAssetLinks->execute($assetId, $this->getKeywordIds($data));
     }

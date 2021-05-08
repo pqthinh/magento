@@ -176,9 +176,6 @@ class SaveDownloadableOrderItemObserverTest extends TestCase
         $itemMock->expects($this->any())
             ->method('getProductType')
             ->willReturn(DownloadableProductType::TYPE_DOWNLOADABLE);
-        $itemMock->expects($this->any())
-            ->method('getRealProductType')
-            ->willReturn(DownloadableProductType::TYPE_DOWNLOADABLE);
 
         $this->orderMock->expects($this->once())
             ->method('getStoreId')
@@ -313,9 +310,6 @@ class SaveDownloadableOrderItemObserverTest extends TestCase
             ->willReturn($itemId);
         $itemMock->expects($this->any())
             ->method('getProductType')
-            ->willReturn(DownloadableProductType::TYPE_DOWNLOADABLE);
-        $itemMock->expects($this->any())
-            ->method('getRealProductType')
             ->willReturn(DownloadableProductType::TYPE_DOWNLOADABLE);
 
         $purchasedLink = $this->getMockBuilder(Purchased::class)

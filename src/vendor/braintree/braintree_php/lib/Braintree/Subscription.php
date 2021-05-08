@@ -8,6 +8,8 @@ namespace Braintree;
  *
  * For more detailed information on Subscriptions, see {@link https://developers.braintreepayments.com/reference/response/subscription/php https://developers.braintreepayments.com/reference/response/subscription/php}
  *
+ * PHP Version 5
+ *
  * @package   Braintree
  * 
  * @property-read \Braintree\Addon[] $addOns
@@ -170,3 +172,4 @@ class Subscription extends Base
         return Configuration::gateway()->subscription()->cancel($subscriptionId);
     }
 }
+class_alias('Braintree\Subscription', 'Braintree_Subscription');

@@ -8,19 +8,18 @@ declare(strict_types=1);
 namespace Magento\MediaGallerySynchronization\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\ValidatorException;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
+use Magento\Framework\Filesystem\Directory\Read;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\MediaGalleryApi\Api\Data\AssetInterface;
 use Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory;
-use Magento\MediaGallerySynchronization\Model\Filesystem\GetFileInfo;
-use Magento\MediaGallerySynchronizationApi\Model\CreateAssetFromFileInterface;
+use Magento\MediaGalleryApi\Api\GetAssetsByPathsInterface;
 
 /**
  * Create media asset object based on the file information
  */
-class CreateAssetFromFile implements CreateAssetFromFileInterface
+class CreateAssetFromFile
 {
     /**
      * @var Filesystem
@@ -33,84 +32,109 @@ class CreateAssetFromFile implements CreateAssetFromFileInterface
     private $driver;
 
     /**
+     * @var GetAssetsByPathsInterface
+     */
+    private $getMediaGalleryAssetByPath;
+
+    /**
+     * @var Read
+     */
+    private $mediaDirectory;
+
+    /**
      * @var AssetInterfaceFactory
      */
     private $assetFactory;
 
     /**
-     * @var GetContentHash
-     */
-    private $getContentHash;
-
-    /**
-     * @var GetFileInfo
-     */
-    private $getFileInfo;
-
-    /**
      * @param Filesystem $filesystem
-     * @param File $driver
      * @param AssetInterfaceFactory $assetFactory
-     * @param GetContentHash $getContentHash
-     * @param GetFileInfo $getFileInfo
+     * @param File $driver
+     * @param GetAssetsByPathsInterface $getMediaGalleryAssetByPath
      */
     public function __construct(
         Filesystem $filesystem,
-        File $driver,
         AssetInterfaceFactory $assetFactory,
-        GetContentHash $getContentHash,
-        GetFileInfo $getFileInfo
+        File $driver,
+        GetAssetsByPathsInterface $getMediaGalleryAssetByPath
     ) {
         $this->filesystem = $filesystem;
-        $this->driver = $driver;
         $this->assetFactory = $assetFactory;
-        $this->getContentHash = $getContentHash;
-        $this->getFileInfo = $getFileInfo;
+        $this->driver = $driver;
+        $this->getMediaGalleryAssetByPath = $getMediaGalleryAssetByPath;
     }
 
     /**
-     * @inheritdoc
+     * Create media asset object based on the file information
+     *
+     * @param \SplFileInfo $file
+     * @return AssetInterface
+     * @throws ValidatorException
      */
-    public function execute(string $path): AssetInterface
+    public function execute(\SplFileInfo $file)
     {
-        $absolutePath = $this->getMediaDirectory()->getAbsolutePath($path);
-        $file = $this->getFileInfo->execute($absolutePath);
-        [$width, $height] = getimagesize($absolutePath);
+        $path = $file->getPath() . '/' . $file->getFileName();
 
+        [$width, $height] = getimagesize($path);
+
+        $asset = $this->getAsset($path);
         return $this->assetFactory->create(
             [
-                'id' => null,
-                'path' => $path,
-                'title' => $file->getBasename(),
+                'id' => $asset ? $asset->getId() : null,
+                'path' => $this->getRelativePath($path),
+                'title' => $asset ? $asset->getTitle() : $file->getBasename('.' . $file->getExtension()),
+                'createdAt' => (new \DateTime())->setTimestamp($file->getCTime())->format('Y-m-d H:i:s'),
+                'updatedAt' => (new \DateTime())->setTimestamp($file->getMTime())->format('Y-m-d H:i:s'),
                 'width' => $width,
                 'height' => $height,
-                'hash' => $this->getHash($path),
                 'size' => $file->getSize(),
-                'contentType' => 'image/' . $file->getExtension(),
-                'source' => 'Local'
+                'contentType' => $asset ? $asset->getContentType() : 'image/' . $file->getExtension(),
+                'source' => $asset ? $asset->getSource() : 'Local'
             ]
         );
     }
 
     /**
-     * Get hash image content.
+     * Returns asset if asset already exist by provided path
      *
      * @param string $path
-     * @return string
-     * @throws FileSystemException
+     * @return null|AssetInterface
+     * @throws ValidatorException
      */
-    private function getHash(string $path): string
+    private function getAsset(string $path): ?AssetInterface
     {
-        return $this->getContentHash->execute($this->getMediaDirectory()->readFile($path));
+        $asset = $this->getMediaGalleryAssetByPath->execute([$this->getRelativePath($path)]);
+        return !empty($asset) ? $asset[0] : null;
     }
 
     /**
-     * Retrieve media directory instance with read access
+     * Get correct path for media asset
      *
-     * @return ReadInterface
+     * @param string $file
+     * @return string
+     * @throws ValidatorException
      */
-    private function getMediaDirectory(): ReadInterface
+    private function getRelativePath(string $file): string
     {
-        return $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $path = $this->getMediaDirectory()->getRelativePath($file);
+
+        if ($this->driver->getParentDirectory($path) === '.') {
+            $path = '/' . $path;
+        }
+
+        return $path;
+    }
+
+    /**
+     * Retrieve media directory instance with read permissions
+     *
+     * @return Read
+     */
+    private function getMediaDirectory(): Read
+    {
+        if (!$this->mediaDirectory) {
+            $this->mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        }
+        return $this->mediaDirectory;
     }
 }

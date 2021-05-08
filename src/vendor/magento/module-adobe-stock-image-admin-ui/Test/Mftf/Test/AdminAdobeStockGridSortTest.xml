@@ -21,8 +21,7 @@
         </annotations>
         <before>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-            <actionGroup ref="AdminOpenCreateNewCMSPageActionGroup" stepKey="openNewPage"/>
-            <actionGroup ref="AdminOpenMediaGalleryFromPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
+            <actionGroup ref="AdminOpenMediaGalleryForPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
             <actionGroup ref="AdminAdobeStockOpenPanelFromMediaGalleryActionGroup" stepKey="openAdobeStockPanel"/>
         </before>
         <after>
@@ -32,7 +31,6 @@
         <actionGroup ref="AdminSearchImagesOnModalActionGroup" stepKey="searchForCarsToDropDefaultFilter">
             <argument name="query" value="cars"/>
         </actionGroup>
-
         <actionGroup ref="AdminAdobeStockClickSortActionGroup" stepKey="sortByCreation">
             <argument name="sortName" value="creation"/>
         </actionGroup>

@@ -14,8 +14,7 @@ define([
     'Magento_AdobeStockImageAdminUi/js/action/confirmQuota',
     'Magento_AdobeStockImageAdminUi/js/media-gallery',
     'Magento_AdobeStockImageAdminUi/js/confirmation/buyCredits',
-    'Magento_AdobeStockImageAdminUi/js/action/getLicenseStatus',
-    'Magento_Ui/js/modal/alert'
+    'Magento_AdobeStockImageAdminUi/js/action/getLicenseStatus'
 ], function (
     Component,
     uiRegistry,
@@ -28,8 +27,7 @@ define([
     confirmQuotaAction,
     mediaGallery,
     buyCreditsConfirmation,
-    getLicenseStatus,
-    uiAlert
+    getLicenseStatus
 ) {
     'use strict';
 
@@ -44,7 +42,6 @@ define([
             saveLicensedAndDownloadUrl: 'adobe_stock/license/saveLicensed',
             buyCreditsUrl: 'https://stock.adobe.com/',
             messageDelay: 5,
-            mediaGallery: '',
             imageItems: [],
             messages: [],
             listens: {
@@ -138,51 +135,35 @@ define([
             this.preview().getAdobeModal().trigger('closeModal');
 
             if (!this.isMediaBrowser()) {
-                this.selectImageInNewMediaGalleryBySearch(this.preview().displayedRecord().id);
+                this.selectImageInNewMediaGalleryBySearch(this.preview().displayedRecord().title);
             } else {
                 this.selectDisplayedImageForOldMediaGallery(this.preview().displayedRecord().path);
             }
         },
 
         /**
-         * Return adobe stock asset by adobe id
+         * Select image in new media gallery via search input
          *
-         * @param {String} adobeId
+         * @param {String} title
          */
-        getAssetDetails: function (adobeId) {
-            return $.ajax({
-                url: this.getMediaGalleryAsset,
-                data: {
-                    'adobe_id': adobeId
-                },
-                context: this,
-                showLoader: true
-            });
+        selectImageInNewMediaGalleryBySearch: function (title) {
+            this.mediaGalleryListingFilters().clear();
+            this.mediaGallerySearchInput().apply(title);
         },
 
         /**
-         * Select image in new media gallery via search input
+         * Selects displayed image in media gallery
          *
-         * @param {String} imageId
+         * @param {String} path
+         * @param {Boolean|Undefined} openNewest
          */
-        selectImageInNewMediaGalleryBySearch: function (imageId) {
-            var path;
-
-            this.mediaGalleryListingFilters().clear();
-            this.getAssetDetails(imageId).then(function (assetDetails) {
-                if (assetDetails.length === 0) {
-                    return;
-                }
-                this.mediaGallerySearchInput().apply(assetDetails.title);
-                path = assetDetails.path;
-                path = path.substring(0, path.lastIndexOf('/'));
-
-                if (path !== '') {
-                    this.imageDirectory().locateNode(path);
-                }
-                this.selectRecordFromMediaGalleryProvider(assetDetails.path);
-            }.bind(this));
-
+        selectInMediaGallery: function (path, openNewest) {
+            if (!this.isMediaBrowser()) {
+                !openNewest || this.openNewestImage();
+                this.selectDisplayedImageForNewMediaGallery(path);
+            } else {
+                this.selectDisplayedImageForOldMediaGallery(path);
+            }
         },
 
         /**
@@ -203,27 +184,55 @@ define([
         },
 
         /**
-         * Select record by image file name
+         * Selects displayed image in media gallery for new gallery
+         */
+        selectDisplayedImageForNewMediaGallery: function (path) {
+            var imageFolders = path.substring(0, path.lastIndexOf('/')),
+                record = this.getRecordFromMediaGalleryProvider(path),
+                subscription; // eslint-disable-line no-unused-vars
+
+            if (!record) {
+                subscription = this.imageItems.subscribe(function () {
+                    subscription.dispose();
+                    record = this.getRecordFromMediaGalleryProvider(path);
+
+                    if (!record) {
+                        mediaGallery.notLocated();
+                    }
+
+                    this.selectRecord(record);
+                }.bind(this));
+            }
+
+            if (imageFolders) {
+                this.imageDirectory().selectFolder(imageFolders);
+            } else {
+                this.imageDirectory().selectStorageRoot();
+            }
+
+            if (record) {
+                this.selectRecord(record);
+            }
+        },
+
+        /**
+         * Get image data by image file name
          *
          * @param {String} path
+         * @returns {null|Object}
          */
-        selectRecordFromMediaGalleryProvider: function (path) {
-            var subscription;
+        getRecordFromMediaGalleryProvider: function (path) {
+            var report = null;
 
-            subscription = this.imageItems.subscribe(function (items) {
-                subscription.dispose();
-                items.each(function (item) {
-                    if (item.path === path) {
-                        this.selectRecord(item);
+            this.imageItems.each(function (item) {
+                if (item.path === path) {
+                    report = item;
 
-                        return false;
-                    }
-                }.bind(this));
-            }.bind(this));
+                    return false;
+                }
+            });
 
-            setTimeout(function () {
-                subscription.dispose();
-            }, 1500);
+            return report;
         },
 
         /**
@@ -232,7 +241,7 @@ define([
          * @param {Object} record
          */
         selectRecord: function (record) {
-            uiRegistry.get('name =' + this.mediaGallery).select(record);
+            uiRegistry.get('name =' + this.mediaGallery).selected(record);
         },
 
         /**
@@ -249,9 +258,7 @@ define([
                 this.getDestinationDirectoryPath()
             ).then(function (destinationPath) {
                 this.updateDownloadedDisplayedRecord(destinationPath);
-                this.reloadGrid().done(function () {
-                    this.openInMediaGalleryClick();
-                }.bind(this));
+                this.updateGridsAndSelectSavedAsset(destinationPath);
             }.bind(this)).fail(function (error) {
                 if (error) {
                     this.showErrorMessage(error);
@@ -294,6 +301,24 @@ define([
             record['is_licensed_locally'] = 1;
 
             this.preview().displayedRecord(record);
+        },
+
+        /**
+         * Update view
+         */
+        updateGridsAndSelectSavedAsset: function (path) {
+            this.source().reload({
+                refresh: true
+            });
+            this.preview().getAdobeModal().trigger('closeModal');
+            $.ajaxSetup({
+                async: false
+            });
+            this.reloadGrid();
+            $.ajaxSetup({
+                async: true
+            });
+            this.selectInMediaGallery(path, true);
         },
 
         /**
@@ -343,9 +368,9 @@ define([
             provider = uiRegistry.get('index = media_gallery_listing_data_source'),
                 dataStorage = provider.storage();
 
+            // this.subscriptionOnImageItems();
             dataStorage.clearRequests();
-
-            return provider.reload();
+            provider.reload();
         },
 
         /**
@@ -418,16 +443,12 @@ define([
             ).then(function (destinationPath) {
                 this.updateLicensedDisplayedRecord(destinationPath);
                 this.login().getUserQuota();
-                this.reloadGrid().done(function () {
-                    this.openInMediaGalleryClick();
-                }.bind(this));
+                this.updateGridsAndSelectSavedAsset(destinationPath);
             }.bind(this)).fail(function (error) {
                 if (error) {
-                    uiAlert({
-                        content: error
-                    });
+                    this.showErrorMessage(error);
                 }
-            });
+            }.bind(this));
         },
 
         /**
@@ -472,25 +493,24 @@ define([
                                         title,
                                         data.message
                                     );
-                                } else {
-                                    licenseAndSaveAction(
-                                        this.preview().licenseAndDownloadUrl,
-                                        id,
-                                        title,
-                                        path,
-                                        contentType,
-                                        isDownloaded,
-                                        data.message,
-                                        this.getDestinationDirectoryPath()
-                                    ).then(function (destinationPath) {
-                                        deferred.resolve(destinationPath);
-                                    }).fail(function (error) {
-                                        deferred.reject(error);
-                                    });
+
+                                    return;
                                 }
-                            }.bind(this)).fail(function (error) {
-                                deferred.reject(error);
-                            });
+                                licenseAndSaveAction(
+                                    this.preview().licenseAndDownloadUrl,
+                                    id,
+                                    title,
+                                    path,
+                                    contentType,
+                                    isDownloaded,
+                                    data.message,
+                                    this.getDestinationDirectoryPath()
+                                ).then(function (destinationPath) {
+                                    deferred.resolve(destinationPath);
+                                }).fail(function (error) {
+                                    deferred.reject(error);
+                                });
+                            }.bind(this));
                         }
                     }.bind(this)).fail(function (error) {
                         deferred.reject(error);
@@ -526,16 +546,12 @@ define([
             ).then(function (destinationPath) {
                 this.updateLicensedDisplayedRecord(destinationPath);
                 this.login().getUserQuota();
-                this.reloadGrid().done(function () {
-                    this.openInMediaGalleryClick();
-                }.bind(this));
+                this.updateGridsAndSelectSavedAsset(destinationPath);
             }.bind(this)).fail(function (error) {
                 if (error) {
-                    uiAlert({
-                        content: error
-                    });
+                    this.showErrorMessage(error);
                 }
-            });
+            }.bind(this));
         },
 
         /**

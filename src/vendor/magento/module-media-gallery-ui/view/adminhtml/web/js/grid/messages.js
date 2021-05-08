@@ -4,17 +4,15 @@
  */
 
 define([
-    'uiElement',
-    'escaper'
-], function (Element, escaper) {
+    'uiElement'
+], function (Element) {
     'use strict';
 
     return Element.extend({
         defaults: {
             template: 'Magento_MediaGalleryUi/grid/messages',
             messageDelay: 5,
-            messages: [],
-            allowedTags: ['div', 'span', 'b', 'strong', 'i', 'em', 'u', 'a']
+            messages: []
         },
 
         /**
@@ -74,16 +72,6 @@ define([
                 clearTimeout(timerId);
                 this.clear();
             }.bind(this), Number(delay) * 1000);
-        },
-
-        /**
-         * Prepare the given message to be rendered as HTML
-         *
-         * @param {String} message
-         * @return {String}
-         */
-        prepareMessageUnsanitizedHtml: function (message) {
-            return escaper.escapeHtml(message, this.allowedTags);
         }
     });
 });

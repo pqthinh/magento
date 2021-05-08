@@ -1019,13 +1019,6 @@ class Address extends AbstractAddress implements
      */
     public function requestShippingRates(AbstractItem $item = null)
     {
-        $storeId = $this->getQuote()->getStoreId() ?: $this->storeManager->getStore()->getId();
-        $taxInclude = $this->_scopeConfig->getValue(
-            'tax/calculation/price_includes_tax',
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
-
         /** @var $request RateRequest */
         $request = $this->_rateRequestFactory->create();
         $request->setAllItems($item ? [$item] : $this->getAllItems());
@@ -1035,11 +1028,9 @@ class Address extends AbstractAddress implements
         $request->setDestStreet($this->getStreetFull());
         $request->setDestCity($this->getCity());
         $request->setDestPostcode($this->getPostcode());
-        $baseSubtotal = $taxInclude ? $this->getBaseSubtotalTotalInclTax() : $this->getBaseSubtotal();
-        $request->setPackageValue($item ? $item->getBaseRowTotal() : $baseSubtotal);
-        $baseSubtotalWithDiscount = $baseSubtotal + $this->getBaseDiscountAmount();
+        $request->setPackageValue($item ? $item->getBaseRowTotal() : $this->getBaseSubtotal());
         $packageWithDiscount = $item ? $item->getBaseRowTotal() -
-            $item->getBaseDiscountAmount() : $baseSubtotalWithDiscount;
+            $item->getBaseDiscountAmount() : $this->getBaseSubtotalWithDiscount();
         $request->setPackageValueWithDiscount($packageWithDiscount);
         $request->setPackageWeight($item ? $item->getRowWeight() : $this->getWeight());
         $request->setPackageQty($item ? $item->getQty() : $this->getItemQty());
@@ -1047,7 +1038,8 @@ class Address extends AbstractAddress implements
         /**
          * Need for shipping methods that use insurance based on price of physical products
          */
-        $packagePhysicalValue = $item ? $item->getBaseRowTotal() : $baseSubtotal - $this->getBaseVirtualAmount();
+        $packagePhysicalValue = $item ? $item->getBaseRowTotal() : $this->getBaseSubtotal() -
+            $this->getBaseVirtualAmount();
         $request->setPackagePhysicalValue($packagePhysicalValue);
 
         $request->setFreeMethodWeight($item ? 0 : $this->getFreeMethodWeight());
@@ -1055,10 +1047,12 @@ class Address extends AbstractAddress implements
         /**
          * Store and website identifiers specified from StoreManager
          */
-        $request->setStoreId($storeId);
         if ($this->getQuote()->getStoreId()) {
+            $storeId = $this->getQuote()->getStoreId();
+            $request->setStoreId($storeId);
             $request->setWebsiteId($this->storeManager->getStore($storeId)->getWebsiteId());
         } else {
+            $request->setStoreId($this->storeManager->getStore()->getId());
             $request->setWebsiteId($this->storeManager->getWebsite()->getId());
         }
         $request->setFreeShipping($this->getFreeShipping());

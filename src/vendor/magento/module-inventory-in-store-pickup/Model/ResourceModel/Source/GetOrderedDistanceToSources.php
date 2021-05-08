@@ -50,7 +50,7 @@ class GetOrderedDistanceToSources
         $connection = $this->resourceConnection->getConnection();
         $sourceTable = $this->resourceConnection->getTableName('inventory_source');
         $latsLngsChunks = array_chunk($latsLngs, self::CHUNK);
-        $distancesChunks = [[]];
+        $distances = [[]];
         foreach ($latsLngsChunks as $latsLngsChunk) {
             $query = $connection->select()
                 ->from($sourceTable)
@@ -58,12 +58,9 @@ class GetOrderedDistanceToSources
                 ->reset(Select::COLUMNS)
                 ->columns($this->createDistanceColumns($latsLngsChunk));
             $query = $this->processHavingClause($query, $radius, $latsLngsChunk);
-            $distancesChunks[] = $connection->fetchPairs($query);
+            $distances[] = $connection->fetchPairs($query);
         }
-        $distances = [];
-        foreach (array_reverse($distancesChunks) as $distanceChunk) {
-            $distances = $distances + $distanceChunk;
-        }
+        $distances = array_merge(...$distances);
 
         return array_map('floatval', $distances);
     }
@@ -75,7 +72,6 @@ class GetOrderedDistanceToSources
      * @param int $radius
      * @param array $latLngs
      * @return Select
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     private function processHavingClause(Select $query, int $radius, array $latLngs): Select
     {

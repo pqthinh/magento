@@ -29,9 +29,8 @@ interface ValidationConfigInterface
     public function getRemoteIp(): string;
 
     /**
-     * Get validation failure message TODO
+     * Get validation failure message
      *
-     * @deprecated use TODO
      * @return string
      */
     public function getValidationFailureMessage(): string;

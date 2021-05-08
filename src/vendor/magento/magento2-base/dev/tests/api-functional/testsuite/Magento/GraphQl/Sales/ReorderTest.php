@@ -108,7 +108,7 @@ class ReorderTest extends GraphQlAbstract
         /** @var \Magento\Catalog\Api\ProductRepositoryInterface $repository */
         $productRepository = Bootstrap::getObjectManager()
             ->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
-        $productSku = 'simple-2';
+        $productSku = 'simple';
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $productRepository->get($productSku);
 

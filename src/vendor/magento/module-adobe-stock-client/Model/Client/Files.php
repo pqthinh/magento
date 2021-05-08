@@ -105,23 +105,27 @@ class Files implements FilesInterface
             $this->clientConfig->getTargetEnvironment()
         );
 
+        /** @var FilesRequest $requestFiles */
         $requestFiles = $this->requestFilesFactory->create();
         $requestFiles->setIds($ids)
             ->setLocale($locale)
             ->setResultColumns($columns);
 
         try {
+            /** @var FilesResponse $response */
             $response = $client->getFiles($requestFiles, $this->getAccessToken->execute());
         } catch (\Exception $exception) {
             $this->logger->error($exception);
             throw new LocalizedException(__('Could not retrieve files information.'), $exception);
         }
 
-        return array_map(
+        $result = array_map(
             function ($file) {
                 return (array) $file;
             },
             $response->getFiles()
         );
+
+        return $result;
     }
 }

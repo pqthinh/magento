@@ -325,8 +325,7 @@ class Order
      * @param \Magento\Sales\Model\Order $orderData
      * @param boolean $syncCustomOption
      *
-     * @return void
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @return null
      */
     private function processOrderItems($orderData, $syncCustomOption)
     {
@@ -334,15 +333,8 @@ class Order
             if ($productItem->getProduct() === null) {
                 continue;
             }
-
-            $isBundle = $isChildOfBundle = false;
-
-            /**
-             * We store data for configurable and bundle products, to be output alongside their children.
-             * Configurable parents are not output in schema,
-             * but bundle parents are.
-             */
             if (in_array($productItem->getProduct()->getTypeId(), ['configurable', 'bundle'])) {
+                // We store data for configurable and bundle products, to be output alongside their children
                 unset($parentProductModel, $parentLineItem);
                 $parentProductModel = $productItem->getProduct();
                 $parentLineItem = $productItem;
@@ -350,13 +342,7 @@ class Order
                 // Custom options stored against parent order items
                 $customOptions = ($syncCustomOption) ? $this->_getOrderItemOptions($productItem) : [];
 
-                // Define parent types for easy reference
-                $isBundle = $productItem->getProduct()->getTypeId() === 'bundle';
-                $isConfigurable = $productItem->getProduct()->getTypeId() === 'configurable';
-
-                if ($isConfigurable) {
-                    continue;
-                }
+                continue;
             }
 
             if (empty($customOptions)) {
@@ -366,7 +352,6 @@ class Order
             if (isset($parentProductModel) &&
                 isset($parentLineItem) &&
                 $parentLineItem->getId() === $productItem->getParentItemId()) {
-                $isChildOfBundle = $parentProductModel->getTypeId() === 'bundle';
                 $productModel = $parentProductModel;
                 $childProductModel = $productItem->getProduct();
             } else {
@@ -416,8 +401,8 @@ class Order
                  */
                 $productData = [
                     'name' => $productItem->getName(),
-                    'parent_name' => $isBundle ? '' : $productModel->getName(),
-                    'sku' => $isBundle ? $productModel->getSku() : $productItem->getSku(),
+                    'parent_name' => $productModel->getName(),
+                    'sku' => $productItem->getSku(),
                     'qty' => (int)number_format(
                         $productItem->getData('qty_ordered'),
                         2
@@ -440,15 +425,7 @@ class Order
                 if ($customOptions) {
                     $productData['custom-options'] = $customOptions;
                 }
-
-                if ($isChildOfBundle) {
-                    end($this->products);
-                    $lastKey = key($this->products);
-                    $this->products[$lastKey]['sub_items'][] = $productData;
-                } else {
-                    $this->products[] = $productData;
-                }
-
+                $this->products[] = $productData;
             } else {
                 // when no product information is available limit to this data
                 $productData = [

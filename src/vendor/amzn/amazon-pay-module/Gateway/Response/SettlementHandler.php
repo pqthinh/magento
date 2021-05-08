@@ -18,8 +18,8 @@ namespace Amazon\Payment\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\Method\Logger;
-use Amazon\Payment\Api\Data\PendingCaptureInterfaceFactory;
 use Amazon\Payment\Gateway\Helper\SubjectReader;
+use Amazon\Core\Helper\Data;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 
@@ -37,9 +37,9 @@ class SettlementHandler implements HandlerInterface
     private $subjectReader;
 
     /**
-     * @var PendingCaptureInterfaceFactory
+     * @var Data
      */
-    private $pendingCaptureFactory;
+    private $coreHelper;
 
     /**
      * @var OrderRepositoryInterface
@@ -56,20 +56,20 @@ class SettlementHandler implements HandlerInterface
      *
      * @param Logger                   $logger
      * @param SubjectReader            $subjectReader
-     * @param PendingCaptureInterfaceFactory $pendingCaptureFactory
+     * @param Data                     $coreHelper
      * @param OrderRepositoryInterface $orderRepository
      * @param CartRepositoryInterface  $quoteRepository
      */
     public function __construct(
         Logger $logger,
         SubjectReader $subjectReader,
-        PendingCaptureInterfaceFactory $pendingCaptureFactory,
+        Data $coreHelper,
         OrderRepositoryInterface $orderRepository,
         CartRepositoryInterface $quoteRepository
     ) {
         $this->logger = $logger;
         $this->subjectReader = $subjectReader;
-        $this->pendingCaptureFactory = $pendingCaptureFactory;
+        $this->coreHelper = $coreHelper;
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
     }
@@ -98,16 +98,6 @@ class SettlementHandler implements HandlerInterface
                 $quoteLink->setConfirmed(true)->save();
             }
         } else {
-            if ($response['pending']) {
-                $this->pendingCaptureFactory->create()
-                    ->setCaptureId($response['transaction_id'])
-                    ->setOrderId($paymentDO->getOrder()->getId())
-                    ->setPaymentId($payment->getId())
-                    ->save();
-
-                $payment->setIsTransactionPending(true);
-                $payment->setIsTransactionClosed(false);
-            }
             // finish capture
             $payment->setTransactionId($response['transaction_id']);
         }

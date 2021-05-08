@@ -77,7 +77,7 @@
             <deleteData stepKey="deleteCategory" createDataKey="createCategory"/>
 
         </after>
-        <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToFrontPage"/>
+        <amOnPage url="{{StorefrontHomePage.url}}" stepKey="goToFrontPage"/>
         <actionGroup ref="StorefrontCheckQuickSearchStringActionGroup" stepKey="searchStorefront">
             <argument name="phrase" value="{{_defaultProduct.name}}"/>
         </actionGroup>

@@ -71,3 +71,4 @@ class MerchantAccount extends Base
         return Configuration::gateway()->merchantAccount()->update($merchant_account_id, $attributes);
     }
 }
+class_alias('Braintree\MerchantAccount', 'Braintree_MerchantAccount');

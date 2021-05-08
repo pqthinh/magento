@@ -96,7 +96,6 @@ class TransactionGateway
             'taxAmount',
             'taxExempt',
             'threeDSecureToken',
-            'threeDSecureAuthenticationId',
             'transactionSource',
             'type',
             'venmoSdkPaymentMethodCode',
@@ -259,15 +258,7 @@ class TransactionGateway
 
     public static function submitForSettlementSignature()
     {
-        return ['orderId', ['descriptor' => ['name', 'phone', 'url']],
-            'purchaseOrderNumber',
-            'taxAmount',
-            'taxExempt',
-            'shippingAmount',
-            'discountAmount',
-            'shipsFromPostalCode',
-            ['lineItems' => ['quantity', 'name', 'description', 'kind', 'unitAmount', 'unitTaxAmount', 'totalAmount', 'discountAmount', 'taxAmount', 'unitOfMeasure', 'productCode', 'commodityCode', 'url']],
-        ];
+        return ['orderId', ['descriptor' => ['name', 'phone', 'url']]];
     }
 
     public static function updateDetailsSignature()
@@ -375,7 +366,7 @@ class TransactionGateway
 
             return new ResourceCollection($response, $pager);
         } else {
-            throw new Exception\RequestTimeout();
+            throw new Exception\Timeout();
         }
     }
 
@@ -395,7 +386,7 @@ class TransactionGateway
                 'transaction'
             );
         } else {
-            throw new Exception\RequestTimeout();
+            throw new Exception\Timeout();
         }
     }
 
@@ -534,6 +525,15 @@ class TransactionGateway
                    'expected transaction id to be set'
                    );
         }
+        
+        // NEXT_MAJOR_VERSION - none of the other sdks validate the format
+        // of the ID. In the next major version, we can remove this check 
+        // and have the gateway return a 404 error instead
+        if (!preg_match('/^[0-9a-z_]+$/', $id)) {
+            throw new InvalidArgumentException(
+                    $id . ' is an invalid transaction id.'
+                    );
+        }
     }
 
     /**
@@ -565,3 +565,4 @@ class TransactionGateway
         }
     }
 }
+class_alias('Braintree\TransactionGateway', 'Braintree_TransactionGateway');

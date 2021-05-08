@@ -839,7 +839,6 @@ class Config
         }
         /** @var AbstractAttribute $attribute */
         $attribute = $this->createAttribute($model)->setData($attributeData);
-        $attribute->setOrigData('entity_type_id', $attribute->getEntityTypeId());
         $this->_addAttributeReference(
             $attributeData['attribute_id'],
             $code,

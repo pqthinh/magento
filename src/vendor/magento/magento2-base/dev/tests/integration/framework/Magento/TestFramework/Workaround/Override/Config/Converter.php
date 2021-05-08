@@ -18,18 +18,12 @@ use Magento\TestFramework\Annotation\DataFixtureBeforeTransaction;
  */
 class Converter implements ConverterInterface
 {
-    /**
-     * @var array
-     */
-    private $supportedFixtureTypes;
-
-    /**
-     * @param array $types
-     */
-    public function __construct(array $types = [])
-    {
-        $this->supportedFixtureTypes = $types;
-    }
+    private const FIXTURE_TYPES = [
+        DataFixture::ANNOTATION,
+        DataFixtureBeforeTransaction::ANNOTATION,
+        ConfigFixture::ANNOTATION,
+        AdminConfigFixture::ANNOTATION,
+    ];
 
     /** @var \DOMXPath */
     private $xpath;
@@ -40,7 +34,7 @@ class Converter implements ConverterInterface
     public function convert($source)
     {
         $this->xpath = new \DOMXPath($source);
-        $config = $this->getGlobalConfig($this->xpath);
+        $config = [];
         foreach ($this->xpath->query('//test') as $testOverride) {
             $className = ltrim($testOverride->getAttribute('class'), '\\');
             $config[$className] = $this->getTestConfigByFixtureType($testOverride);
@@ -52,7 +46,7 @@ class Converter implements ConverterInterface
 
                 foreach ($this->xpath->query('./dataSet', $method) as $dataSet) {
                     $setName = $dataSet->getAttribute('name');
-                    $config[$className][$methodName][$setName] = $config[$className][$methodName][$setName] ?? [];
+                    $config[$className][$methodName][$setName] =   $config[$className][$methodName][$setName] ?? [];
                     $config[$className][$methodName][$setName] = $this->fillSkipSection(
                         $dataSet,
                         $config[$className][$methodName][$setName]
@@ -73,7 +67,6 @@ class Converter implements ConverterInterface
      */
     private function fillSkipSection(\DOMElement $node, array $config): array
     {
-        $config['skip_from_config'] = !empty($node->getAttribute('skip'));
         $config['skip'] = $node->getAttribute('skip') === 'true';
         $config['skipMessage'] = $node->getAttribute('skipMessage') ?: null;
 
@@ -88,7 +81,7 @@ class Converter implements ConverterInterface
      */
     private function getTestConfigByFixtureType(\DOMElement $node): array
     {
-        foreach ($this->supportedFixtureTypes as $fixtureType) {
+        foreach (self::FIXTURE_TYPES as $fixtureType) {
             $currentTestNodePath = sprintf("//test[@class ='%s']/%s", $node->getAttribute('class'), $fixtureType);
             foreach ($this->xpath->query($currentTestNodePath) as $classDataFixture) {
                 $config[$fixtureType][] = $this->fillAttributes($classDataFixture);
@@ -118,7 +111,7 @@ class Converter implements ConverterInterface
      * @param \DOMElement $fixture
      * @return array
      */
-    protected function fillAttributes(\DOMElement $fixture): array
+    private function fillAttributes(\DOMElement $fixture): array
     {
         $result = [];
         switch ($fixture->nodeName) {
@@ -145,7 +138,7 @@ class Converter implements ConverterInterface
      * @param \DOMElement $fixture
      * @return array
      */
-    protected function fillDataFixtureAttributes(\DOMElement $fixture): array
+    private function fillDataFixtureAttributes(\DOMElement $fixture): array
     {
         return [
             'path' => $fixture->getAttribute('path'),
@@ -162,7 +155,7 @@ class Converter implements ConverterInterface
      * @param \DOMElement $fixture
      * @return array
      */
-    protected function fillConfigFixtureAttributes(\DOMElement $fixture): array
+    private function fillConfigFixtureAttributes(\DOMElement $fixture): array
     {
         return [
             'path' => $fixture->getAttribute('path'),
@@ -180,7 +173,7 @@ class Converter implements ConverterInterface
      * @param \DOMElement $fixture
      * @return array
      */
-    protected function fillAdminConfigFixtureAttributes(\DOMElement $fixture): array
+    private function fillAdminConfigFixtureAttributes(\DOMElement $fixture): array
     {
         return [
             'path' => $fixture->getAttribute('path'),
@@ -188,37 +181,5 @@ class Converter implements ConverterInterface
             'newValue' => $fixture->getAttribute('newValue'),
             'remove' => $fixture->getAttribute('remove'),
         ];
-    }
-    /**
-     * Get global configurations
-     *
-     * @param \DOMXPath $xpath
-     * @return array
-     */
-    private function getGlobalConfig(\DOMXPath $xpath): array
-    {
-        foreach ($xpath->query('//global') as $globalOverride) {
-            $config = $this->fillGlobalConfigByFixtureType($globalOverride);
-        }
-
-        return $config ?? [];
-    }
-
-    /**
-     * Fill global configurations node
-     *
-     * @param \DOMElement $node
-     * @return array
-     */
-    private function fillGlobalConfigByFixtureType(\DOMElement $node): array
-    {
-        $config = [];
-        foreach ($this->supportedFixtureTypes as $fixtureType) {
-            foreach ($node->getElementsByTagName($fixtureType) as $fixture) {
-                $config['global'][$fixtureType][] = $this->fillAttributes($fixture);
-            }
-        }
-
-        return $config;
     }
 }

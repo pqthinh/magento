@@ -21,7 +21,6 @@ namespace Braintree;
  * @property-read string $expirationYear
  * @property-read string $googleTransactionId
  * @property-read string $imageUrl
- * @property-read boolean $isNetworkTokenized
  * @property-read string $last4
  * @property-read string $sourceCardLast4
  * @property-read string $sourceCardType
@@ -88,3 +87,4 @@ class AndroidPayCard extends Base
         $this->_set('subscriptions', $subscriptionArray);
     }
 }
+class_alias('Braintree\AndroidPayCard', 'Braintree_AndroidPayCard');

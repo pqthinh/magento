@@ -69,7 +69,7 @@ class Products implements ResolverInterface
             );
         }
 
-        $searchResult = $this->searchQuery->getResult($args, $info, $context);
+        $searchResult = $this->searchQuery->getResult($args, $info);
 
         if ($searchResult->getCurrentPage() > $searchResult->getTotalPages() && $searchResult->getTotalCount() > 0) {
             throw new GraphQlInputException(

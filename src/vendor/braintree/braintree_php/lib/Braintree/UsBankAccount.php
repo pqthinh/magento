@@ -114,3 +114,4 @@ class UsBankAccount extends Base
         return Configuration::gateway()->usBankAccount()->sale($token, $transactionAttribs);
     }
 }
+class_alias('Braintree\UsBankAccount', 'Braintree_UsBankAccount');

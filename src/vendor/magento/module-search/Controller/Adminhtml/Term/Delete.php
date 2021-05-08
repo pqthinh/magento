@@ -38,4 +38,3 @@ class Delete extends TermController implements HttpPostActionInterface
         return $resultRedirect;
     }
 }
-

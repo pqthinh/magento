@@ -18,7 +18,6 @@ $mediaAsset = $mediaAssetFactory->create(
     [
         'id' => 2020,
         'path' => 'testDirectory/path.jpg',
-        'description' => 'Description of an image',
         'contentType' => 'image',
         'title' => 'Img',
         'source' => 'Local',

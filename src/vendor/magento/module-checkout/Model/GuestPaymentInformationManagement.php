@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace Magento\Checkout\Model;
 
-use Magento\Checkout\Api\PaymentProcessingRateLimiterInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Model\Quote;
@@ -57,18 +57,12 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
     private $logger;
 
     /**
-     * @var PaymentProcessingRateLimiterInterface
-     */
-    private $paymentsRateLimiter;
-
-    /**
      * @param \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement
      * @param \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
      * @param \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement
      * @param \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory
      * @param CartRepositoryInterface $cartRepository
-     * @param PaymentProcessingRateLimiterInterface|null $paymentsRateLimiter
      * @codeCoverageIgnore
      */
     public function __construct(
@@ -77,8 +71,7 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         \Magento\Quote\Api\GuestCartManagementInterface $cartManagement,
         \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement,
         \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory,
-        CartRepositoryInterface $cartRepository,
-        ?PaymentProcessingRateLimiterInterface $paymentsRateLimiter = null
+        CartRepositoryInterface $cartRepository
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;
@@ -86,8 +79,6 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->cartRepository = $cartRepository;
-        $this->paymentsRateLimiter = $paymentsRateLimiter
-            ?? ObjectManager::getInstance()->get(PaymentProcessingRateLimiterInterface::class);
     }
 
     /**
@@ -130,8 +121,6 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
-        $this->paymentsRateLimiter->limit();
-
         $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
         /** @var Quote $quote */
         $quote = $this->cartRepository->getActive($quoteIdMask->getQuoteId());

@@ -11,9 +11,7 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\Auth\Session;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Config\Share;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
@@ -24,11 +22,8 @@ use Magento\LoginAsCustomerApi\Api\ConfigInterface;
 use Magento\LoginAsCustomerApi\Api\Data\AuthenticationDataInterface;
 use Magento\LoginAsCustomerApi\Api\Data\AuthenticationDataInterfaceFactory;
 use Magento\LoginAsCustomerApi\Api\DeleteAuthenticationDataForUserInterface;
-use Magento\LoginAsCustomerApi\Api\IsLoginAsCustomerEnabledForCustomerInterface;
 use Magento\LoginAsCustomerApi\Api\SaveAuthenticationDataInterface;
-use Magento\LoginAsCustomerApi\Api\SetLoggedAsCustomerCustomerIdInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\StoreSwitcher\ManageStoreCookie;
 
 /**
  * Login as customer action
@@ -86,41 +81,15 @@ class Login extends Action implements HttpGetActionInterface
     private $url;
 
     /**
-     * @var Share
-     */
-    private $share;
-
-    /**
-     * @var ManageStoreCookie
-     */
-    private $manageStoreCookie;
-
-    /**
-     * @var SetLoggedAsCustomerCustomerIdInterface
-     */
-    private $setLoggedAsCustomerCustomerId;
-
-    /**
-     * @var IsLoginAsCustomerEnabledForCustomerInterface
-     */
-    private $isLoginAsCustomerEnabled;
-
-    /**
      * @param Context $context
      * @param Session $authSession
      * @param StoreManagerInterface $storeManager
      * @param CustomerRepositoryInterface $customerRepository
      * @param ConfigInterface $config
      * @param AuthenticationDataInterfaceFactory $authenticationDataFactory
-     * @param SaveAuthenticationDataInterface $saveAuthenticationData
+     * @param SaveAuthenticationDataInterface $saveAuthenticationData ,
      * @param DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser
      * @param Url $url
-     * @param Share $share
-     * @param ManageStoreCookie $manageStoreCookie
-     * @param SetLoggedAsCustomerCustomerIdInterface $setLoggedAsCustomerCustomerId
-     * @param IsLoginAsCustomerEnabledForCustomerInterface $isLoginAsCustomerEnabled
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
@@ -131,11 +100,7 @@ class Login extends Action implements HttpGetActionInterface
         AuthenticationDataInterfaceFactory $authenticationDataFactory,
         SaveAuthenticationDataInterface $saveAuthenticationData,
         DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser,
-        Url $url,
-        ?Share $share = null,
-        ?ManageStoreCookie $manageStoreCookie = null,
-        ?SetLoggedAsCustomerCustomerIdInterface $setLoggedAsCustomerCustomerId = null,
-        ?IsLoginAsCustomerEnabledForCustomerInterface $isLoginAsCustomerEnabled = null
+        Url $url
     ) {
         parent::__construct($context);
 
@@ -147,12 +112,6 @@ class Login extends Action implements HttpGetActionInterface
         $this->saveAuthenticationData = $saveAuthenticationData;
         $this->deleteAuthenticationDataForUser = $deleteAuthenticationDataForUser;
         $this->url = $url;
-        $this->share = $share ?? ObjectManager::getInstance()->get(Share::class);
-        $this->manageStoreCookie = $manageStoreCookie ?? ObjectManager::getInstance()->get(ManageStoreCookie::class);
-        $this->setLoggedAsCustomerCustomerId = $setLoggedAsCustomerCustomerId
-            ?? ObjectManager::getInstance()->get(SetLoggedAsCustomerCustomerIdInterface::class);
-        $this->isLoginAsCustomerEnabled = $isLoginAsCustomerEnabled
-            ?? ObjectManager::getInstance()->get(IsLoginAsCustomerEnabledForCustomerInterface::class);
     }
 
     /**
@@ -167,35 +126,29 @@ class Login extends Action implements HttpGetActionInterface
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
+        if (!$this->config->isEnabled()) {
+            $this->messageManager->addErrorMessage(__('Login as Customer is disabled.'));
+            return $resultRedirect->setPath('customer/index/index');
+        }
+
         $customerId = (int)$this->_request->getParam('customer_id');
         if (!$customerId) {
             $customerId = (int)$this->_request->getParam('entity_id');
         }
 
-        $isLoginAsCustomerEnabled = $this->isLoginAsCustomerEnabled->execute($customerId);
-        if (!$isLoginAsCustomerEnabled->isEnabled()) {
-            foreach ($isLoginAsCustomerEnabled->getMessages() as $message) {
-                $this->messageManager->addErrorMessage(__($message));
-            }
-
-            return $resultRedirect->setPath('customer/index/index');
-        }
-
         try {
             $customer = $this->customerRepository->getById($customerId);
         } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage('Customer with this ID are no longer exist.');
+            $this->messageManager->addErrorMessage(__('Customer with this ID are no longer exist.'));
             return $resultRedirect->setPath('customer/index/index');
         }
 
         if ($this->config->isStoreManualChoiceEnabled()) {
             $storeId = (int)$this->_request->getParam('store_id');
             if (empty($storeId)) {
-                $this->messageManager->addNoticeMessage(__('Please select a Store to login in.'));
+                $this->messageManager->addNoticeMessage(__('Please select a Store View to login in.'));
                 return $resultRedirect->setPath('customer/index/edit', ['id' => $customerId]);
             }
-        } elseif ($this->share->isGlobalScope()) {
-            $storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
         } else {
             $storeId = (int)$customer->getStoreId();
         }
@@ -214,7 +167,7 @@ class Login extends Action implements HttpGetActionInterface
 
         $this->deleteAuthenticationDataForUser->execute($userId);
         $secret = $this->saveAuthenticationData->execute($authenticationData);
-        $this->setLoggedAsCustomerCustomerId->execute($customerId);
+        $this->authSession->setIsLoggedAsCustomer(true);
 
         $redirectUrl = $this->getLoginProceedRedirectUrl($secret, $storeId);
         $resultRedirect->setUrl($redirectUrl);
@@ -231,17 +184,10 @@ class Login extends Action implements HttpGetActionInterface
      */
     private function getLoginProceedRedirectUrl(string $secret, int $storeId): string
     {
-        $targetStore = $this->storeManager->getStore($storeId);
+        $store = $this->storeManager->getStore($storeId);
 
-        $redirectUrl = $this->url
-            ->setScope($targetStore)
+        return $this->url
+            ->setScope($store)
             ->getUrl('loginascustomer/login/index', ['secret' => $secret, '_nosid' => true]);
-
-        if (!$targetStore->isUseStoreInUrl()) {
-            $fromStore = $this->storeManager->getStore();
-            $redirectUrl = $this->manageStoreCookie->switch($fromStore, $targetStore, $redirectUrl);
-        }
-
-        return $redirectUrl;
     }
 }

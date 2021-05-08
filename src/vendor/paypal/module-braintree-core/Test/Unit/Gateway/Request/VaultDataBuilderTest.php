@@ -45,7 +45,7 @@ class VaultDataBuilderTest extends TestCase
      */
     private $paymentMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->paymentDO = $this->createMock(PaymentDataObjectInterface::class);
 
@@ -66,7 +66,6 @@ class VaultDataBuilderTest extends TestCase
 
     public function testBuild()
     {
-        $this->markTestSkipped('Skip this test');
         $additionalData = [
             VaultConfigProvider::IS_ACTIVE_CODE => true
         ];

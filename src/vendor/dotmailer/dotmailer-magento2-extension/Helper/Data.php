@@ -22,6 +22,7 @@ use Magento\Store\Model\ScopeInterface;
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    const MODULE_NAME = 'Dotdigitalgroup_Email';
     const DM_FIELD_LIMIT = 1000;
 
     /**
@@ -53,6 +54,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Store\Model\Store
      */
     public $store;
+
+    /**
+     * @var \Magento\Framework\Module\ModuleListInterface
+     */
+    public $fullModuleList;
 
     /**
      * @var \Magento\Customer\Model\CustomerFactory
@@ -144,6 +150,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Customer\Model\CustomerFactory $customerFactory
+     * @param \Magento\Framework\Module\ModuleListInterface $moduleListInterface
      * @param \Magento\Store\Model\Store $store
      * @param \Magento\Framework\App\Config\Storage\Writer $writer
      * @param \Dotdigitalgroup\Email\Model\Apiconnector\ClientFactory $clientFactory
@@ -169,6 +176,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
+        \Magento\Framework\Module\ModuleListInterface $moduleListInterface,
         \Magento\Store\Model\Store $store,
         \Magento\Framework\App\Config\Storage\Writer $writer,
         \Dotdigitalgroup\Email\Model\Apiconnector\ClientFactory $clientFactory,
@@ -192,6 +200,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->resourceConfig = $resourceConfig;
         $this->storeManager = $storeManager;
         $this->customerFactory = $customerFactory;
+        $this->fullModuleList = $moduleListInterface;
         $this->store = $store;
         $this->writer = $writer;
         $this->clientFactory = $clientFactory;
@@ -1656,6 +1665,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * Get current connector version.
+     *
+     * @return string
+     */
+    public function getConnectorVersion()
+    {
+        return $this->fullModuleList->getOne(self::MODULE_NAME)['setup_version'];
+    }
+
+    /**
      * Get the abandoned cart limit.
      *
      * @return boolean|string
@@ -1689,7 +1708,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $subscriberDataFields = [
             'website_name' => '',
             'store_name' => '',
-            'subscriber_status' => '',
             'number_of_orders' => '',
             'average_order_value' => '',
             'total_spend' => '',
@@ -1708,7 +1726,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $store = $website->getDefaultStore();
         $mappedData = $this->scopeConfig->getValue(
             'connector_data_mapping/customer_data',
-            ScopeInterface::SCOPE_STORE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store->getId()
         );
 
@@ -2000,20 +2018,5 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     private function getTrackingScriptVersionNumber()
     {
         return (int)$this->scopeConfig->getValue(Config::XML_PATH_TRACKING_SCRIPT_VERSION);
-    }
-
-    /**
-     * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function isConnectorEnabledAtAnyLevel()
-    {
-        foreach ($this->storeManager->getWebsites(true) as $website) {
-            if ($this->isEnabled($website->getId())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

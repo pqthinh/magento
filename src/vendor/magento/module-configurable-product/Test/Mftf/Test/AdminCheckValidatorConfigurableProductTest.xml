@@ -50,14 +50,16 @@
         </after>
 
         <!-- Find the product that we just created using the product grid -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="visitAdminProductPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPage"/>
+        <waitForPageLoad stepKey="waitForAdminProductPageLoad"/>
         <conditionalClick selector="{{AdminProductGridFilterSection.clearFilters}}"
             dependentSelector="{{AdminProductGridFilterSection.clearFilters}}" visible="true" stepKey="clickClearFiltersInitial"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="findCreatedProduct">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
         <waitForPageLoad stepKey="waitForProductFilterLoad"/>
-        <actionGroup ref="AdminProductGridSectionClickFirstRowActionGroup" stepKey="clickOnProductPage"/>
+        <click selector="{{AdminProductGridSection.firstRow}}" stepKey="clickOnProductPage"/>
+        <waitForPageLoad stepKey="waitForProductPageLoad"/>
 
         <!-- Create configurations based off the Text Swatch we created earlier -->
         <click selector="{{AdminProductFormConfigurationsSection.createConfigurations}}" stepKey="clickCreateConfigurations"/>
@@ -99,7 +101,7 @@
         <waitForElementVisible selector="{{AdminCreateProductConfigurationsPanel.next}}" stepKey="waitForNextPageOpened3"/>
         <click selector="{{AdminCreateProductConfigurationsPanel.next}}" stepKey="generateProducts"/>
         <waitForElementVisible selector="{{AdminProductFormActionSection.saveButton}}" stepKey="waitForSaveButtonVisible"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="saveProduct"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveProduct"/>
         <waitForElementVisible selector="{{AdminChooseAffectedAttributeSetPopup.confirm}}" stepKey="waitForPopUpVisible"/>
         <click selector="{{AdminChooseAffectedAttributeSetPopup.confirm}}" stepKey="clickOnConfirmInPopup"/>
         <dontSeeElement selector="{{AdminMessagesSection.success}}" stepKey="dontSeeSaveProductMessage"/>
@@ -117,7 +119,7 @@
 
         <!--Click on "Save"-->
         <waitForElementVisible selector="{{AdminProductFormActionSection.saveButton}}" stepKey="waitForSaveBtnVisible"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="saveProductAgain"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveProductAgain"/>
 
         <!--Click on "Confirm". Product is saved, success message appears -->
         <waitForElementVisible selector="{{AdminChooseAffectedAttributeSetPopup.confirm}}" stepKey="waitPopUpVisible"/>

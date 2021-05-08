@@ -48,7 +48,8 @@
         <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView"/>
 
         <!-- Create Downloadable product -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="amOnProductGridPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
+        <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
         <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createProduct">
             <argument name="productType" value="downloadable"/>
         </actionGroup>

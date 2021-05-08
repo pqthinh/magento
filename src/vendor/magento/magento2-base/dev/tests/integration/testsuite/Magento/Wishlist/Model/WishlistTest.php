@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for wish list model.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppIsolation disabled
  */
 class WishlistTest extends TestCase
@@ -116,13 +116,17 @@ class WishlistTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Wishlist/_files/wishlist_with_disabled_simple_product.php
+     * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
      *
      * @return void
      */
     public function testGetItemCollectionWithDisabledProduct(): void
     {
+        $productSku = 'simple';
         $customerId = 1;
+        $product = $this->productRepository->get($productSku);
+        $product->setStatus(ProductStatus::STATUS_DISABLED);
+        $this->productRepository->save($product);
         $this->assertEmpty($this->getWishlistByCustomerId->execute($customerId)->getItemCollection()->getItems());
     }
 
@@ -139,12 +143,7 @@ class WishlistTest extends TestCase
         $configurableOptions = $configurableProduct->getTypeInstance()->getConfigurableOptions($configurableProduct);
         $attributeId = key($configurableOptions);
         $option = reset($configurableOptions[$attributeId]);
-        $buyRequest = [
-            'super_attribute' => [
-                $attributeId => $option['value_index']
-            ],
-            'action' => 'add',
-        ];
+        $buyRequest = ['super_attribute' => [$attributeId => $option['value_index']]];
         $wishlist = $this->getWishlistByCustomerId->execute(1);
         $wishlist->addNewItem($configurableProduct, $buyRequest);
         $item = $this->getWishlistByCustomerId->getItemBySku(1, 'Configurable product');
@@ -167,12 +166,7 @@ class WishlistTest extends TestCase
         $option = reset($bundleOptions);
         $productLinks = $option->getProductLinks();
         $this->assertNotNull($productLinks[0]);
-        $buyRequest = [
-            'bundle_option' => [
-                $option->getOptionId() => $productLinks[0]->getId()
-            ],
-            'action' => 'add',
-        ];
+        $buyRequest = ['bundle_option' => [$option->getOptionId() => $productLinks[0]->getId()]];
         $skuWithChosenOption = implode('-', [$bundleProduct->getSku(), $productLinks[0]->getSku()]);
         $wishlist = $this->getWishlistByCustomerId->execute(1);
         $wishlist->addNewItem($bundleProduct, $buyRequest);
@@ -224,27 +218,6 @@ class WishlistTest extends TestCase
     }
 
     /**
-     * Update description of wishlist item
-     *
-     * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
-     *
-     * @return void
-     */
-    public function testUpdateItemDescriptionInWishList(): void
-    {
-        $itemDescription = 'Test Description';
-        $wishlist = $this->getWishlistByCustomerId->execute(1);
-        $item = $this->getWishlistByCustomerId->getItemBySku(1, 'simple');
-        $item->setDescription($itemDescription);
-        $this->assertNotNull($item);
-        $buyRequest = $this->dataObjectFactory->create(['data' => ['qty' => 55]]);
-        $wishlist->updateItem($item, $buyRequest);
-        $updatedItem = $this->getWishlistByCustomerId->getItemBySku(1, 'simple');
-        $this->assertEquals(55, $updatedItem->getQty());
-        $this->assertEquals($itemDescription, $updatedItem->getDescription());
-    }
-
-    /**
      * @return void
      */
     public function testUpdateNotExistingItemInWishList(): void
@@ -266,27 +239,6 @@ class WishlistTest extends TestCase
         $item->getProduct()->setId(null);
         $this->expectExceptionObject(new LocalizedException(__('The product does not exist.')));
         $wishlist->updateItem($item, []);
-    }
-
-    /**
-     * Test that admin user should be able to update wishlist on second website
-     *
-     * @magentoAppArea adminhtml
-     * @magentoDbIsolation disabled
-     * @magentoDataFixture Magento/Wishlist/_files/wishlist_on_second_website.php
-     *
-     * @return void
-     */
-    public function testUpdateWishListItemOnSecondWebsite(): void
-    {
-        $wishlist = $this->getWishlistByCustomerId->execute(1);
-        $item = $this->getWishlistByCustomerId->getItemBySku(1, 'simple-2');
-        $this->assertNotNull($item);
-        $this->assertEquals(1, $item->getQty());
-        $buyRequest = $this->dataObjectFactory->create(['data' => ['qty' => 2]]);
-        $wishlist->updateItem($item->getId(), $buyRequest);
-        $updatedItem = $this->getWishlistByCustomerId->getItemBySku(1, 'simple-2');
-        $this->assertEquals(2, $updatedItem->getQty());
     }
 
     /**

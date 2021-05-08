@@ -23,10 +23,6 @@ acl purge {
 }
 
 sub vcl_recv {
-    if (req.restarts > 0) {
-        set req.hash_always_miss = true;
-    }
-
     if (req.method == "PURGE") {
         if (client.ip !~ purge) {
             return (synth(405, "Method not allowed"));

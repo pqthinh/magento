@@ -9,9 +9,6 @@
  */
 namespace Magento\Framework\DB\Adapter;
 
-/**
- * @magentoDbIsolation disabled
- */
 class InterfaceTest extends \PHPUnit\Framework\TestCase
 {
     /**

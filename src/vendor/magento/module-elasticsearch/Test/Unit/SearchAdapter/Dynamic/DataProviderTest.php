@@ -390,13 +390,13 @@ class DataProviderTest extends TestCase
     {
         $expectedResult = [
             [
-                'from' => 0,
+                'from' => '',
                 'to' => 10,
                 'count' => 1,
             ],
             [
                 'from' => 10,
-                'to' => 20,
+                'to' => '',
                 'count' => 1,
             ],
         ];

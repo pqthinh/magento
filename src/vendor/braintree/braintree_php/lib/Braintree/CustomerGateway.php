@@ -111,6 +111,7 @@ class CustomerGateway
     {
         $creditCardSignature = CreditCardGateway::createSignature();
         unset($creditCardSignature[array_search('customerId', $creditCardSignature)]);
+
         $signature = [
             'id', 'company', 'email', 'fax', 'firstName',
             'lastName', 'phone', 'website', 'deviceData',
@@ -142,7 +143,7 @@ class CustomerGateway
         ];
         return $signature;
     }
- 
+
     /**
      * creates a full array signature of a valid update request
      * @return array update request format
@@ -588,3 +589,4 @@ class CustomerGateway
         }
     }
 }
+class_alias('Braintree\CustomerGateway', 'Braintree_CustomerGateway');

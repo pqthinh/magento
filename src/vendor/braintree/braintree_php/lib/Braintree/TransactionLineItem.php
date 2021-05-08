@@ -50,3 +50,4 @@ class TransactionLineItem extends Instance
         return Configuration::gateway()->transactionLineItem()->findAll($transactionId);
     }
 }
+class_alias('Braintree\TransactionLineItem', 'Braintree_TransactionLineItem');

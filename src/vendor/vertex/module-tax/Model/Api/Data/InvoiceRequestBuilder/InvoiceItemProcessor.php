@@ -131,13 +131,13 @@ class InvoiceItemProcessor implements InvoiceProcessorInterface
             $productSku[] = $item->getSku();
         }
 
-        $orderId = $invoice->getOrderId();
-        $products = $this->itemProcessor->getProductsIndexedBySku($productSku, $orderId);
+        $products = $this->itemProcessor->getProductsIndexedBySku($productSku);
 
         /** @var int[] $taxClasses Key is InvoiceItem ID, Value is Tax Class ID */
         $taxClasses = [];
 
         $storeId = $invoice->getStoreId();
+        $orderId = $invoice->getOrderId();
 
         $lineItemMapper = $this->mapperFactory->getForClass(LineItemInterface::class, $storeId);
 

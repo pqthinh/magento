@@ -15,7 +15,6 @@ define([
         defaults: {
             template: 'Magento_MediaGalleryUi/image/image-details',
             modalSelector: '',
-            modalWindowSelector: '',
             imageDetailsUrl: '/media_gallery/image/details',
             images: [],
             tagListLimit: 7,
@@ -48,12 +47,12 @@ define([
          */
         showImageDetailsById: function (imageId) {
             if (_.isUndefined(this.images[imageId])) {
-                getDetails(this.imageDetailsUrl, [imageId]).then(function (imageDetails) {
-                    this.images[imageId] = imageDetails[imageId];
+                getDetails(this.imageDetailsUrl, imageId).then(function (imageDetails) {
+                    this.images[imageId] = imageDetails;
                     this.image(this.images[imageId]);
                     this.openImageDetailsModal();
-                }.bind(this)).fail(function (error) {
-                    this.addMediaGridMessage('error', error);
+                }.bind(this)).fail(function (message) {
+                    this.addMediaGridMessage('error', message);
                 }.bind(this));
 
                 return;
@@ -126,59 +125,23 @@ define([
         },
 
         /**
-         * Is value an object
+         * Get image details value
          *
-         * @param {*} value
-         * @returns {Boolean}
+         * @param {Object|String} value
+         * @return {String}
          */
-        isArray: function (value) {
-            return _.isArray(value);
-        },
+        getValueUnsanitizedHtml: function (value) {
+            var usedIn = '';
 
-        /**
-         * Is value not empty
-         *
-         * @param {*} value
-         * @returns {Boolean}
-         */
-        notEmpty: function (value) {
-            return value.length > 0;
-        },
+            if (_.isObject(value)) {
+                _.each(value, function (numberOfTimeUsed, moduleName) {
+                    usedIn += numberOfTimeUsed + ' ' + moduleName + '</br>';
+                });
 
-        /**
-         * Get name and number text for used in link
-         *
-         * @param {Object} item
-         * @returns {String}
-         */
-        getUsedInText: function (item) {
-            return item.name +  '(' + item.number + ')';
-        },
+                return usedIn;
+            }
 
-        /**
-         * Get filter url
-         *
-         * @param {String} link
-         */
-        getFilterUrl: function (link) {
-            return link + '?filters[asset_id]=[' + this.image().id + ']';
-        },
-
-        /**
-         * Check if details modal is active
-         * @return {Boolean}
-         */
-        isActive: function () {
-            return $(this.modalWindowSelector).hasClass('_show');
-        },
-
-        /**
-         * Remove image details
-         *
-         * @param {String} id
-         */
-        removeCached: function (id) {
-            delete this.images[id];
+            return value;
         }
     });
 });

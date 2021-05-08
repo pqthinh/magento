@@ -2,11 +2,7 @@
     "name": "magento/magento2-base",
     "description": "Magento 2 Base (Community Edition)",
     "type": "magento2-component",
-    "license": [
-        "OSL-3.0",
-        "AFL-3.0"
-    ],
-    "version": "2.4.1",
+    "version": "2.4.0",
     "require": {
         "magento/magento-composer-installer": "*",
         "php": "~7.3.0||~7.4.0",
@@ -48,6 +44,10 @@
     "conflict": {
         "gene/bluefoot": "*"
     },
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
     "replace": {
         "trentrichardson/jquery-timepicker-addon": "1.4.3",
         "components/jquery": "1.11.0",
@@ -57,28 +57,26 @@
         "tinymce/tinymce": "3.4.7"
     },
     "extra": {
-        "chmod": [
-            {
-                "mask": "0755",
-                "path": "bin/magento"
-            }
-        ],
         "component_paths": {
-            "blueimp/jquery-file-upload": "lib/web/jquery/fileUploader",
+            "trentrichardson/jquery-timepicker-addon": "lib/web/jquery/jquery-ui-timepicker-addon.js",
             "components/jquery": [
                 "lib/web/jquery.js",
                 "lib/web/jquery/jquery.min.js",
                 "lib/web/jquery/jquery-migrate.js"
             ],
+            "blueimp/jquery-file-upload": "lib/web/jquery/fileUploader",
             "components/jqueryui": "lib/web/jquery/jquery-ui.js",
-            "tinymce/tinymce": "lib/web/tiny_mce_4",
-            "trentrichardson/jquery-timepicker-addon": "lib/web/jquery/jquery-ui-timepicker-addon.js",
-            "twbs/bootstrap": "lib/web/jquery/jquery.tabs.js"
+            "twbs/bootstrap": "lib/web/jquery/jquery.tabs.js",
+            "tinymce/tinymce": "lib/web/tiny_mce_4"
         },
         "map": [
             [
                 ".editorconfig",
                 ".editorconfig"
+            ],
+            [
+                ".github",
+                ".github"
             ],
             [
                 ".htaccess",
@@ -369,12 +367,12 @@
                 "lib/web/images"
             ],
             [
-                "lib/web/jquery",
-                "lib/web/jquery"
-            ],
-            [
                 "lib/web/jquery.js",
                 "lib/web/jquery.js"
+            ],
+            [
+                "lib/web/jquery",
+                "lib/web/jquery"
             ],
             [
                 "lib/web/knockoutjs",
@@ -513,12 +511,12 @@
                 "pub/opt"
             ],
             [
-                "pub/static/.htaccess",
-                "pub/static/.htaccess"
-            ],
-            [
                 "pub/static.php",
                 "pub/static.php"
+            ],
+            [
+                "pub/static/.htaccess",
+                "pub/static/.htaccess"
             ],
             [
                 "setup",
@@ -532,7 +530,12 @@
                 "vendor/.htaccess",
                 "vendor/.htaccess"
             ]
+        ],
+        "chmod": [
+            {
+                "mask": "0755",
+                "path": "bin/magento"
+            }
         ]
     }
 }
-

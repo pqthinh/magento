@@ -39,7 +39,8 @@
             <deleteData stepKey="deleteProductTaxClass" createDataKey="createProductTaxClass"/>
         </after>
 
-        <actionGroup ref="AdminTaxRuleGridOpenPageActionGroup" stepKey="goToTaxRuleIndex1"/>
+        <amOnPage url="{{AdminTaxRuleGridPage.url}}" stepKey="goToTaxRuleIndex1"/>
+        <waitForPageLoad stepKey="waitForTaxRuleIndex1"/>
         <click selector="{{AdminTaxRuleGridSection.add}}" stepKey="clickAddNewTaxRuleButton"/>
         <waitForPageLoad stepKey="waitForTaxRuleIndex2"/>
 

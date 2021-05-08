@@ -371,9 +371,6 @@ define(
                                     "method": "braintree_applepay",
                                     "additional_data": {
                                         "payment_method_nonce": nonce
-                                    },
-                                    "extension_attributes": {
-                                        "agreement_ids": [1]
                                     }
                                 }
                             }

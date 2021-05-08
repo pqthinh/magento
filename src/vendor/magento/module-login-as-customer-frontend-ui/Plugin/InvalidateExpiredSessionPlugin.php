@@ -9,7 +9,6 @@ namespace Magento\LoginAsCustomerFrontendUi\Plugin;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\ActionInterface;
 use Magento\LoginAsCustomerApi\Api\ConfigInterface;
-use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
 use Magento\LoginAsCustomerApi\Api\IsLoginAsCustomerSessionActiveInterface;
 
 /**
@@ -33,26 +32,18 @@ class InvalidateExpiredSessionPlugin
     private $isLoginAsCustomerSessionActive;
 
     /**
-     * @var GetLoggedAsCustomerAdminIdInterface
-     */
-    private $getLoggedAsCustomerAdminId;
-
-    /**
      * @param ConfigInterface $config
      * @param Session $session
      * @param IsLoginAsCustomerSessionActiveInterface $isLoginAsCustomerSessionActive
-     * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
      */
     public function __construct(
         ConfigInterface $config,
         Session $session,
-        IsLoginAsCustomerSessionActiveInterface $isLoginAsCustomerSessionActive,
-        GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
+        IsLoginAsCustomerSessionActiveInterface $isLoginAsCustomerSessionActive
     ) {
         $this->session = $session;
         $this->isLoginAsCustomerSessionActive = $isLoginAsCustomerSessionActive;
         $this->config = $config;
-        $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId;
     }
 
     /**
@@ -66,13 +57,11 @@ class InvalidateExpiredSessionPlugin
     public function beforeExecute(ActionInterface $subject)
     {
         if ($this->config->isEnabled()) {
-            $adminId = $this->getLoggedAsCustomerAdminId->execute();
+            $adminId = (int)$this->session->getLoggedAsCustomerAdmindId();
             $customerId = (int)$this->session->getCustomerId();
             if ($adminId && $customerId) {
                 if (!$this->isLoginAsCustomerSessionActive->execute($customerId, $adminId)) {
-                    $this->session->clearStorage();
-                    $this->session->expireSessionCookie();
-                    $this->session->regenerateId();
+                    $this->session->destroy();
                 }
             }
         }

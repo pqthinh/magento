@@ -10,7 +10,7 @@ define([
     'Magento_Ui/js/lib/validation/validator',
     'mage/translate',
     'jquery/file-uploader'
-], function (Component, $, _, validator, $t) {
+], function (Component, $, _, validator) {
     'use strict';
 
     return Component.extend({
@@ -23,7 +23,6 @@ define([
             acceptFileTypes: '',
             allowedExtensions: '',
             maxFileSize: '',
-            maxFileNameLength: 90,
             loader: false,
             modules: {
                 directories: '${ $.directoriesPath }',
@@ -85,17 +84,13 @@ define([
 
                 add: function (e, data) {
                     if (!this.isSizeExceeded(data.files[0]).passed) {
-                        this.addValidationErrorMessage(
-                            $t('Cannot upload "%1". File exceeds maximum file size limit.')
-                                .replace('%1', data.files[0].name)
+                        this.mediaGridMessages().add(
+                            'error',
+                            $.mage.__('Cannot upload <b>' + data.files[0].name +
+                                      '</b>. File exceeds maximum file size limit.')
                         );
 
-                        return;
-                    } else if (!this.isFileNameLengthExceeded(data.files[0]).passed) {
-                        this.addValidationErrorMessage(
-                            $t('Cannot upload "%1". Filename is too long, must be 90 characters or less.')
-                                .replace('%1', data.files[0].name)
-                        );
+                        this.count() < 2 || this.mediaGridMessages().scheduleCleanup();
 
                         return;
                     }
@@ -117,14 +112,8 @@ define([
                 done: function (e, data) {
                     var response = data.jqXHR.responseJSON;
 
-                    if (!response) {
-                        this.showErrorMessage(data, $t('Could not upload the asset.'));
-
-                        return;
-                    }
-
                     if (!response.success) {
-                        this.showErrorMessage(data, response.message);
+                        this.showErrorMessage(data);
 
                         return;
                     }
@@ -136,17 +125,6 @@ define([
         },
 
         /**
-         * Add error message after validation error.
-         *
-         * @param {String} message
-         */
-        addValidationErrorMessage: function (message) {
-            this.mediaGridMessages().add('error', message);
-
-            this.count() < 2 || this.mediaGridMessages().scheduleCleanup();
-        },
-
-        /**
          * Checks if size of provided file exceeds
          * defined in configuration size limits.
          *
@@ -155,17 +133,6 @@ define([
          */
         isSizeExceeded: function (file) {
             return validator('validate-max-size', file.size, this.maxFileSize);
-        },
-
-        /**
-         * Checks if name length of provided file exceeds
-         * defined in configuration size limits.
-         *
-         * @param {Object} file - File to be checked.
-         * @returns {Boolean}
-         */
-        isFileNameLengthExceeded: function (file) {
-            return validator('max_text_length', file.name, this.maxFileNameLength);
         },
 
         /**
@@ -187,13 +154,12 @@ define([
          * Show error meassages with file name.
          *
          * @param {Object} data
-         * @param {String} message
          */
-        showErrorMessage: function (data, message) {
+        showErrorMessage: function (data) {
             data.files.each(function (file) {
                 this.mediaGridMessages().add(
                     'error',
-                    file.name + ': ' + $t(message)
+                    $.mage.__('Cannot upload <b>' + file.name + '</b>. This file format is not supported')
                 );
             }.bind(this));
 
@@ -204,10 +170,12 @@ define([
          * Show success message, and files counts
          */
         showSuccessMessage: function () {
+            var prefix = this.count() === 1 ? 'an image' : this.count() + ' images';
+
             this.mediaGridMessages().messages.remove(function (item) {
                 return item.code === 'success';
             });
-            this.mediaGridMessages().add('success', $t('Assets have been successfully uploaded!'));
+            this.mediaGridMessages().add('success', $.mage.__('Successfully uploaded ' + prefix));
             this.count(this.count() + 1);
 
         },

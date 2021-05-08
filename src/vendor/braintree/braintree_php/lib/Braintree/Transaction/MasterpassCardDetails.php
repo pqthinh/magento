@@ -49,3 +49,4 @@ class MasterpassCardDetails extends Instance
 
     }
 }
+class_alias('Braintree\Transaction\MasterpassCardDetails', 'Braintree_Transaction_MasterpassCardDetails');

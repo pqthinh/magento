@@ -539,14 +539,9 @@ class SimplePath
      */
     public function getRegion()
     {
-        $currency = $this->getCurrency();
+        $currency = $this->getConfig('currency/options/default');
 
-        $region = null;
-        if ($currency) {
-            $region = isset($this->_mapCurrencyRegion[$currency]) ? strtoupper($this->_mapCurrencyRegion[$currency]) : 'DE';
-        }
-
-
+        $region = isset($this->_mapCurrencyRegion[$currency]) ? strtoupper($this->_mapCurrencyRegion[$currency]) : '';
         if ($region == 'DE') {
             $region = 'Euro Region';
         }
@@ -560,15 +555,7 @@ class SimplePath
     public function getCurrency()
     {
         $currency = $this->getConfig('currency/options/default');
-        $isCurrencyValid = isset($this->_mapCurrencyRegion[$currency]);
-        if (!$isCurrencyValid) {
-            if ($this->getConfig(CoreHelper::AMAZON_ACTIVE, $this->_scope, $this->_scopeId)) {
-                $isCurrencyValid = $this->amazonConfig->canUseCurrency($currency, $this->_scope, $this->_scopeId);
-            } else {
-                $isCurrencyValid = in_array($currency, $this->amazonConfig->getValidCurrencies($this->_scope, $this->_scopeId));
-            }
-        }
-        return $isCurrencyValid ? $currency : null;
+        return (isset($this->_mapCurrencyRegion[$currency])) ? $currency : null;
     }
 
     /**
@@ -594,7 +581,7 @@ class SimplePath
             'isSecure'      => (int) ($this->request->isSecure()),
             'hasOpenssl'    => (int) (extension_loaded('openssl')),
             'formParams'    => $this->getFormParams(),
-            'isMultiCurrencyRegion' => (int) $this->amazonConfig->isMulticurrencyRegion($this->_scope, $this->_scopeId),
+            'isMultiCurrencyRegion' => (int) $this->amazonConfig->isMulticurrencyRegion(),
         ];
     }
 }

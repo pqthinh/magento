@@ -42,25 +42,17 @@ class Synchronize implements SynchronizeInterface
     private $synchronizerPool;
 
     /**
-     * @var RemoveObsoleteContentAsset
-     */
-    private $removeObsoleteContent;
-
-    /**
-     * @param RemoveObsoleteContentAsset $removeObsoleteContent
      * @param DateTimeFactory $dateFactory
      * @param FlagManager $flagManager
      * @param LoggerInterface $log
      * @param SynchronizerPool $synchronizerPool
      */
     public function __construct(
-        RemoveObsoleteContentAsset $removeObsoleteContent,
         DateTimeFactory $dateFactory,
         FlagManager $flagManager,
         LoggerInterface $log,
         SynchronizerPool $synchronizerPool
     ) {
-        $this->removeObsoleteContent = $removeObsoleteContent;
         $this->dateFactory = $dateFactory;
         $this->flagManager = $flagManager;
         $this->log = $log;
@@ -95,7 +87,6 @@ class Synchronize implements SynchronizeInterface
         }
 
         $this->setLastExecutionTime();
-        $this->removeObsoleteContent->execute();
     }
 
     /**

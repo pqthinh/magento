@@ -32,3 +32,4 @@ class AuthorizationAdjustment extends Base
         return __CLASS__ . '[' . Util::attributesToString($this->_attributes) . ']';
     }
 }
+class_alias('Braintree\AuthorizationAdjustment', 'Braintree_Authorization_Adjustment');

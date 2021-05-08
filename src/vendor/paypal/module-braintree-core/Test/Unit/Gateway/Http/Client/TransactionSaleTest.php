@@ -19,12 +19,12 @@ class TransactionSaleTest extends \PHPUnit\Framework\TestCase
     private $model;
 
     /**
-     * @var Logger|\PHPUnit\Framework\MockObject\MockObject
+     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var BraintreeAdapter|\PHPUnit\Framework\MockObject\MockObject
+     * @var BraintreeAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $adapter;
 
@@ -33,7 +33,7 @@ class TransactionSaleTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $criticalLoggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->loggerMock = $this->getMockBuilder(Logger::class)
@@ -51,13 +51,11 @@ class TransactionSaleTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
+     * @expectedException \Magento\Payment\Gateway\Http\ClientException
+     * @expectedExceptionMessage Test messages
      */
     public function testPlaceRequestException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\Magento\Payment\Gateway\Http\ClientException::class);
-        $this->expectExceptionMessage('Test messages');
-
         $this->loggerMock->expects($this->once())
             ->method('debug')
             ->with(
@@ -72,7 +70,7 @@ class TransactionSaleTest extends \PHPUnit\Framework\TestCase
             ->method('sale')
             ->willThrowException(new \Exception('Test messages'));
 
-        /** @var TransferInterface|\PHPUnit\Framework\MockObject\MockObject $transferObjectMock */
+        /** @var TransferInterface|\PHPUnit_Framework_MockObject_MockObject $transferObjectMock */
         $transferObjectMock = $this->getTransferObjectMock();
 
         $this->model->placeRequest($transferObjectMock);
@@ -104,12 +102,12 @@ class TransactionSaleTest extends \PHPUnit\Framework\TestCase
 
         $actualResult = $this->model->placeRequest($this->getTransferObjectMock());
 
-        $this->assertIsObject($actualResult['object']);
+        $this->assertTrue(is_object($actualResult['object']));
         $this->assertEquals(['object' => $response], $actualResult);
     }
 
     /**
-     * @return TransferInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return TransferInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getTransferObjectMock()
     {

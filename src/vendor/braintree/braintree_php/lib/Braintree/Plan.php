@@ -65,3 +65,4 @@ class Plan extends Base
         return Configuration::gateway()->plan()->all();
     }
 }
+class_alias('Braintree\Plan', 'Braintree_Plan');

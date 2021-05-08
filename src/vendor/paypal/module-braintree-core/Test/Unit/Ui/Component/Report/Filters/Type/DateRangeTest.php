@@ -17,34 +17,34 @@ use Magento\Ui\Component\Form\Element\DataType\Date as FormDate;
 class DateRangeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var UiComponentFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @var UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $uiComponentFactory;
 
     /**
-     * @var FilterBuilder|\PHPUnit\Framework\MockObject\MockObject
+     * @var FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterBuilderMock;
 
     /**
-     * @var FilterModifier|\PHPUnit\Framework\MockObject\MockObject
+     * @var FilterModifier|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterModifierMock;
 
     /**
-     * @var DataProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var DataProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataProviderMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
         $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
@@ -88,7 +88,7 @@ class DateRangeTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrepare($name, $filterData, $expectedCondition)
     {
-        /** @var FormDate PHPUnit\Framework\MockObject\MockObject|$uiComponent */
+        /** @var FormDate PHPUnit_Framework_MockObject_MockObject|$uiComponent */
         $uiComponent = $this->getMockBuilder(FormDate::class)->disableOriginalConstructor()->getMock();
 
         $uiComponent->expects($this->any())
@@ -182,7 +182,7 @@ class DateRangeTest extends \PHPUnit\Framework\TestCase
      * @param string $expectedDate
      * @param int $i
      *
-     * @return Filter|\PHPUnit\Framework\MockObject\MockObject
+     * @return Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getFilterMock($name, $expectedType, $expectedDate, &$i)
     {

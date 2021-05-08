@@ -7,16 +7,16 @@ declare(strict_types=1);
 
 namespace Magento\TestFramework\Workaround\Override\Fixture;
 
-use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Annotation\AdminConfigFixture;
 use Magento\TestFramework\Annotation\ConfigFixture;
 use Magento\TestFramework\Annotation\DataFixture;
 use Magento\TestFramework\Annotation\DataFixtureBeforeTransaction;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\ConfigInterface;
+use Magento\TestFramework\Workaround\Override\Config;
 use Magento\TestFramework\Workaround\Override\Fixture\Applier\AdminConfigFixture as AdminConfigFixtureApplier;
 use Magento\TestFramework\Workaround\Override\Fixture\Applier\ApplierInterface;
 use Magento\TestFramework\Workaround\Override\Fixture\Applier\Base;
@@ -29,30 +29,30 @@ use PHPUnit\Framework\TestCase;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Resolver implements ResolverInterface
+class Resolver
 {
-    /** @var ObjectManagerInterface */
-    protected $objectManager;
-
     /** @var self */
     private static $instance;
 
     /** @var TestCase */
     private $currentTest;
 
-    /** @var ConfigInterface */
+    /** @var Config */
     private $config;
 
     /** @var ApplierInterface[] */
     private $appliersList;
 
+    /** @var ObjectManagerInterface */
+    private $objectManager;
+
     /** @var string */
     private $currentFixtureType = null;
 
     /**
-     * @param ConfigInterface $config
+     * @param Config $config
      */
-    public function __construct(ConfigInterface $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
         $this->objectManager = Bootstrap::getObjectManager();
@@ -61,30 +61,22 @@ class Resolver implements ResolverInterface
     /**
      * Get class instance
      *
-     * @return ResolverInterface
+     * @return self
      */
-    public static function getInstance(): ResolverInterface
+    public static function getInstance(): self
     {
         if (empty(self::$instance)) {
-            throw new \RuntimeException('Override fixture resolver isn\'t initialized');
+            self::$instance = new self(Config::getInstance());
         }
 
         return self::$instance;
     }
 
     /**
-     * Instance setter.
+     * Set current test to instance
      *
-     * @param ResolverInterface $instance
+     * @param TestCase $currentTest
      * @return void
-     */
-    public static function setInstance(ResolverInterface $instance): void
-    {
-        self::$instance = $instance;
-    }
-
-    /**
-     * @inheritdoc
      */
     public function setCurrentTest(?TestCase $currentTest): void
     {
@@ -92,7 +84,9 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * Get current test
+     *
+     * @return TestCase|null
      */
     public function getCurrentTest(): ?TestCase
     {
@@ -100,7 +94,10 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * Set which fixture type is executed
+     *
+     * @param null|string $fixtureType
+     * @return void
      */
     public function setCurrentFixtureType(?string $fixtureType): void
     {
@@ -108,7 +105,10 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * Require fixture wrapper
+     *
+     * @param string $path
+     * @return void
      */
     public function requireDataFixture(string $path): void
     {
@@ -123,60 +123,36 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * Apply override configurations to config fixtures list
+     *
+     * @param TestCase $test
+     * @param array $fixtures
+     * @param string $fixtureType
+     * @return array
      */
     public function applyConfigFixtures(TestCase $test, array $fixtures, string $fixtureType): array
     {
-        $skipConfig = $this->config->getSkipConfiguration($test);
-
-        return $skipConfig['skip']
-            ? []
-            : $this->getApplier($test, $fixtureType)->apply($fixtures);
+        return $this->getApplier($test, $fixtureType)->apply($fixtures);
     }
 
     /**
-     * @inheritdoc
+     * Apply override configurations to data fixtures list
+     *
+     * @param TestCase $test
+     * @param array $fixtures
+     * @param string $fixtureType
+     * @return array
      */
     public function applyDataFixtures(TestCase $test, array $fixtures, string $fixtureType): array
     {
         $result = [];
-        $skipConfig = $this->config->getSkipConfiguration($test);
+        $fixtures = $this->getApplier($test, $fixtureType)->apply($fixtures);
 
-        if (!$skipConfig['skip']) {
-            $fixtures = $this->getApplier($test, $fixtureType)->apply($fixtures);
-
-            foreach ($fixtures as $fixture) {
-                $result[] = $this->processFixturePath($test, $fixture);
-            }
+        foreach ($fixtures as $fixture) {
+            $result[] = $this->processFixturePath($test, $fixture);
         }
 
         return $result;
-    }
-
-    /**
-     * Get appropriate fixture applier according to fixture type
-     *
-     * @param string $fixtureType
-     * @return ApplierInterface
-     */
-    protected function getApplierByFixtureType(string $fixtureType): ApplierInterface
-    {
-        switch ($fixtureType) {
-            case DataFixture::ANNOTATION:
-            case DataFixtureBeforeTransaction::ANNOTATION:
-                $applier = $this->objectManager->get(DataFixtureApplier::class);
-                break;
-            case ConfigFixture::ANNOTATION:
-                $applier = $this->objectManager->get(ConfigFixtureApplier::class);
-                break;
-            case AdminConfigFixture::ANNOTATION:
-                $applier = $this->objectManager->get(AdminConfigFixtureApplier::class);
-                break;
-            default:
-                throw new \InvalidArgumentException(sprintf('Unsupported fixture type %s provided', $fixtureType));
-        }
-
-        return $applier;
     }
 
     /**
@@ -203,7 +179,6 @@ class Resolver implements ResolverInterface
         }
         /** @var Base $applier */
         $applier = $this->appliersList[$fixtureType];
-        $applier->setGlobalConfig($this->config->getGlobalConfig($fixtureType));
         $applier->setClassConfig($this->config->getClassConfig($test, $fixtureType));
         $applier->setMethodConfig($this->config->getMethodConfig($test, $fixtureType));
         $applier->setDataSetConfig(
@@ -211,6 +186,32 @@ class Resolver implements ResolverInterface
                 ? $this->config->getDataSetConfig($test, $fixtureType)
                 : []
         );
+
+        return $applier;
+    }
+
+    /**
+     * Get appropriate fixture applier according to fixture type
+     *
+     * @param string $fixtureType
+     * @return ApplierInterface
+     */
+    private function getApplierByFixtureType(string $fixtureType): ApplierInterface
+    {
+        switch ($fixtureType) {
+            case DataFixture::ANNOTATION:
+            case DataFixtureBeforeTransaction::ANNOTATION:
+                $applier = $this->objectManager->get(DataFixtureApplier::class);
+                break;
+            case ConfigFixture::ANNOTATION:
+                $applier = $this->objectManager->get(ConfigFixtureApplier::class);
+                break;
+            case AdminConfigFixture::ANNOTATION:
+                $applier = $this->objectManager->get(AdminConfigFixtureApplier::class);
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unsupported fixture type %s provided', $fixtureType));
+        }
 
         return $applier;
     }

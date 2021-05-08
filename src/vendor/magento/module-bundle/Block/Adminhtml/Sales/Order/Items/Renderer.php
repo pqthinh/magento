@@ -86,7 +86,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
         }
 
         if ($items) {
-            $itemsArray[$item->getOrderItem()->getId()][$item->getOrderItemId()] = $item;
             foreach ($items as $value) {
                 $parentItem = $value->getOrderItem()->getParentItem();
                 if ($parentItem) {

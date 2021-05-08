@@ -14,14 +14,15 @@
 & when (@media-common = true) {
     .adobe-stock-images-search-modal-content {
         .color-rectangle {
-            border: solid 1px @color-dots-background-color;
+            border: solid 1px;
+            border-color: @color-dots-background-color;
             display: inline-block;
             height: 12px;
             position: inherit;
             top: 2px;
             width: 12px;
         }
-
+        
         .masonry-image {
             &-grid {
                 display: inline-block;
@@ -45,7 +46,7 @@
 
             &-preview {
                 position: fixed;
-                z-index: 289;
+                z-index: 299;
 
                 .container {
                     padding-top: 0;
@@ -207,13 +208,6 @@
                 .ui-state-default {
                     border-bottom: none;
                 }
-
-                .ui-state-active {
-                    border-bottom: 0;
-                    font-weight: unset;
-                    letter-spacing: normal;
-                    margin-bottom: -1.1rem;
-                }
             }
 
             .related-loader {
@@ -247,9 +241,8 @@
                         width: 100%;
 
                         img {
-                            margin: 0 auto;
                             max-width: initial;
-                            position: relative;
+                            position: absolute;
                             width: auto;
                         }
                     }
@@ -359,13 +352,6 @@
 
             .admin__field-tooltip {
                 margin: -5px 0 0 5px;
-
-                .admin__field-tooltip-action {
-                    &:before {
-                        line-height: initial;
-                        overflow: visible;
-                    }
-                }
             }
         }
     }
@@ -380,7 +366,7 @@
                         max-width: 130px;
                     }
                     .see-more-wrapper {
-                        width: auto;
+                        max-width: 130px;
                     }
                 }
             }

@@ -20,6 +20,7 @@
             "MEDIA_GALLERY_ASSET_TITLE": true
         },
         "constraint": {
+            "MEDIA_GALLERY_ID_PATH_TITLE_CONTENT_TYPE_WIDTH_HEIGHT": true,
             "PRIMARY": true,
             "MEDIA_GALLERY_ASSET_PATH": true
         }

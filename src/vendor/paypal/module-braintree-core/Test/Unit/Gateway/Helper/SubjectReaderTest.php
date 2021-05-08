@@ -16,20 +16,18 @@ class SubjectReaderTest extends \PHPUnit\Framework\TestCase
      */
     private $subjectReader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->subjectReader = new SubjectReader();
     }
 
     /**
      * @covers \PayPal\Braintree\Gateway\Helper\SubjectReader::readCustomerId
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The "customerId" field does not exists
      */
     public function testReadCustomerIdWithException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The "customerId" field does not exists');
-
         $this->subjectReader->readCustomerId([]);
     }
 
@@ -44,13 +42,11 @@ class SubjectReaderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers \PayPal\Braintree\Gateway\Helper\SubjectReader::readPublicHash
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The "public_hash" field does not exists
      */
     public function testReadPublicHashWithException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The "public_hash" field does not exists');
-
         $this->subjectReader->readPublicHash([]);
     }
 
@@ -65,13 +61,11 @@ class SubjectReaderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers \PayPal\Braintree\Gateway\Helper\SubjectReader::readPayPal
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Transaction has't paypal attribute
      */
     public function testReadPayPalWithException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Transaction has\'t paypal attribute');
-
         $transaction = Transaction::factory([
             'id' => 'u38rf8kg6vn'
         ]);

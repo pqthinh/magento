@@ -309,24 +309,7 @@ class CreditCardGateway
         $options[] = "failOnDuplicatePaymentMethod";
         $signature = self::baseSignature($options);
         $signature[] = 'customerId';
-        $signature[] = self::threeDSecurePassThruSignature();
         return $signature;
-    }
-
-    public static function threeDSecurePassThruSignature()
-    {
-        return [
-            'threeDSecurePassThru' => [
-                'eciFlag',
-                'cavv',
-                'xid',
-                'threeDSecureVersion',
-                'authenticationResponse',
-                'directoryResponse',
-                'cavvAlgorithm',
-                'dsTransactionId',
-            ]
-        ];
     }
 
     public static function updateSignature()
@@ -334,7 +317,6 @@ class CreditCardGateway
         $options = self::baseOptions();
         $options[] = "failOnDuplicatePaymentMethod";
         $signature = self::baseSignature($options);
-        $signature[] = self::threeDSecurePassThruSignature();
 
         $updateExistingBillingSignature = [
             [
@@ -434,3 +416,4 @@ class CreditCardGateway
         }
     }
 }
+class_alias('Braintree\CreditCardGateway', 'Braintree_CreditCardGateway');

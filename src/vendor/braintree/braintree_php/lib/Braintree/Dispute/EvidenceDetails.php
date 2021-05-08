@@ -27,3 +27,5 @@ class EvidenceDetails extends Instance
         parent::__construct($attributes);
     }
 }
+
+class_alias('Braintree\Dispute\EvidenceDetails', 'Braintree_Dispute_EvidenceDetails');

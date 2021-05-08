@@ -7,130 +7,83 @@ declare(strict_types=1);
 
 namespace Magento\AdobeStockImage\Model;
 
-use Magento\AdobeStockImage\Model\Extract\MediaGalleryAsset as DocumentToAsset;
+use Magento\AdobeStockImage\Model\Extract\MediaGalleryAsset as DocumentToMediaGalleryAsset;
 use Magento\Framework\Api\Search\Document;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\MediaGalleryApi\Api\Data\AssetInterface;
-use Magento\MediaGalleryApi\Api\GetAssetsByPathsInterface;
+use Magento\Framework\Filesystem;
 use Magento\MediaGalleryApi\Api\SaveAssetsInterface;
-use Magento\MediaGallerySynchronizationApi\Api\SynchronizeFilesInterface;
 
 /**
- * Process save action of the media gallery asset and keywords.
+ * Process save action of the media gallery asset.
  */
 class SaveMediaGalleryAsset
 {
-    private const SOURCE_ADOBE_STOCK = 'Adobe Stock';
-
-    /**
-     * @var DocumentToAsset
-     */
-    private $documentToAsset;
-
-    /**
-     * @var GetAssetsByPathsInterface
-     */
-    private $getAssetsByPaths;
-
-    /**
-     * @var SynchronizeFilesInterface
-     */
-    private $importFiles;
-
     /**
      * @var SaveAssetsInterface
      */
-    private $saveAssets;
+    private $saveMediaAsset;
 
     /**
-     * @var SaveKeywords
+     * @var DocumentToMediaGalleryAsset
      */
-    private $saveKeywords;
+    private $documentToMediaGalleryAsset;
 
     /**
-     * @param DocumentToAsset $documentToAsset
-     * @param GetAssetsByPathsInterface $getAssetsByPaths
-     * @param SynchronizeFilesInterface $importFiles
-     * @param SaveAssetsInterface $saveAssets
-     * @param SaveKeywords $saveKeywords
+     * @var Filesystem
+     */
+    private $fileSystem;
+
+    /**
+     * @param SaveAssetsInterface $saveMediaAsset
+     * @param DocumentToMediaGalleryAsset $documentToMediaGalleryAsset
+     * @param Filesystem $fileSystem
      */
     public function __construct(
-        DocumentToAsset $documentToAsset,
-        GetAssetsByPathsInterface $getAssetsByPaths,
-        SynchronizeFilesInterface $importFiles,
-        SaveAssetsInterface $saveAssets,
-        SaveKeywords $saveKeywords
+        SaveAssetsInterface $saveMediaAsset,
+        DocumentToMediaGalleryAsset $documentToMediaGalleryAsset,
+        Filesystem $fileSystem
     ) {
-        $this->documentToAsset = $documentToAsset;
-        $this->getAssetsByPaths = $getAssetsByPaths;
-        $this->importFiles = $importFiles;
-        $this->saveAssets = $saveAssets;
-        $this->saveKeywords = $saveKeywords;
+        $this->saveMediaAsset = $saveMediaAsset;
+        $this->documentToMediaGalleryAsset = $documentToMediaGalleryAsset;
+        $this->fileSystem = $fileSystem;
     }
 
     /**
      * Process saving MediaGalleryAsset based on the search document and destination path.
      *
      * @param Document $document
-     * @param string $path
-     * @return int
+     * @param string $destinationPath
+     * @return void
      * @throws CouldNotSaveException
-     * @throws LocalizedException
      */
-    public function execute(Document $document, string $path): int
+    public function execute(Document $document, string $destinationPath): void
     {
         try {
-            $this->importFiles->execute([$path]);
-            $asset = $this->getAssetsByPaths->execute([$path])[0];
-            $this->saveAsset($document, $asset);
-            $this->saveKeywords($document, $asset->getId());
-            return $asset->getId();
-        } catch (LocalizedException $exception) {
-            throw $exception;
+            $fileSize = $this->calculateFileSize($destinationPath);
+            $additionalData = [
+                'id' => null,
+                'path' => $destinationPath,
+                'source' => 'Adobe Stock',
+                'size' => $fileSize,
+            ];
+
+            $mediaGalleryAsset = $this->documentToMediaGalleryAsset->convert($document, $additionalData);
+            $this->saveMediaAsset->execute([$mediaGalleryAsset]);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__('Could not save media gallery asset.'), $exception);
         }
     }
 
     /**
-     * Save media gallery asset
+     * Calculates saved image file size.
      *
-     * @param Document $document
-     * @param AssetInterface $asset
-     * @throws CouldNotSaveException
+     * @param string $destinationPath
+     * @return int
      */
-    private function saveAsset(Document $document, AssetInterface $asset): void
+    private function calculateFileSize(string $destinationPath): int
     {
-        $this->saveAssets->execute(
-            [
-                $this->documentToAsset->convert(
-                    $document,
-                    [
-                        'id' => $asset->getId(),
-                        'path' => $asset->getPath(),
-                        'source' => self::SOURCE_ADOBE_STOCK,
-                        'description' => $asset->getDescription(),
-                        'hash' => $asset->getHash(),
-                        'width' => $asset->getWidth(),
-                        'height' => $asset->getHeight(),
-                        'size' => $asset->getSize()
-                    ]
-                )
-            ]
-        );
-    }
-
-    /**
-     * Save media gallery asset keywords
-     *
-     * @param Document $document
-     * @param int $id
-     * @throws CouldNotSaveException
-     * @throws LocalizedException
-     */
-    private function saveKeywords(Document $document, int $id): void
-    {
-        $this->saveKeywords->execute($id, $document);
+        $mediaDirectory = $this->fileSystem->getDirectoryRead(DirectoryList::MEDIA);
+        return $mediaDirectory->stat($mediaDirectory->getAbsolutePath($destinationPath))['size'];
     }
 }

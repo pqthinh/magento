@@ -247,7 +247,7 @@ class SendFriendFormTest extends AbstractController
         $this->makePostRequest($postValues);
 
         $this->assertSessionMessages(
-            self::equalTo(['Something went wrong with reCAPTCHA. Please contact the store owner.']),
+            self::equalTo(['reCAPTCHA verification failed']),
             MessageInterface::TYPE_ERROR
         );
         self::assertEmpty($this->transportMock->getSentMessage());

@@ -45,9 +45,11 @@
                 <argument name="productAttributeCode" value="{{textProductAttribute.attribute_code}}"/>
             </actionGroup>
             <actionGroup ref="AssertProductAttributeRemovedSuccessfullyActionGroup" stepKey="deleteProductAttributeSuccess"/>
-            <actionGroup ref="AdminOpenProductAttributePageActionGroup" stepKey="navigateToProductAttributeGrid"/>
+            <amOnPage url="{{AdminProductAttributeGridPage.url}}" stepKey="navigateToProductAttributeGrid"/>
+            <waitForPageLoad stepKey="waitForAttributePageLoad"/>
             <click selector="{{AdminProductAttributeGridSection.ResetFilter}}" stepKey="resetFiltersOnGrid"/>
-            <actionGroup ref="AdminProductCatalogPageOpenActionGroup" stepKey="goToProductCatalog"/>
+            <amOnPage url="{{ProductCatalogPage.url}}" stepKey="goToProductCatalog"/>
+            <waitForPageLoad stepKey="waitForProductIndexPage"/>
             <actionGroup ref="DeleteProductsIfTheyExistActionGroup" stepKey="deleteProduct"/>
             <actionGroup ref="ResetProductGridToDefaultViewActionGroup" stepKey="resetFiltersIfExist"/>
             <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
@@ -59,7 +61,7 @@
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
         <!--Create new searchable product attribute-->
-        <actionGroup ref="AdminOpenProductAttributePageActionGroup" stepKey="goToProductAttributes"/>
+        <amOnPage url="{{AdminProductAttributeGridPage.url}}" stepKey="goToProductAttributes"/>
         <actionGroup ref="AdminCreateSearchableProductAttributeActionGroup" stepKey="createAttribute">
             <argument name="attribute" value="textProductAttribute"/>
         </actionGroup>
@@ -84,7 +86,7 @@
             <argument name="categoryName" value="$$createCategory.name$$"/>
         </actionGroup>
         <fillField selector="{{AdminProductFormSection.attributeRequiredInput(textProductAttribute.attribute_code)}}" userInput="searchable" stepKey="fillTheAttributeRequiredInputField"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="clickSaveButton"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="clickSaveButton"/>
         <!-- TODO: REMOVE AFTER FIX MC-21717 -->
         <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
             <argument name="indices" value=""/>

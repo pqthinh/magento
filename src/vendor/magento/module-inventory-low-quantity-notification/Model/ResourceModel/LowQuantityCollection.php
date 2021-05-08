@@ -299,10 +299,7 @@ class LowQuantityCollection extends AbstractCollection
      */
     private function addSourceItemInStockFilter(): void
     {
-        $condition = '(' . SourceItemInterface::QUANTITY . ' > 0 AND main_table.status = ' .
-            SourceItemInterface::STATUS_IN_STOCK . ') OR
-            (' . SourceItemInterface::QUANTITY . ' = 0)';
-        $this->getSelect()->where($condition);
+        $this->addFieldToFilter('main_table.status', SourceItemInterface::STATUS_IN_STOCK);
     }
 
     /**

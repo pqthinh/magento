@@ -27,7 +27,6 @@ class SortFixturesTest extends AbstractOverridesTest
     {
         parent::setUp();
 
-        // phpstan:ignore "Class Magento\TestModuleOverrideConfig\Model\FixtureCallStorage not found."
         $this->fixtureCallStorage = $this->objectManager->get(FixtureCallStorage::class);
     }
 
@@ -62,7 +61,6 @@ class SortFixturesTest extends AbstractOverridesTest
                     'fixture2_first_module.php',
                     'fixture1_third_module.php',
                     'fixture3_first_module.php',
-                    'global_fixture_first_module.php',// globally added fixture
                     'fixture2_second_module.php',
                 ],
             ],
@@ -72,7 +70,6 @@ class SortFixturesTest extends AbstractOverridesTest
                     'fixture1_second_module.php',
                     'fixture2_first_module.php',
                     'fixture3_first_module.php',
-                    'global_fixture_first_module.php',// globally added fixture
                     'fixture2_second_module.php',
                 ],
             ],

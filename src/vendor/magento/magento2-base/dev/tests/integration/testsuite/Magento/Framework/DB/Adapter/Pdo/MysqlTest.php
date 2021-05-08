@@ -10,11 +10,6 @@ use Magento\TestFramework\Helper\CacheCleaner;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\TestFramework\Helper\Bootstrap;
 
-/**
- * Class checks Mysql adapter behaviour
- *
- * @magentoDbIsolation disabled
- */
 class MysqlTest extends \PHPUnit\Framework\TestCase
 {
     /**

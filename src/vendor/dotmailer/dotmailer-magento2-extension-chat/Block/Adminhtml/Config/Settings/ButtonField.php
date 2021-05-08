@@ -35,6 +35,7 @@ abstract class ButtonField extends \Magento\Config\Block\System\Config\Form\Fiel
         $this->helper = $helper;
         $this->config = $config;
         parent::__construct($context, $data);
+        $this->config->setScopeAndWebsiteId($this->helper->getWebsiteForSelectedScopeInAdmin());
     }
 
     /**

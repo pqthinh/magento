@@ -326,19 +326,9 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
             touch($reportFile);
         }
         $codeSniffer = new CodeSniffer('Magento', $reportFile, new Wrapper());
-        $fileList = $this->isFullScan() ? $this->getFullWhitelist() : self::getWhitelist(['php', 'phtml']);
-        $ignoreList = Files::init()->readLists(__DIR__ . '/_files/phpcs/ignorelist/*.txt');
-        if ($ignoreList) {
-            $ignoreListPattern = sprintf('#(%s)#i', implode('|', $ignoreList));
-            $fileList = array_filter(
-                $fileList,
-                function ($path) use ($ignoreListPattern) {
-                    return !preg_match($ignoreListPattern, $path);
-                }
-            );
-        }
-
-        $result = $codeSniffer->run($fileList);
+        $result = $codeSniffer->run(
+            $this->isFullScan() ? $this->getFullWhitelist() : self::getWhitelist(['php', 'phtml'])
+        );
         $report = file_get_contents($reportFile);
         $this->assertEquals(
             0,
@@ -358,19 +348,8 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
         if (!$codeMessDetector->canRun()) {
             $this->markTestSkipped('PHP Mess Detector is not available.');
         }
-        $fileList = self::getWhitelist(['php']);
-        $ignoreList = Files::init()->readLists(__DIR__ . '/_files/phpmd/ignorelist/*.txt');
-        if ($ignoreList) {
-            $ignoreListPattern = sprintf('#(%s)#i', implode('|', $ignoreList));
-            $fileList = array_filter(
-                $fileList,
-                function ($path) use ($ignoreListPattern) {
-                    return !preg_match($ignoreListPattern, $path);
-                }
-            );
-        }
 
-        $result = $codeMessDetector->run($fileList);
+        $result = $codeMessDetector->run(self::getWhitelist(['php']));
 
         $output = "";
         if (file_exists($reportFile)) {

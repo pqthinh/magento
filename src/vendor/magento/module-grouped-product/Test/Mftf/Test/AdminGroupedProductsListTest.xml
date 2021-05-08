@@ -37,7 +37,8 @@
         </after>
 
         <!-- Create product -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="adminProductIndexPageAdd"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="adminProductIndexPageAdd"/>
+        <waitForPageLoad stepKey="waitForProductIndexPageLoad"/>
         <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateProductPage">
             <argument name="product" value="GroupedProduct"/>
         </actionGroup>

@@ -124,6 +124,20 @@ define([
         },
 
         /**
+         * @return {Boolean}
+         */
+        closeSidebar: function () {
+            var minicart = $('[data-block="minicart"]');
+
+            minicart.on('click', '[data-action="close"]', function (event) {
+                event.stopPropagation();
+                minicart.find('[data-role="dropdownDialog"]').dropdownDialog('close');
+            });
+
+            return true;
+        },
+
+        /**
          * @param {String} productType
          * @return {*|String}
          */

@@ -56,7 +56,8 @@
         <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
 
         <!--Select product and go toUpdate Attribute page-->
-        <actionGroup ref="AdminProductCatalogPageOpenActionGroup" stepKey="goToCatalogPageChangingView"/>
+        <amOnPage url="{{ProductCatalogPage.url}}" stepKey="GoToCatalogPageChangingView"/>
+        <waitForPageLoad stepKey="WaitForPageToLoadFullyChangingView"/>
         <actionGroup ref="FilterProductGridByNameActionGroup" stepKey="filterBundleProductOptionsDownToName">
             <argument name="product" value="ApiSimpleProduct"/>
         </actionGroup>

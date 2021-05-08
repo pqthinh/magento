@@ -8,10 +8,7 @@ declare(strict_types=1);
 namespace Magento\LoginAsCustomerFrontendUi\ViewModel;
 
 use Magento\Customer\Model\Context;
-use Magento\Framework\App\Http\Context as HttpContext;
-use Magento\Framework\App\ObjectManager;
 use Magento\LoginAsCustomerApi\Api\ConfigInterface;
-use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
 
 /**
  * View model to get extension configuration in the template
@@ -24,29 +21,20 @@ class Configuration implements \Magento\Framework\View\Element\Block\ArgumentInt
     private $config;
 
     /**
-     * @var HttpContext
+     * @var \Magento\Framework\App\Http\Context
      */
     private $httpContext;
 
     /**
-     * @var GetLoggedAsCustomerAdminIdInterface
-     */
-    private $getLoggedAsCustomerAdminId;
-
-    /**
      * @param ConfigInterface $config
-     * @param HttpContext $httpContext
-     * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
+     * @param \Magento\Framework\App\Http\Context $httpContext
      */
     public function __construct(
         ConfigInterface $config,
-        HttpContext $httpContext,
-        ?GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId = null
+        \Magento\Framework\App\Http\Context $httpContext
     ) {
         $this->config = $config;
         $this->httpContext = $httpContext;
-        $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId
-            ?? ObjectManager::getInstance()->get(GetLoggedAsCustomerAdminIdInterface::class);
     }
 
     /**
@@ -56,7 +44,7 @@ class Configuration implements \Magento\Framework\View\Element\Block\ArgumentInt
      */
     public function isEnabled(): bool
     {
-        return $this->config->isEnabled() && $this->isLoggedIn() && $this->getLoggedAsCustomerAdminId->execute();
+        return $this->config->isEnabled() && $this->isLoggedIn();
     }
 
     /**

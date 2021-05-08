@@ -12,9 +12,10 @@
     },
     "version": "2.4.1",
     "require": {
+        "boolfly/module-momo-wallet": "^1.0",
         "livechat/module-magento-livechat": "dev-master",
         "magento/composer-root-update-plugin": "~1.0",
-        "magento/product-community-edition": "2.4.1"
+        "magento/product-community-edition": "2.4.0"
     },
     "autoload": {
         "exclude-from-classmap": [

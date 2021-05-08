@@ -14,12 +14,12 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Message\MessageInterface;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\Wishlist\Model\GetWishlistByCustomerId;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 /**
  * Test for add product to wish list.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Customer/_files/customer.php
  */

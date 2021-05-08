@@ -88,11 +88,6 @@ class Cron
     private $abandonedCartProgramEnroller;
 
     /**
-     * @var MonitorFactory
-     */
-    private $monitor;
-
-    /**
      * Cron constructor.
      *
      * @param Sync\CampaignFactory $campaignFactory
@@ -111,7 +106,6 @@ class Cron
      * @param Cron\CronSubFactory $cronSubFactory
      * @param AbandonedCart\ProgramEnrolment\Enroller $abandonedCartProgramEnroller
      * @param IntegrationInsightsFactory $integrationInsightsFactory
-     * @param MonitorFactory $monitorFactory
      */
     public function __construct(
         Sync\CampaignFactory $campaignFactory,
@@ -129,8 +123,7 @@ class Cron
         ResourceModel\Cron\CollectionFactory $cronCollection,
         Cron\CronSubFactory $cronSubFactory,
         AbandonedCart\ProgramEnrolment\Enroller $abandonedCartProgramEnroller,
-        IntegrationInsightsFactory $integrationInsightsFactory,
-        MonitorFactory $monitorFactory
+        IntegrationInsightsFactory $integrationInsightsFactory
     ) {
         $this->campaignFactory   = $campaignFactory;
         $this->syncOrderFactory  = $syncOrderFactory;
@@ -148,7 +141,6 @@ class Cron
         $this->cronHelper        = $cronSubFactory->create();
         $this->abandonedCartProgramEnroller = $abandonedCartProgramEnroller;
         $this->integrationInsights = $integrationInsightsFactory;
-        $this->monitor = $monitorFactory;
     }
 
     /**
@@ -380,18 +372,5 @@ class Cron
 
         $this->templateFactory->create()
             ->sync();
-    }
-
-    /**
-     * @return void
-     */
-    public function monitor()
-    {
-        if ($this->jobHasAlreadyBeenRun('ddg_automation_monitor')) {
-            return;
-        }
-
-        $this->monitor->create()
-            ->run();
     }
 }

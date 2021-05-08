@@ -138,3 +138,4 @@ class MasterpassCard extends Base
         return $instance;
     }
 }
+class_alias('Braintree\MasterpassCard', 'Braintree_MasterpassCard');

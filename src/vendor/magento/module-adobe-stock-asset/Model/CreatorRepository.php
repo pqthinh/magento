@@ -113,6 +113,7 @@ class CreatorRepository implements CreatorRepositoryInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria) : CreatorSearchResultsInterface
     {
+        /** @var CreatorCollection $collection */
         $collection = $this->collectionFactory->create();
         $this->joinProcessor->process(
             $collection,
@@ -121,6 +122,7 @@ class CreatorRepository implements CreatorRepositoryInterface
 
         $this->collectionProcessor->process($searchCriteria, $collection);
 
+        /** @var CreatorSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultFactory->create();
         $searchResults->setItems($collection->getItems());
         $searchResults->setSearchCriteria($searchCriteria);

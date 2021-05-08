@@ -77,17 +77,15 @@ class FlushCacheByTags
      * Clean cache on delete object
      *
      * @param AbstractResource $subject
-     * @param AbstractResource $result
+     * @param \Closure $proceed
      * @param AbstractModel $object
      * @return AbstractResource
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterDelete(
-        AbstractResource $subject,
-        AbstractResource $result,
-        AbstractModel $object
-    ): AbstractResource {
+    public function aroundDelete(AbstractResource $subject, \Closure $proceed, AbstractModel $object): AbstractResource
+    {
         $tags = $this->tagResolver->getTags($object);
+        $result = $proceed($object);
         $this->cleanCacheByTags($tags);
 
         return $result;

@@ -37,7 +37,7 @@
         </actionGroup>
         <!--Add custom option to configurable product-->
         <actionGroup ref="AddProductCustomOptionFileActionGroup" stepKey="addCustomOptionToProduct"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="saveProduct"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveProduct"/>
 
         <!--Go to storefront-->
         <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToHomePage"/>

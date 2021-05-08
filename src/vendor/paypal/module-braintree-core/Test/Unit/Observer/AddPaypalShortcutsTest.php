@@ -21,18 +21,18 @@ class AddPaypalShortcutsTest extends \PHPUnit\Framework\TestCase
     {
         $addPaypalShortcuts = new AddPaypalShortcuts();
 
-        /** @var Observer|\PHPUnit\Framework\MockObject\MockObject $observerMock */
+        /** @var Observer|\PHPUnit_Framework_MockObject_MockObject $observerMock */
         $observerMock = $this->getMockBuilder(Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var Event|\PHPUnit\Framework\MockObject\MockObject $eventMock */
+        /** @var Event|\PHPUnit_Framework_MockObject_MockObject $eventMock */
         $eventMock = $this->getMockBuilder(Event::class)
             ->setMethods(['getContainer'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var ShortcutButtons|\PHPUnit\Framework\MockObject\MockObject $shortcutButtonsMock */
+        /** @var ShortcutButtons|\PHPUnit_Framework_MockObject_MockObject $shortcutButtonsMock */
         $shortcutButtonsMock = $this->getMockBuilder(ShortcutButtons::class)
             ->disableOriginalConstructor()
             ->getMock();

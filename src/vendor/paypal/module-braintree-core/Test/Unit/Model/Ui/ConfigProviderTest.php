@@ -9,7 +9,7 @@ use PayPal\Braintree\Gateway\Config\Config;
 use PayPal\Braintree\Model\Adapter\BraintreeAdapter;
 use PayPal\Braintree\Model\Ui\ConfigProvider;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject as MockObject;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PayPal\Braintree\Gateway\Config\PayPal\Config as PayPalConfig;
 use Magento\Payment\Model\CcConfig;
 use Magento\Framework\View\Asset\Source;
@@ -53,7 +53,7 @@ class ConfigProviderTest extends TestCase
      */
     private $assetSource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->config = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
@@ -93,7 +93,6 @@ class ConfigProviderTest extends TestCase
      */
     public function testGetConfig($config, $expected)
     {
-        $this->markTestSkipped('Skip this test');
         $this->braintreeAdapter->expects(static::once())
             ->method('generate')
             ->willReturn(self::CLIENT_TOKEN);
@@ -135,6 +134,7 @@ class ConfigProviderTest extends TestCase
                 'config' => [
                     'isActive' => true,
                     'getCcTypesMapper' => ['visa' => 'VI', 'american-express'=> 'AE'],
+                    'getSdkUrl' => self::SDK_URL,
                     'getCountrySpecificCardTypeConfig' => [
                         'GB' => ['VI', 'AE'],
                         'US' => ['DI', 'JCB']
@@ -142,7 +142,7 @@ class ConfigProviderTest extends TestCase
                     'getAvailableCardTypes' => ['AE', 'VI', 'MC', 'DI', 'JCB'],
                     'isCvvEnabled' => true,
                     'isVerify3DSecure' => true,
-                    'getThresholdAmount' => (float)20,
+                    'getThresholdAmount' => 20,
                     'get3DSecureSpecificCountries' => ['GB', 'US', 'CA'],
                     'getEnvironment' => 'test-environment',
                     'getKountMerchantId' => 'test-kount-merchant-id',

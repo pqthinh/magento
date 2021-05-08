@@ -1972,7 +1972,7 @@ define([
 
             if (firstActive.length) {
                 $('html, body').stop().animate({
-                    scrollTop: firstActive.parent().offset().top - windowHeight / 2
+                    scrollTop: firstActive.offset().top - windowHeight / 2
                 });
                 firstActive.focus();
             }

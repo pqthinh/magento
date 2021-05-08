@@ -32,3 +32,4 @@ class RiskData extends Base
     }
 
 }
+class_alias('Braintree\RiskData', 'Braintree_RiskData');

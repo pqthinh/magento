@@ -20,7 +20,7 @@ $registry = $objectManager->get(Registry::class);
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', true);
 /** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
 
 try {
     $productRepository->deleteById('out-of-stock-product');
