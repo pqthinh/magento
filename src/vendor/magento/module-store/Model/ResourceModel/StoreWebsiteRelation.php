@@ -27,8 +27,6 @@ class StoreWebsiteRelation
     }
 
     /**
-     * Get store by website id
-     *
      * @param int $websiteId
      * @return array
      */
@@ -42,30 +40,5 @@ class StoreWebsiteRelation
         );
         $data = $connection->fetchCol($storeSelect);
         return $data;
-    }
-
-    /**
-     * Get website store data
-     *
-     * @param int $websiteId
-     * @param bool $available
-     * @return array
-     */
-    public function getWebsiteStores(int $websiteId, bool $available = false): array
-    {
-        $connection = $this->resource->getConnection();
-        $storeTable = $this->resource->getTableName('store');
-        $storeSelect = $connection->select()->from($storeTable)->where(
-            'website_id = ?',
-            $websiteId
-        );
-
-        if ($available) {
-            $storeSelect = $storeSelect->where(
-                'is_active = 1'
-            );
-        }
-
-        return $connection->fetchAll($storeSelect);
     }
 }

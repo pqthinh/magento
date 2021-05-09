@@ -643,12 +643,8 @@ class Storage extends \Magento\Framework\DataObject
         }
         $image = $this->_imageFactory->create();
         $image->open($source);
-
         $image->keepAspectRatio($keepRatio);
-
-        list($imageWidth, $imageHeight) = $this->getResizedParams($source);
-        
-        $image->resize($imageWidth, $imageHeight);
+        $image->resize($this->_resizeParameters['width'], $this->_resizeParameters['height']);
         $dest = $targetDir . '/' . $this->ioFile->getPathInfo($source)['basename'];
         $image->save($dest);
         if ($this->_directory->isFile($this->_directory->getRelativePath($dest))) {
@@ -657,29 +653,6 @@ class Storage extends \Magento\Framework\DataObject
         return false;
     }
 
-    /**
-     * Return width height for the image resizing.
-     *
-     * @param string $source
-     * @return array
-     */
-    private function getResizedParams(string $source): array
-    {
-        $configWidth = $this->_resizeParameters['width'];
-        $configHeight = $this->_resizeParameters['height'];
-
-        //phpcs:ignore Generic.PHP.NoSilencedErrors
-        list($imageWidth, $imageHeight) = @getimagesize($source);
-     
-        if ($imageWidth && $imageHeight) {
-            $imageWidth = $configWidth > $imageWidth ? $imageWidth : $configWidth;
-            $imageHeight = $configHeight > $imageHeight ? $imageHeight : $configHeight;
-
-            return  [$imageWidth, $imageHeight];
-        }
-        return [$configWidth, $configHeight];
-    }
-    
     /**
      * Resize images on the fly in controller action
      *

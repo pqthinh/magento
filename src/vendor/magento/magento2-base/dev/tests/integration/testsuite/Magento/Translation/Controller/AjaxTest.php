@@ -12,8 +12,6 @@ use Magento\Translation\Model\ResourceModel\StringUtils;
 
 /**
  * Test for Magento\Translation\Controller\Ajax class.
- *
- * @magentoDbIsolation disabled
  */
 class AjaxTest extends \Magento\TestFramework\TestCase\AbstractController
 {

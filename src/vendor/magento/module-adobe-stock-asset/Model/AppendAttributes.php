@@ -11,7 +11,7 @@ use Magento\AdobeStockAssetApi\Model\Asset\Command\LoadByIdsInterface;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\Search\Document;
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\MediaGalleryApi\Api\GetAssetsByIdsInterface;
+use Magento\MediaGalleryApi\Model\Asset\Command\GetByIdInterface;
 
 /**
  * Class is used for adding an additional assets attributes such as is_downloaded or path to the search results
@@ -33,23 +33,23 @@ class AppendAttributes
     private $loadByIds;
 
     /**
-     * @var GetAssetsByIdsInterface
+     * @var GetByIdInterface
      */
-    private $getMediaGalleryAssetsByIds;
+    private $getMediaGalleryAssetById;
 
     /**
      * @param AttributeValueFactory $attributeValueFactory
      * @param LoadByIdsInterface $loadByIds
-     * @param GetAssetsByIdsInterface $getMediaGalleryAssetById
+     * @param GetByIdInterface $getMediaGalleryAssetById
      */
     public function __construct(
         AttributeValueFactory $attributeValueFactory,
         LoadByIdsInterface $loadByIds,
-        GetAssetsByIdsInterface $getMediaGalleryAssetById
+        GetByIdInterface $getMediaGalleryAssetById
     ) {
         $this->attributeValueFactory = $attributeValueFactory;
         $this->loadByIds = $loadByIds;
-        $this->getMediaGalleryAssetsByIds = $getMediaGalleryAssetById;
+        $this->getMediaGalleryAssetById = $getMediaGalleryAssetById;
     }
 
     /**
@@ -89,9 +89,9 @@ class AppendAttributes
                 continue;
             }
 
-            $path = $this->getMediaGalleryAssetsByIds->execute(
-                [$assets[$item->getId()]->getMediaGalleryId()]
-            )[0]->getPath();
+            $path = $this->getMediaGalleryAssetById->execute(
+                $assets[$item->getId()]->getMediaGalleryId()
+            )->getPath();
 
             $this->addAttributes(
                 $item,

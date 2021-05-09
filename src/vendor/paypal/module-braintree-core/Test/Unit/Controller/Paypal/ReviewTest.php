@@ -28,32 +28,32 @@ use PayPal\Braintree\Block\Paypal\Checkout\Review as CheckoutReview;
 class ReviewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var QuoteUpdater|\PHPUnit\Framework\MockObject\MockObject
+     * @var QuoteUpdater|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteUpdaterMock;
 
     /**
-     * @var Config|\PHPUnit\Framework\MockObject\MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var Session|\PHPUnit\Framework\MockObject\MockObject
+     * @var Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $checkoutSessionMock;
 
     /**
-     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResultFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @var ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManagerMock;
 
@@ -62,9 +62,9 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
      */
     private $review;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        /** @var Context|\PHPUnit\Framework\MockObject\MockObject $contextMock */
+        /** @var Context|\PHPUnit_Framework_MockObject_MockObject $contextMock */
         $contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -162,7 +162,6 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
 
     public function testExecuteException()
     {
-        $this->markTestSkipped('Skip this test');
         $result = '{}';
         $quoteMock = $this->getQuoteMock();
         $resultRedirectMock = $this->getResultRedirectMock();
@@ -205,7 +204,6 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
 
     public function testExecuteExceptionPaymentWithoutNonce()
     {
-        $this->markTestSkipped('Skip this test');
         $result = '{}';
         $quoteMock = $this->getQuoteMock();
         $resultRedirectMock = $this->getResultRedirectMock();
@@ -252,7 +250,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Redirect|\PHPUnit\Framework\MockObject\MockObject
+     * @return Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getResultRedirectMock()
     {
@@ -262,7 +260,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return AbstractBlock|\PHPUnit\Framework\MockObject\MockObject
+     * @return AbstractBlock|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getChildBlockMock()
     {
@@ -272,7 +270,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return CheckoutReview|\PHPUnit\Framework\MockObject\MockObject
+     * @return CheckoutReview|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getBlockMock()
     {
@@ -282,7 +280,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Layout|\PHPUnit\Framework\MockObject\MockObject
+     * @return Layout|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getLayoutMock()
     {
@@ -292,7 +290,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Page|\PHPUnit\Framework\MockObject\MockObject
+     * @return Page|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getResultPageMock()
     {
@@ -302,7 +300,7 @@ class ReviewTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Quote|\PHPUnit\Framework\MockObject\MockObject
+     * @return Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getQuoteMock()
     {

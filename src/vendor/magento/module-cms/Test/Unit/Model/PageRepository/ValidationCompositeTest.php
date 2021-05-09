@@ -43,7 +43,7 @@ class ValidationCompositeTest extends TestCase
         new ValidationComposite($this->subject, $validators);
     }
 
-    public function testSaveInvokesValidatorsWithSuccess()
+    public function testSaveInvokesValidatorsWithSucess()
     {
         $validator1 = $this->getMockForAbstractClass(ValidatorInterface::class);
         $validator2 = $this->getMockForAbstractClass(ValidatorInterface::class);

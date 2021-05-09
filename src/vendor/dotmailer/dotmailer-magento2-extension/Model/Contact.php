@@ -100,13 +100,12 @@ class Contact extends \Magento\Framework\Model\AbstractModel
         $limit = 1000,
         $isCustomerCheck = true
     ) {
-        /** @var \Dotdigitalgroup\Email\Model\ResourceModel\Contact\Collection $collection */
-        $collection = $this->getCollection();
-        return $collection->getSubscribersToImport(
-            $storeId,
-            $limit,
-            $isCustomerCheck
-        );
+        return $this->getCollection()
+            ->getSubscribersToImport(
+                $storeId,
+                $limit,
+                $isCustomerCheck
+            );
     }
 
     /**
@@ -118,9 +117,8 @@ class Contact extends \Magento\Framework\Model\AbstractModel
      */
     public function getSubscribersToImportFromEmails($emails)
     {
-        /** @var \Dotdigitalgroup\Email\Model\ResourceModel\Contact\Collection $collection */
-        $collection = $this->getCollection();
-        return $collection->getSubscribersToImportFromEmails($emails);
+        return $this->getCollection()
+            ->getSubscribersToImportFromEmails($emails);
     }
 
     /**

@@ -22,16 +22,16 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     private $model;
 
     /**
-     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var Json|\PHPUnit\Framework\MockObject\MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
         $this->serializerMock = $this->createMock(Json::class);
@@ -203,7 +203,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
             ->with($this->getPath(Config::KEY_USE_CVV), ScopeInterface::SCOPE_STORE, null)
             ->willReturn(1);
 
-        static::assertTrue($this->model->isCvvEnabled());
+        static::assertEquals(true, $this->model->isCvvEnabled());
     }
 
     /**

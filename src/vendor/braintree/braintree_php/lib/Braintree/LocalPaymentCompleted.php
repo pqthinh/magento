@@ -72,3 +72,4 @@ class LocalPaymentCompleted extends Base
                 Util::attributesToString($this->_attributes) . ']';
     }
 }
+class_alias('Braintree\LocalPaymentCompleted', 'Braintree_LocalPaymentCompleted');

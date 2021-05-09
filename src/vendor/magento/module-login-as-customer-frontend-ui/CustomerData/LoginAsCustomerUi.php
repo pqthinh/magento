@@ -9,9 +9,7 @@ namespace Magento\LoginAsCustomerFrontendUi\CustomerData;
 
 use Magento\Customer\CustomerData\SectionSourceInterface;
 use Magento\Customer\Model\Session;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -32,24 +30,15 @@ class LoginAsCustomerUi implements SectionSourceInterface
     private $storeManager;
 
     /**
-     * @var GetLoggedAsCustomerAdminIdInterface
-     */
-    private $getLoggedAsCustomerAdminId;
-
-    /**
      * @param Session $customerSession
      * @param StoreManagerInterface $storeManager
-     * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
      */
     public function __construct(
         Session $customerSession,
-        StoreManagerInterface $storeManager,
-        ?GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId = null
+        StoreManagerInterface $storeManager
     ) {
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManager;
-        $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId
-            ?? ObjectManager::getInstance()->get(GetLoggedAsCustomerAdminIdInterface::class);
     }
 
     /**
@@ -60,14 +49,12 @@ class LoginAsCustomerUi implements SectionSourceInterface
      */
     public function getSectionData(): array
     {
-        $adminId = $this->getLoggedAsCustomerAdminId->execute();
-
-        if (!$adminId || !$this->customerSession->getCustomerId()) {
+        if (!$this->customerSession->getCustomerId() || !$this->customerSession->getLoggedAsCustomerAdmindId()) {
             return [];
         }
 
         return [
-            'adminUserId' => $adminId,
+            'adminUserId' => $this->customerSession->getLoggedAsCustomerAdmindId(),
             'websiteName' => $this->storeManager->getWebsite()->getName()
         ];
     }

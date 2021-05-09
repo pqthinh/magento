@@ -108,18 +108,11 @@ class Consumer implements ConsumerInterface
     public function process($maxNumberOfMessages = null)
     {
         $queue = $this->configuration->getQueue();
-        $maxIdleTime = $this->configuration->getMaxIdleTime();
-        $sleep = $this->configuration->getSleep();
+
         if (!isset($maxNumberOfMessages)) {
             $queue->subscribe($this->getTransactionCallback($queue));
         } else {
-            $this->invoker->invoke(
-                $queue,
-                $maxNumberOfMessages,
-                $this->getTransactionCallback($queue),
-                $maxIdleTime,
-                $sleep
-            );
+            $this->invoker->invoke($queue, $maxNumberOfMessages, $this->getTransactionCallback($queue));
         }
     }
 

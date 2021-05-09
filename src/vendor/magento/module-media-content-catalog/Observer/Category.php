@@ -13,7 +13,6 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\MediaContentApi\Api\UpdateContentAssetLinksInterface;
 use Magento\MediaContentApi\Api\Data\ContentIdentityInterfaceFactory;
 use Magento\MediaContentApi\Model\GetEntityContentsInterface;
-use Magento\MediaContentApi\Model\Config;
 
 /**
  * Observe the catalog_category_save_after event and run processing relation between category content and media asset.
@@ -29,11 +28,6 @@ class Category implements ObserverInterface
      * @var UpdateContentAssetLinksInterface
      */
     private $updateContentAssetLinks;
-
-    /**
-     * @var Config
-     */
-    private $config;
 
     /**
      * @var array
@@ -56,20 +50,17 @@ class Category implements ObserverInterface
      * @param ContentIdentityInterfaceFactory $contentIdentityFactory
      * @param GetEntityContentsInterface $getContent
      * @param UpdateContentAssetLinksInterface $updateContentAssetLinks
-     * @param Config $config
      * @param array $fields
      */
     public function __construct(
         ContentIdentityInterfaceFactory $contentIdentityFactory,
         GetEntityContentsInterface $getContent,
         UpdateContentAssetLinksInterface $updateContentAssetLinks,
-        Config $config,
         array $fields
     ) {
         $this->contentIdentityFactory = $contentIdentityFactory;
         $this->getContent = $getContent;
         $this->updateContentAssetLinks = $updateContentAssetLinks;
-        $this->config = $config;
         $this->fields = $fields;
     }
 
@@ -81,10 +72,6 @@ class Category implements ObserverInterface
      */
     public function execute(Observer $observer): void
     {
-        if (!$this->config->isEnabled()) {
-            return;
-        }
-
         $model = $observer->getEvent()->getData('category');
 
         if ($model instanceof CatalogCategory) {

@@ -35,7 +35,8 @@
 
         <!-- Create a product to appear in the widget, fill in basic info first -->
 
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="amOnProductList"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductList"/>
+        <waitForPageLoad stepKey="waitForProductList"/>
         <click selector="{{AdminProductGridActionSection.addProductToggle}}" stepKey="clickAddProductToggle"/>
         <click selector="{{AdminProductGridActionSection.addBundleProduct}}" stepKey="clickAddBundleProduct"/>
         <fillField selector="{{AdminProductFormSection.productName}}" userInput="{{_defaultProduct.name}}" stepKey="fillProductName"/>
@@ -63,7 +64,7 @@
         <click selector="{{AdminAddProductsToOptionPanel.addSelectedProducts}}" stepKey="clickAddSelectedBundleProducts"/>
         <fillField selector="{{AdminProductFormBundleSection.bundleOptionXProductYQuantity('0', '0')}}" userInput="1" stepKey="fillProductDefaultQty1"/>
         <fillField selector="{{AdminProductFormBundleSection.bundleOptionXProductYQuantity('0', '1')}}" userInput="1" stepKey="fillProductDefaultQty2"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="clickSaveProduct"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="clickSaveProduct"/>
 
         <!-- If PageCache is enabled, Cache clearing happens here, via merge -->
 

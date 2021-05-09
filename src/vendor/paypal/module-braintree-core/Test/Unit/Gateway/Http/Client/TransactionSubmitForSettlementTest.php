@@ -20,16 +20,16 @@ class TransactionSubmitForSettlementTest extends \PHPUnit\Framework\TestCase
     private $client;
 
     /**
-     * @var Logger|\PHPUnit\Framework\MockObject\MockObject
+     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
      */
     private $logger;
 
     /**
-     * @var BraintreeAdapter|\PHPUnit\Framework\MockObject\MockObject
+     * @var BraintreeAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $adapter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $criticalLoggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->logger = $this->getMockBuilder(Logger::class)
@@ -50,19 +50,17 @@ class TransactionSubmitForSettlementTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers \PayPal\Braintree\Gateway\Http\Client\TransactionSubmitForSettlement::placeRequest
+     * @expectedException \Magento\Payment\Gateway\Http\ClientException
+     * @expectedExceptionMessage Transaction has been declined
      */
     public function testPlaceRequestWithException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\Magento\Payment\Gateway\Http\ClientException::class);
-        $this->expectExceptionMessage('Transaction has been declined');
-
         $exception = new \Exception('Transaction has been declined');
         $this->adapter->expects(static::once())
             ->method('submitForSettlement')
             ->willThrowException($exception);
 
-        /** @var TransferInterface|\PHPUnit\Framework\MockObject\MockObject $transferObjectMock */
+        /** @var TransferInterface|\PHPUnit_Framework_MockObject_MockObject $transferObjectMock */
         $transferObjectMock = $this->getTransferObjectMock();
         $this->client->placeRequest($transferObjectMock);
     }
@@ -77,15 +75,15 @@ class TransactionSubmitForSettlementTest extends \PHPUnit\Framework\TestCase
             ->method('submitForSettlement')
             ->willReturn($data);
 
-        /** @var TransferInterface|\PHPUnit\Framework\MockObject\MockObject $transferObjectMock */
+        /** @var TransferInterface|\PHPUnit_Framework_MockObject_MockObject $transferObjectMock */
         $transferObjectMock = $this->getTransferObjectMock();
         $response = $this->client->placeRequest($transferObjectMock);
-        static::assertIsObject($response['object']);
+        static::assertTrue(is_object($response['object']));
         static::assertEquals(['object' => $data], $response);
     }
 
     /**
-     * @return TransferInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return TransferInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getTransferObjectMock()
     {

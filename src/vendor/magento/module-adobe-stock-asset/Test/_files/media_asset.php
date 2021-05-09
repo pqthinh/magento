@@ -15,6 +15,7 @@ $objectManager = Bootstrap::getObjectManager();
 
 /** @var MediaAssetFactory $mediaAssetFactory */
 $mediaAssetFactory = $objectManager->get(MediaAssetFactory::class);
+/** @var MediaAsset $mediaAsset */
 $mediaAsset = $mediaAssetFactory->create(
     [
         'path' => 'some/path.jpg',

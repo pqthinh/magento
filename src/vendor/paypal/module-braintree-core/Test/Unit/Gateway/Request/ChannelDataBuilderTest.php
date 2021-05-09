@@ -20,7 +20,7 @@ class ChannelDataBuilderTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->builder = new ChannelDataBuilder();
     }

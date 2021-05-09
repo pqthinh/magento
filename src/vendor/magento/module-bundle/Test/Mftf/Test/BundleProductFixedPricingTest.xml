@@ -73,7 +73,7 @@
         <fillField userInput="{{BundleProduct.fixedPrice}}" selector="{{AdminProductFormBundleSection.priceField}}" stepKey="fillPrice"/>
 
         <!--Save the product-->
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="clickSaveButton"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="clickSaveButton"/>
         <seeElement selector="{{AdminCategoryMessagesSection.SuccessMessage}}" stepKey="messageYouSavedTheProductIsShown"/>
 
         <!--Testing that price appears correctly in admin catalog-->

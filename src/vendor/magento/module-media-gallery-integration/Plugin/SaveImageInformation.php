@@ -7,29 +7,47 @@ declare(strict_types=1);
 
 namespace Magento\MediaGalleryIntegration\Plugin;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\File\Uploader;
-use Magento\Framework\Filesystem;
-use Magento\MediaGalleryApi\Api\IsPathExcludedInterface;
 use Magento\MediaGalleryApi\Api\SaveAssetsInterface;
-use Magento\MediaGallerySynchronizationApi\Api\SynchronizeFilesInterface;
-use Magento\MediaGalleryUiApi\Api\ConfigInterface;
+use Magento\Framework\File\Uploader;
+use Magento\MediaGallerySynchronization\Model\CreateAssetFromFile;
+use Magento\Cms\Model\Wysiwyg\Images\Storage;
+use Magento\MediaGallerySynchronization\Model\Filesystem\SplFileInfoFactory;
+use Magento\MediaGalleryApi\Api\IsPathExcludedInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Save image information by SaveAssetsInterface.
  */
 class SaveImageInformation
 {
+    private const IMAGE_FILE_NAME_PATTERN = '#\.(jpg|jpeg|gif|png)$# i';
+
     /**
      * @var IsPathExcludedInterface
      */
     private $isPathExcluded;
 
     /**
-     * @var ConfigInterface
+     * @var SplFileInfoFactory
      */
-    private $config;
+    private $splFileInfoFactory;
+
+    /**
+     * @var SaveAssetsInterface
+     */
+    private $saveAsset;
+
+    /**
+     * @var CreateAssetFromFile
+     */
+    private $createAssetFromFile;
+
+    /**
+     * @var Storage
+     */
+    private $storage;
 
     /**
      * @var LoggerInterface
@@ -40,39 +58,32 @@ class SaveImageInformation
      * @var Filesystem
      */
     private $filesystem;
-
-    /**
-     * @var SynchronizeFilesInterface
-     */
-    private $synchronizeFiles;
-
-    /**
-     * @var string[]
-     */
-    private $imageExtensions;
-
+    
     /**
      * @param Filesystem $filesystem
      * @param LoggerInterface $log
      * @param IsPathExcludedInterface $isPathExcluded
-     * @param SynchronizeFilesInterface $synchronizeFiles
-     * @param ConfigInterface $config
-     * @param array $imageExtensions
+     * @param SplFileInfoFactory $splFileInfoFactory
+     * @param CreateAssetFromFile $createAssetFromFile
+     * @param SaveAssetsInterface $saveAsset
+     * @param Storage $storage
      */
     public function __construct(
         Filesystem $filesystem,
         LoggerInterface $log,
         IsPathExcludedInterface $isPathExcluded,
-        SynchronizeFilesInterface $synchronizeFiles,
-        ConfigInterface $config,
-        array $imageExtensions
+        SplFileInfoFactory $splFileInfoFactory,
+        CreateAssetFromFile $createAssetFromFile,
+        SaveAssetsInterface $saveAsset,
+        Storage $storage
     ) {
         $this->log = $log;
         $this->isPathExcluded = $isPathExcluded;
+        $this->splFileInfoFactory = $splFileInfoFactory;
+        $this->createAssetFromFile = $createAssetFromFile;
+        $this->saveAsset = $saveAsset;
+        $this->storage = $storage;
         $this->filesystem = $filesystem;
-        $this->synchronizeFiles = $synchronizeFiles;
-        $this->config = $config;
-        $this->imageExtensions = $imageExtensions;
     }
 
     /**
@@ -81,20 +92,15 @@ class SaveImageInformation
      * @param Uploader $subject
      * @param array $result
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @return array
      */
     public function afterSave(Uploader $subject, array $result): array
     {
-        if (!$this->config->isEnabled()) {
+        $file = $this->splFileInfoFactory->create($result['path'] . '/' . $result['file']);
+        if (!$this->isApplicable($file->getPathName())) {
             return $result;
         }
-
-        $path = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)
-            ->getRelativePath(rtrim($result['path'], '/') . '/' . ltrim($result['file'], '/'));
-        if (!$this->isApplicable($path)) {
-            return $result;
-        }
-        $this->synchronizeFiles->execute([$path]);
+        $this->saveAsset->execute([$this->createAssetFromFile->execute($file)]);
+        $this->storage->resizeFile($result['path'] . '/' . $result['file']);
 
         return $result;
     }
@@ -108,9 +114,10 @@ class SaveImageInformation
     private function isApplicable(string $path): bool
     {
         try {
-            return $path
-                && !$this->isPathExcluded->execute($path)
-                && preg_match('#\.(' . implode("|", $this->imageExtensions) . ')$# i', $path);
+            $relativePath = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getRelativePath($path);
+            return $relativePath
+                && !$this->isPathExcluded->execute($relativePath)
+                && preg_match(self::IMAGE_FILE_NAME_PATTERN, $path);
         } catch (\Exception $exception) {
             $this->log->critical($exception);
             return false;

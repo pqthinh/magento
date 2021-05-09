@@ -115,7 +115,7 @@ class Time extends AbstractElement
             [],
             <<<style
                 .select80wide {
-                    width: 80px !important;
+                    width: 80px;
                 }
 style
             ,

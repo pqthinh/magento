@@ -103,7 +103,7 @@ class ConfirmOrderReference
         if ($paymentMethod->getMethod() == GatewayConfig::CODE) {
             $quote = $this->quoteRepository->get($cartId);
             $quoteExtensionAttributes = $quote->getExtensionAttributes();
-            if ($quoteExtensionAttributes && $quoteExtensionAttributes->getAmazonOrderReferenceId()) {
+            if ($quoteExtensionAttributes) {
                 $amazonOrderReferenceId = $quoteExtensionAttributes
                     ->getAmazonOrderReferenceId()
                     ->getAmazonOrderReferenceId();

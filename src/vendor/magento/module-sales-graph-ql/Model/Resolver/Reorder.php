@@ -49,7 +49,7 @@ class Reorder implements ResolverInterface
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function resolve(
         Field $field,

@@ -8,9 +8,9 @@ declare(strict_types=1);
 namespace Magento\LoginAsCustomer\Plugin;
 
 use Magento\Backend\Model\Auth;
+use Magento\Backend\Model\Auth\Session as AuthSession;
 use Magento\LoginAsCustomerApi\Api\ConfigInterface;
 use Magento\LoginAsCustomerApi\Api\DeleteAuthenticationDataForUserInterface;
-use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerCustomerIdInterface;
 
 /**
  * Delete all Login as Customer sessions for logging out admin.
@@ -19,6 +19,11 @@ use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerCustomerIdInterface;
  */
 class AdminLogoutPlugin
 {
+    /**
+     * @var AuthSession
+     */
+    private $authSession;
+
     /**
      * @var ConfigInterface
      */
@@ -30,23 +35,18 @@ class AdminLogoutPlugin
     private $deleteAuthenticationDataForUser;
 
     /**
-     * @var GetLoggedAsCustomerCustomerIdInterface
-     */
-    private $getLoggedAsCustomerCustomerId;
-
-    /**
+     * @param AuthSession $authSession
      * @param ConfigInterface $config
      * @param DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser
-     * @param GetLoggedAsCustomerCustomerIdInterface $getLoggedAsCustomerCustomerId
      */
     public function __construct(
+        AuthSession $authSession,
         ConfigInterface $config,
-        DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser,
-        GetLoggedAsCustomerCustomerIdInterface $getLoggedAsCustomerCustomerId
+        DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser
     ) {
+        $this->authSession = $authSession;
         $this->config = $config;
         $this->deleteAuthenticationDataForUser = $deleteAuthenticationDataForUser;
-        $this->getLoggedAsCustomerCustomerId = $getLoggedAsCustomerCustomerId;
     }
 
     /**
@@ -57,7 +57,7 @@ class AdminLogoutPlugin
     public function beforeLogout(Auth $subject): void
     {
         $user = $subject->getUser();
-        $isLoggedAsCustomer = (bool)$this->getLoggedAsCustomerCustomerId->execute();
+        $isLoggedAsCustomer = $this->authSession->getIsLoggedAsCustomer();
         if ($this->config->isEnabled() && $user && $isLoggedAsCustomer) {
             $userId = (int)$user->getId();
             $this->deleteAuthenticationDataForUser->execute($userId);

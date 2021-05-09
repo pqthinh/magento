@@ -19,7 +19,7 @@ use Magento\TestFramework\TestCase\AbstractController;
 /**
  * Test sending wish list.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
  */

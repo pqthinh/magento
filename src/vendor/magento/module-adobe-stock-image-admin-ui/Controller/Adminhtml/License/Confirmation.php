@@ -70,9 +70,10 @@ class Confirmation extends Action implements HttpGetActionInterface
                 'success' => true,
                 'result' => [
                     'message' => $confirmation->getMessage(),
-                    'canLicense' => $confirmation->isCanLicense()
+                    'canLicense' => $confirmation->getCanLicense()
                 ]
             ];
+
         } catch (\Exception $exception) {
             $responseCode = self::HTTP_INTERNAL_ERROR;
             $this->logger->critical($exception);

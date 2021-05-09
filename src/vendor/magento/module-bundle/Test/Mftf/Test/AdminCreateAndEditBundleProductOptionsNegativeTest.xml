@@ -111,7 +111,7 @@
 
         <!-- Save product form -->
         <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveProduct"/>
-        <actionGroup ref="AdminProductFormSaveActionGroup" stepKey="saveWithTwoOptions"/>
+        <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveWithTwoOptions"/>
         <seeElement selector="{{AdminCategoryMessagesSection.SuccessMessage}}" stepKey="messageYouSavedTheProductIsShown"/>
 
         <!-- Delete created bundle product -->

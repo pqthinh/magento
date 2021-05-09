@@ -1,7 +1,6 @@
 define([
-    'Magento_Catalog/js/product/storage/storage-service',
-    'jquery'
-], function (storage, $) {
+    'Magento_Catalog/js/product/storage/storage-service'
+], function (storage) {
     'use strict';
 
     return {
@@ -27,21 +26,12 @@ define([
         },
 
         dataCollectionHandler: function (data) {
-            let productData;
-            let productId;
-
-            productId = parseInt(
+            var productId = parseInt(
                 document.querySelector('[data-product-id]')
                     .getAttribute('data-product-id')
             );
 
-            if (typeof data[productId] === 'undefined') {
-                productId = parseInt(
-                    $('[name=product]').val()
-                );
-            }
-
-            productData = data[productId];
+            var productData = data[productId];
 
             if (productData != null) {
                 var trackingData = {

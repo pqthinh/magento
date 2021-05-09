@@ -12,7 +12,6 @@ use Magento\Framework\View\Element\Text;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Search\Model\QueryFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Search\ViewModel\ConfigProvider;
 
 class ResultTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,26 +26,15 @@ class ResultTest extends \PHPUnit\Framework\TestCase
     private $layout;
 
     /**
-     * @var ConfigProvider
-     */
-    private $configProvider;
-
-    /**
      * @inheritdoc
      */
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->layout = $this->objectManager->get(LayoutInterface::class);
-        $this->configProvider = $this->objectManager->get(ConfigProvider::class);
     }
 
-    /**
-     * Set list orders test
-     *
-     * @return void
-     */
-    public function testSetListOrders(): void
+    public function testSetListOrders()
     {
         $this->layout->addBlock(Text::class, 'head');
         // The tested block is using head block
@@ -74,7 +62,6 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $searchResultBlock = $this->layout->createBlock(Result::class);
         /** @var Template $searchBlock */
         $searchBlock = $this->layout->createBlock(Template::class);
-        $searchBlock->setData(['configProvider' => $this->configProvider]);
         $searchBlock->setTemplate('Magento_Search::form.mini.phtml');
         /** @var RequestInterface $request */
         $request = $this->objectManager->get(RequestInterface::class);

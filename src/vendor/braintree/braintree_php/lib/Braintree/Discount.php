@@ -32,3 +32,4 @@ class Discount extends Modification
         return Configuration::gateway()->discount()->all();
     }
 }
+class_alias('Braintree\Discount', 'Braintree_Discount');

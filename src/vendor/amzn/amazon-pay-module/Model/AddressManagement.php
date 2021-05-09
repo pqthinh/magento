@@ -276,6 +276,7 @@ class AddressManagement implements AddressManagementInterface
     {
         $orderStatus = $data['OrderReferenceDetails']['OrderReferenceStatus'] ?? false;
 
-        return $orderStatus && $orderStatus['State'] == AmazonOrderStatus::STATE_SUSPENDED;
+        return ($orderStatus && $orderStatus['State'] == AmazonOrderStatus::STATE_SUSPENDED
+            && $orderStatus['ReasonCode'] == AmazonAuthorizationStatus::REASON_INVALID_PAYMENT_METHOD);
     }
 }

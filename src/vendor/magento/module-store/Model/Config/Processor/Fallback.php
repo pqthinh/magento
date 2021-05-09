@@ -178,18 +178,20 @@ class Fallback implements PostProcessorInterface
      */
     private function loadScopes(): void
     {
+        $loaded = false;
         try {
             if ($this->deploymentConfig->isDbAvailable()) {
                 $this->storeData = $this->storeResource->readAllStores();
                 $this->websiteData = $this->websiteResource->readAllWebsites();
-            } else {
-                $this->storeData = $this->scopes->get('stores');
-                $this->websiteData = $this->scopes->get('websites');
+                $loaded = true;
             }
         } catch (TableNotFoundException $exception) {
             // database is empty or not setup
-            $this->storeData = [];
-            $this->websiteData = [];
+            $loaded = false;
+        }
+        if (!$loaded) {
+            $this->storeData = $this->scopes->get('stores');
+            $this->websiteData = $this->scopes->get('websites');
         }
     }
 }

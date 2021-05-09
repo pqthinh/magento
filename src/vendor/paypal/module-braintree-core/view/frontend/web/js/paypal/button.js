@@ -261,17 +261,16 @@ define(
 
                                         // Map the shipping address correctly
                                         var address = payload.details.shippingAddress;
-                                        var recipientName = address.recipientName.split(" ");
                                         payload.details.shippingAddress = {
-                                            streetAddress: typeof address.line2 !== 'undefined' ? address.line1.replace(/'/g, "&apos;") + " " + address.line2.replace(/'/g, "&apos;") : address.line1.replace(/'/g, "&apos;"),
-                                            locality: address.city.replace(/'/g, "&apos;"),
+                                            streetAddress: typeof address.line2 !== 'undefined' ? address.line1 + " " + address.line2 : address.line1,
+                                            locality: address.city,
                                             postalCode: address.postalCode,
                                             countryCodeAlpha2: address.countryCode,
-                                            email: payload.details.email.replace(/'/g, "&apos;"),
-                                            firstname: recipientName[0].replace(/'/g, "&apos;"),
-                                            lastname: recipientName[1].replace(/'/g, "&apos;"),
+                                            email: payload.details.email,
+                                            firstname: payload.details.firstName,
+                                            lastname: payload.details.lastName,
                                             telephone: typeof payload.details.phone !== 'undefined' ? payload.details.phone : '',
-                                            region: typeof address.state !== 'undefined' ? address.state.replace(/'/g, "&apos;") : ''
+                                            region: typeof address.state !== 'undefined' ? address.state : ''
                                         };
 
                                         formBuilder.build(

@@ -3,6 +3,7 @@
 namespace Dotdigitalgroup\Chat\Model\Api\Token;
 
 use Dotdigitalgroup\Chat\Model\Config;
+use Dotdigitalgroup\Email\Helper\Data;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -15,6 +16,11 @@ class Token
      * @var Config
      */
     private $config;
+
+    /**
+     * @var Data
+     */
+    private $helper;
 
     /**
      * @var EncryptorInterface
@@ -42,6 +48,11 @@ class Token
     private $logger;
 
     /**
+     * @var int
+     */
+    private $websiteId = 0;
+
+    /**
      * We want to allow a small amount of time when checking the token expiry,
      * to account for 'clock skew' or just the time the script takes to proceed
      * from checking the token to actually making the API call.
@@ -54,6 +65,7 @@ class Token
      * Token constructor
      *
      * @param Config $config
+     * @param Data $helper
      * @param EncryptorInterface $encryptor
      * @param ScopeConfigInterface $scopeConfig
      * @param JwtDecoder $jwtDecoder
@@ -62,6 +74,7 @@ class Token
      */
     public function __construct(
         Config $config,
+        Data $helper,
         EncryptorInterface $encryptor,
         ScopeConfigInterface $scopeConfig,
         JwtDecoder $jwtDecoder,
@@ -69,6 +82,7 @@ class Token
         Logger $logger
     ) {
         $this->config = $config;
+        $this->helper = $helper;
         $this->encryptor = $encryptor;
         $this->scopeConfig = $scopeConfig;
         $this->jwtDecoder = $jwtDecoder;
@@ -82,10 +96,14 @@ class Token
      */
     public function getApiToken()
     {
-        $storedToken = $this->config->getApiToken();
+        $value = $this->scopeConfig->getValue(
+            Config::XML_PATH_LIVECHAT_API_TOKEN,
+            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            $this->websiteId
+        );
 
         try {
-            $jwt = $this->encryptor->decrypt($storedToken);
+            $jwt = $this->encryptor->decrypt($value);
             $jwtPayload = $this->jwtDecoder->decode($jwt);
         } catch (\InvalidArgumentException $e) {
             return $this->refreshToken();
@@ -122,7 +140,7 @@ class Token
      */
     private function refreshToken()
     {
-        $client = $this->config->getApiClient();
+        $client = $this->helper->getWebsiteApiClient($this->websiteId);
         $response = $client->setUpChatAccount();
 
         if (!$response || isset($response->message)) {

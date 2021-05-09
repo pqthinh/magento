@@ -66,11 +66,10 @@ class AmazonConstraint
     {
         switch ($this->getId()) {
             case static::PAYMENT_METHOD_NOT_ALLOWED_ID:
-                return __('The selected payment method is not available for this transaction. Please select another one or add a new payment method to the wallet widget.');
             case static::PAYMENT_PLAN_NOT_SET_ID:
-                return __('No payment instrument has been selected for this order, please try to refresh the page or add a new payment instrument in the wallet widget.');
+                return 'Please select a payment method.';
             default:
-                return __('The order failed due to a technical error, please select another payment method or contact our support.');
+                return 'Amazon could not process your request.';
         }
     }
 }

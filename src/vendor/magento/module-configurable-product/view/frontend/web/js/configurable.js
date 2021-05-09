@@ -33,7 +33,7 @@ define([
             mediaGallerySelector: '[data-gallery-role=gallery-placeholder]',
             mediaGalleryInitial: null,
             slyOldPriceSelector: '.sly-old-price',
-            normalPriceLabelSelector: '.product-info-main .normal-price .price-label',
+            normalPriceLabelSelector: '.normal-price .price-label',
 
             /**
              * Defines the mechanism of how images of a gallery should be

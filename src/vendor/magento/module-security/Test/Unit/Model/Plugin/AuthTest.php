@@ -64,7 +64,7 @@ class AuthTest extends TestCase
 
         $this->messageManager = $this->getMockForAbstractClass(
             ManagerInterface::class,
-            ['addWarningMessage'],
+            ['addWarning'],
             '',
             false
         );
@@ -100,7 +100,7 @@ class AuthTest extends TestCase
             ->method('isOtherSessionsTerminated')
             ->willReturn(true);
         $this->messageManager->expects($this->once())
-            ->method('addWarningMessage')
+            ->method('addWarning')
             ->with($warningMessage);
 
         $this->model->afterLogin($this->authMock);

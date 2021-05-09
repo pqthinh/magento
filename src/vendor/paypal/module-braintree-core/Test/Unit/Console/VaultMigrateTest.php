@@ -2,7 +2,6 @@
 
 namespace PayPal\Braintree\Test\Console;
 
-use Magento\Store\Model\StoreManagerInterface;
 use PayPal\Braintree\Console\VaultMigrate;
 use PayPal\Braintree\Model\Adapter\BraintreeAdapter;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -48,15 +47,11 @@ class VaultMigrateTest extends TestCase
      */
     private $jsonMock;
     /**
-     * @var MockObject|StoreManagerInterface
-     */
-    private $storeManagerMock;
-    /**
      * @var MockObject|VaultMigrate
      */
     private $command;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->connectionFactoryMock = $this->createMock(ConnectionFactory::class);
         $this->braintreeAdapterMock = $this->createMock(BraintreeAdapter::class);
@@ -65,7 +60,6 @@ class VaultMigrateTest extends TestCase
         $this->paymentTokenRepositoryMock = $this->createMock(PaymentTokenRepositoryInterface::class);
         $this->encryptorMock = $this->createMock(EncryptorInterface::class);
         $this->jsonMock = $this->createMock(SerializerInterface::class);
-        $this->storeManagerMock = $this->createMock(StoreManagerInterface::class);
 
         $this->command = new VaultMigrate(
             $this->connectionFactoryMock,
@@ -74,8 +68,7 @@ class VaultMigrateTest extends TestCase
             $this->paymentTokenFactoryMock,
             $this->paymentTokenRepositoryMock,
             $this->encryptorMock,
-            $this->jsonMock,
-            $this->storeManagerMock
+            $this->jsonMock
         );
     }
 

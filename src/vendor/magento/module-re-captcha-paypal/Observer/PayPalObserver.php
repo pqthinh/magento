@@ -9,7 +9,6 @@ namespace Magento\ReCaptchaPaypal\Observer;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -17,17 +16,13 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\ReCaptchaUi\Model\CaptchaResponseResolverInterface;
-use Magento\ReCaptchaUi\Model\ErrorMessageConfigInterface;
 use Magento\ReCaptchaUi\Model\IsCaptchaEnabledInterface;
 use Magento\ReCaptchaUi\Model\ValidationConfigResolverInterface;
 use Magento\ReCaptchaValidationApi\Api\ValidatorInterface;
-use Magento\ReCaptchaValidationApi\Model\ValidationErrorMessagesProvider;
 use Psr\Log\LoggerInterface;
 
 /**
- * reCaptcha support for PayPal Payflow Pro Integration.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * AjaxLoginObserver
  */
 class PayPalObserver implements ObserverInterface
 {
@@ -67,16 +62,6 @@ class PayPalObserver implements ObserverInterface
     private $logger;
 
     /**
-     * @var ErrorMessageConfigInterface
-     */
-    private $errorMessageConfig;
-
-    /**
-     * @var ValidationErrorMessagesProvider
-     */
-    private $validationErrorMessagesProvider;
-
-    /**
      * @param CaptchaResponseResolverInterface $captchaResponseResolver
      * @param ValidationConfigResolverInterface $validationConfigResolver
      * @param ValidatorInterface $captchaValidator
@@ -84,8 +69,6 @@ class PayPalObserver implements ObserverInterface
      * @param SerializerInterface $serializer
      * @param IsCaptchaEnabledInterface $isCaptchaEnabled
      * @param LoggerInterface $logger
-     * @param ErrorMessageConfigInterface|null $errorMessageConfig
-     * @param ValidationErrorMessagesProvider|null $validationErrorMessagesProvider
      */
     public function __construct(
         CaptchaResponseResolverInterface $captchaResponseResolver,
@@ -94,9 +77,7 @@ class PayPalObserver implements ObserverInterface
         ActionFlag $actionFlag,
         SerializerInterface $serializer,
         IsCaptchaEnabledInterface $isCaptchaEnabled,
-        LoggerInterface $logger,
-        ?ErrorMessageConfigInterface $errorMessageConfig = null,
-        ?ValidationErrorMessagesProvider $validationErrorMessagesProvider = null
+        LoggerInterface $logger
     ) {
         $this->captchaResponseResolver = $captchaResponseResolver;
         $this->validationConfigResolver = $validationConfigResolver;
@@ -105,10 +86,6 @@ class PayPalObserver implements ObserverInterface
         $this->serializer = $serializer;
         $this->isCaptchaEnabled = $isCaptchaEnabled;
         $this->logger = $logger;
-        $this->errorMessageConfig = $errorMessageConfig
-            ?? ObjectManager::getInstance()->get(ErrorMessageConfigInterface::class);
-        $this->validationErrorMessagesProvider = $validationErrorMessagesProvider
-            ?? ObjectManager::getInstance()->get(ValidationErrorMessagesProvider::class);
     }
 
     /**
@@ -133,53 +110,24 @@ class PayPalObserver implements ObserverInterface
                 $reCaptchaResponse = $this->captchaResponseResolver->resolve($request);
             } catch (InputException $e) {
                 $this->logger->error($e);
-                $this->processError(
-                    $response,
-                    [],
-                    $key
-                );
+                $this->processError($response, $validationConfig->getValidationFailureMessage());
                 return;
             }
 
             $validationResult = $this->captchaValidator->isValid($reCaptchaResponse, $validationConfig);
             if (false === $validationResult->isValid()) {
-                $this->processError(
-                    $response,
-                    $validationResult->getErrors(),
-                    $key
-                );
+                $this->processError($response, $validationConfig->getValidationFailureMessage());
             }
         }
     }
 
     /**
-     * Process errors from reCAPTCHA response.
-     *
      * @param ResponseInterface $response
-     * @param array $errorMessages
-     * @param string $sourceKey
+     * @param string $message
      * @return void
      */
-    private function processError(ResponseInterface $response, array $errorMessages, string $sourceKey): void
+    private function processError(ResponseInterface $response, string $message): void
     {
-        $validationErrorText = $this->errorMessageConfig->getValidationFailureMessage();
-        $technicalErrorText = $this->errorMessageConfig->getTechnicalFailureMessage();
-
-        $message = $errorMessages ? $validationErrorText : $technicalErrorText;
-
-        foreach ($errorMessages as $errorMessageCode => $errorMessageText) {
-            if (!$this->isValidationError($errorMessageCode)) {
-                $message = $technicalErrorText;
-                $this->logger->error(
-                    __(
-                        'reCAPTCHA \'%1\' form error: %2',
-                        $sourceKey,
-                        $errorMessageText
-                    )
-                );
-            }
-        }
-
         $this->actionFlag->set('', Action::FLAG_NO_DISPATCH, true);
 
         $jsonPayload = $this->serializer->serialize([
@@ -188,16 +136,5 @@ class PayPalObserver implements ObserverInterface
             'error_messages' => $message,
         ]);
         $response->representJson($jsonPayload);
-    }
-
-    /**
-     * Check if error code present in validation errors list.
-     *
-     * @param string $errorMessageCode
-     * @return bool
-     */
-    private function isValidationError(string $errorMessageCode): bool
-    {
-        return $errorMessageCode !== $this->validationErrorMessagesProvider->getErrorMessage($errorMessageCode);
     }
 }

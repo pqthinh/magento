@@ -10,7 +10,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Model\Ui\TokenUiComponentInterface;
 use Magento\Vault\Model\Ui\TokenUiComponentInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject as MockObject;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 class TokenUiComponentProviderTest extends \PHPUnit\Framework\TestCase
 {
@@ -30,7 +30,7 @@ class TokenUiComponentProviderTest extends \PHPUnit\Framework\TestCase
      */
     private $tokenUiComponentProvider;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->componentFactory = $this->getMockBuilder(TokenUiComponentInterfaceFactory::class)
             ->disableOriginalConstructor()

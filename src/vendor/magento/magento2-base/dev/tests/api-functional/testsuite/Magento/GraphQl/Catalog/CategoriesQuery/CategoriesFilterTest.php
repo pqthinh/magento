@@ -189,7 +189,7 @@ QUERY;
         $expectedBaseCategoryProducts = [
             ['sku' => 'simple', 'name' => 'Simple Product'],
             ['sku' => 'simple-4', 'name' => 'Simple Product Three'],
-            ['sku' => '12345', 'name' => 'Simple Product Two'],
+            ['sku' => '12345', 'name' => 'Simple Product Two']
         ];
         $this->assertCategoryProducts($baseCategory, $expectedBaseCategoryProducts);
         //Check base category children
@@ -649,15 +649,6 @@ QUERY;
                 '["category-1-2", "movable"]',
                 [
                     [
-                        'id' => '13',
-                        'name' => 'Category 1.2',
-                        'url_key' => 'category-1-2',
-                        'url_path' => 'category-1/category-1-2',
-                        'children_count' => '0',
-                        'path' => '1/2/3/13',
-                        'position' => '2'
-                    ],
-                    [
                         'id' => '7',
                         'name' => 'Movable',
                         'url_key' => 'movable',
@@ -665,6 +656,15 @@ QUERY;
                         'children_count' => '0',
                         'path' => '1/2/7',
                         'position' => '3'
+                    ],
+                    [
+                        'id' => '13',
+                        'name' => 'Category 1.2',
+                        'url_key' => 'category-1-2',
+                        'url_path' => 'category-1/category-1-2',
+                        'children_count' => '0',
+                        'path' => '1/2/3/13',
+                        'position' => '2'
                     ]
                 ]
             ],

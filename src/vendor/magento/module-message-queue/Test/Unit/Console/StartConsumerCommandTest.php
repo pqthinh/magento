@@ -103,6 +103,7 @@ class StartConsumerCommandTest extends TestCase
         $pidFilePath,
         $singleThread,
         $lockExpects,
+        $isLockedExpects,
         $isLocked,
         $unlockExpects,
         $runProcessExpects,
@@ -143,11 +144,14 @@ class StartConsumerCommandTest extends TestCase
             ->method('get')->with($consumerName, $batchSize)->willReturn($consumer);
         $consumer->expects($this->exactly($runProcessExpects))->method('process')->with($numberOfMessages);
 
-        $this->lockManagerMock->expects($this->exactly($lockExpects))
-            ->method('lock')
-            ->with(md5($consumerName))//phpcs:ignore
+        $this->lockManagerMock->expects($this->exactly($isLockedExpects))
+            ->method('isLocked')
+            ->with(md5($consumerName)) //phpcs:ignore
             ->willReturn($isLocked);
 
+        $this->lockManagerMock->expects($this->exactly($lockExpects))
+            ->method('lock')
+            ->with(md5($consumerName)); //phpcs:ignore
         $this->lockManagerMock->expects($this->exactly($unlockExpects))
             ->method('unlock')
             ->with(md5($consumerName)); //phpcs:ignore
@@ -168,7 +172,8 @@ class StartConsumerCommandTest extends TestCase
                 'pidFilePath' => null,
                 'singleThread' => false,
                 'lockExpects' => 0,
-                'isLocked' => true,
+                'isLockedExpects' => 0,
+                'isLocked' => false,
                 'unlockExpects' => 0,
                 'runProcessExpects' => 1,
                 'expectedReturn' => Cli::RETURN_SUCCESS,
@@ -177,7 +182,8 @@ class StartConsumerCommandTest extends TestCase
                 'pidFilePath' => '/var/consumer.pid',
                 'singleThread' => true,
                 'lockExpects' => 1,
-                'isLocked' => true,
+                'isLockedExpects' => 1,
+                'isLocked' => false,
                 'unlockExpects' => 1,
                 'runProcessExpects' => 1,
                 'expectedReturn' => Cli::RETURN_SUCCESS,
@@ -185,8 +191,9 @@ class StartConsumerCommandTest extends TestCase
             [
                 'pidFilePath' => '/var/consumer.pid',
                 'singleThread' => true,
-                'lockExpects' => 1,
-                'isLocked' => false,
+                'lockExpects' => 0,
+                'isLockedExpects' => 1,
+                'isLocked' => true,
                 'unlockExpects' => 0,
                 'runProcessExpects' => 0,
                 'expectedReturn' => Cli::RETURN_FAILURE,

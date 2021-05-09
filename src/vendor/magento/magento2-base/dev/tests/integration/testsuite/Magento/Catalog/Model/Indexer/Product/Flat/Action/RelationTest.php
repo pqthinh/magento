@@ -15,8 +15,6 @@ use Magento\TestFramework\Catalog\Model\Indexer\Product\Flat\Action\Full as Flat
 
 /**
  * Test relation customization
- *
- * @magentoDbIsolation disabled
  */
 class RelationTest extends \Magento\TestFramework\Indexer\TestCase
 {

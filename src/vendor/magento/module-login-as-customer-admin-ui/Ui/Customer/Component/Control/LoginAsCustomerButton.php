@@ -7,13 +7,12 @@ declare(strict_types=1);
 
 namespace Magento\LoginAsCustomerAdminUi\Ui\Customer\Component\Control;
 
+use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+use Magento\Framework\AuthorizationInterface;
+use Magento\Framework\Escaper;
+use Magento\Framework\Registry;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Customer\Block\Adminhtml\Edit\GenericButton;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
-use Magento\LoginAsCustomerAdminUi\Ui\Customer\Component\Button\DataProvider;
 use Magento\LoginAsCustomerApi\Api\ConfigInterface;
 
 /**
@@ -32,26 +31,26 @@ class LoginAsCustomerButton extends GenericButton implements ButtonProviderInter
     private $config;
 
     /**
-     * @var DataProvider
+     * Escaper
+     *
+     * @var Escaper
      */
-    private $dataProvider;
+    private $escaper;
 
     /**
      * @param Context $context
      * @param Registry $registry
      * @param ConfigInterface $config
-     * @param DataProvider $dataProvider
      */
     public function __construct(
         Context $context,
         Registry $registry,
-        ConfigInterface $config,
-        ?DataProvider $dataProvider = null
+        ConfigInterface $config
     ) {
         parent::__construct($context, $registry);
         $this->authorization = $context->getAuthorization();
         $this->config = $config;
-        $this->dataProvider = $dataProvider ?? ObjectManager::getInstance()->get(DataProvider::class);
+        $this->escaper = $context->getEscaper();
     }
 
     /**
@@ -59,14 +58,31 @@ class LoginAsCustomerButton extends GenericButton implements ButtonProviderInter
      */
     public function getButtonData(): array
     {
-        $customerId = (int)$this->getCustomerId();
+        $customerId = $this->getCustomerId();
         $data = [];
         $isAllowed = $customerId && $this->authorization->isAllowed('Magento_LoginAsCustomer::login_button');
         $isEnabled = $this->config->isEnabled();
         if ($isAllowed && $isEnabled) {
-            $data = $this->dataProvider->getData($customerId);
+            $data = [
+                'label' => __('Login as Customer'),
+                'class' => 'login login-button',
+                'on_click' => 'window.lacConfirmationPopup("'
+                    . $this->escaper->escapeHtml($this->escaper->escapeJs($this->getLoginUrl()))
+                    . '")',
+                'sort_order' => 15,
+            ];
         }
 
         return $data;
+    }
+
+    /**
+     * Get Login as Customer login url.
+     *
+     * @return string
+     */
+    public function getLoginUrl(): string
+    {
+        return $this->getUrl('loginascustomer/login/login', ['customer_id' => $this->getCustomerId()]);
     }
 }

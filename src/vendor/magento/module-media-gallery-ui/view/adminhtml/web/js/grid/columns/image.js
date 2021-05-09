@@ -5,9 +5,8 @@
 define([
     'jquery',
     'Magento_Ui/js/grid/columns/column',
-    'uiLayout',
-    'underscore'
-], function ($, Column, layout, _) {
+    'uiLayout'
+], function ($, Column, layout) {
     'use strict';
 
     return Column.extend({
@@ -25,15 +24,13 @@ define([
             modules: {
                 actions: '${ $.name }_actions',
                 provider: '${ $.provider }',
-                messages: '${ $.messagesName }',
-                massaction: '${ $.massactionComponentName }'
+                messages: '${ $.messagesName }'
             },
             imports: {
                 activeDirectory: '${ $.mediaGalleryDirectoryComponent }:activeNode'
             },
             listens: {
-                activeDirectory: 'selectDirectoryHandle',
-                '${ $.massactionComponentName }:massActionMode': 'updateSelected'
+                activeDirectory: 'selectDirectoryHandle'
             },
             viewConfig: [
                 {
@@ -72,13 +69,6 @@ define([
         },
 
         /**
-         * Is massaction mode active.
-         */
-        isMassActionMode: function () {
-            return this.massaction().massActionMode();
-        },
-
-        /**
          * Returns url to given record.
          *
          * @param {Object} record - Data to be preprocessed.
@@ -99,14 +89,6 @@ define([
         },
 
         /**
-         * Update selected items per massaction mode.
-         */
-        updateSelected: function () {
-            this.selected({});
-            this.hideAddSelectedAndDeleteButon();
-        },
-
-        /**
          * Returns name to given record.
          *
          * @param {Object} record - Data to be preprocessed.
@@ -123,12 +105,8 @@ define([
          * @returns {Boolean}
          */
         isSelected: function (record) {
-            if (_.isNull(this.selected())) {
+            if (this.selected() === null) {
                 return false;
-            }
-
-            if (this.massaction().massActionMode()) {
-                return this.selected()[record.id];
             }
 
             return this.getId(this.selected()) === this.getId(record);
@@ -159,34 +137,11 @@ define([
         },
 
         /**
-         * Handle checkbox click.
-         */
-        checkboxClick: function (record) {
-            var items = this.selected();
-
-            if (this.selected()[record.id])  {
-                delete items[record.id];
-                this.selected(items);
-            } else {
-                items[record.id] = record.id;
-                this.selected(items);
-            }
-
-            return true;
-        },
-
-        /**
          * Set the record as selected
          */
         select: function (record) {
-            if (this.massaction().massActionMode()) {
-                return this.checkboxClick(record);
-            }
-
             this.isSelected(record) ? this.selected(null) : this.selected(record);
             this.toggleAddSelectedButton();
-
-            return true;
         },
 
         /**
@@ -279,9 +234,7 @@ define([
          * @param {String} path
          */
         selectDirectoryHandle: function (path) {
-            if (this.selected() &&
-                this.selected().directory !== path  &&
-                !this.massaction().massActionMode()) {
+            if (this.selected() && this.selected().directory !== path) {
                 this.deselectImage();
             }
         }

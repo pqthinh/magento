@@ -92,6 +92,7 @@ class AssetRepositoryTest extends TestCase
         /** @var SortOrderBuilder $sortOrderBuilder */
         $sortOrderBuilder = Bootstrap::getObjectManager()->create(SortOrderBuilder::class);
 
+        /** @var SortOrder $sortOrder */
         $sortOrder = $sortOrderBuilder->setField('id')
             ->setDirection(SortOrder::SORT_DESC)
             ->create();

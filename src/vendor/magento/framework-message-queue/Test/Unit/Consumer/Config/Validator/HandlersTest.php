@@ -64,9 +64,6 @@ class HandlersTest extends TestCase
                         ],
                         'connection' => 'connection1',
                         'maxMessages' => '100',
-                        'maxIdleTime' => '500',
-                        'sleep' => '10',
-                        'onlySpawnWhenMessageAvailable' => true
                     ]
                 ]
             ],
@@ -79,9 +76,6 @@ class HandlersTest extends TestCase
                         'handlers' => [],
                         'connection' => 'connection1',
                         'maxMessages' => null,
-                        'maxIdleTime' => '500',
-                        'sleep' => null,
-                        'onlySpawnWhenMessageAvailable' => true
                     ]
                 ]
             ],
@@ -115,9 +109,6 @@ class HandlersTest extends TestCase
                         'handlers' => ['handlerClassOne::handlerMethodOne'],
                         'connection' => 'connection1',
                         'maxMessages' => '100',
-                        'maxIdleTime' => '500',
-                        'sleep' => '10',
-                        'onlySpawnWhenMessageAvailable' => false
                     ]
                 ],
                 "'consumer1' consumer declaration is invalid. Every handler element must be an array."
@@ -134,9 +125,6 @@ class HandlersTest extends TestCase
                         ],
                         'connection' => 'connection1',
                         'maxMessages' => '100',
-                        'maxIdleTime' => '500',
-                        'sleep' => '10',
-                        'onlySpawnWhenMessageAvailable' => true
                     ]
                 ],
                 "'consumer1' consumer declaration is invalid. Every handler element must be an array."
@@ -153,9 +141,6 @@ class HandlersTest extends TestCase
                         ],
                         'connection' => 'connection1',
                         'maxMessages' => '100',
-                        'maxIdleTime' => '500',
-                        'sleep' => '10',
-                        'onlySpawnWhenMessageAvailable' => true
                     ]
                 ],
                 "'consumer1' consumer declaration is invalid. Every handler element must be an array."
@@ -172,9 +157,6 @@ class HandlersTest extends TestCase
                         ],
                         'connection' => 'connection1',
                         'maxMessages' => '100',
-                        'maxIdleTime' => '500',
-                        'sleep' => '10',
-                        'onlySpawnWhenMessageAvailable' => true
                     ]
                 ],
                 "'consumer1' consumer declaration is invalid. Every handler element must be an array."
@@ -195,9 +177,6 @@ class HandlersTest extends TestCase
                 ],
                 'connection' => 'connection1',
                 'maxMessages' => '100',
-                'maxIdleTime' => '500',
-                'sleep' => '10',
-                'onlySpawnWhenMessageAvailable' => true
             ]
         ];
         $expectedExceptionMessage = 'Service method specified as handler for of consumer "consumer1" is not available.'

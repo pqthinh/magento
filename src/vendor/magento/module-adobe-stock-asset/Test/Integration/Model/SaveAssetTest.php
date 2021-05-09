@@ -52,6 +52,7 @@ class SaveAssetTest extends TestCase
      */
     public function testExecute(): void
     {
+        /** @var AssetInterface $asset */
         $asset = $this->prepareAsset();
         $this->saveAsset->execute($asset);
         $expectedAsset = $this->assetRepository->getById($asset->getId());
@@ -101,9 +102,6 @@ class SaveAssetTest extends TestCase
 
     /**
      * Clean up test entries.
-     *
-     * @param AssetInterface $asset
-     * @throws \Exception
      */
     private function cleanUpEntries(AssetInterface $asset): void
     {

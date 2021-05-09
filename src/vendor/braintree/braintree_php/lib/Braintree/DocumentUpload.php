@@ -49,3 +49,4 @@ class DocumentUpload extends Base
         return $instance;
     }
 }
+class_alias('Braintree\DocumentUpload', 'Braintree_DocumentUpload');

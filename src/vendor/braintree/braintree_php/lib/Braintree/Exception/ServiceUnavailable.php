@@ -11,4 +11,6 @@ use Braintree\Exception;
  */
 class ServiceUnavailable extends Exception
 {
+
 }
+class_alias('Braintree\Exception\ServiceUnavailable', 'Braintree_Exception_ServiceUnavailable');

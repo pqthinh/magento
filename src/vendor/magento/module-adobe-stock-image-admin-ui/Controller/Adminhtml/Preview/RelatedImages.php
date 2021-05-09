@@ -12,7 +12,7 @@ use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\AuthenticationException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller providing related images (same model and same series) for the provided Adobe Stock asset id
@@ -35,17 +35,25 @@ class RelatedImages extends Action implements HttpGetActionInterface
     private $getRelatedImages;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * RelatedImages constructor.
      *
      * @param Action\Context $context
      * @param GetRelatedImagesInterface $getRelatedImages
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Action\Context $context,
-        GetRelatedImagesInterface $getRelatedImages
+        GetRelatedImagesInterface $getRelatedImages,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->getRelatedImages = $getRelatedImages;
+        $this->logger = $logger;
     }
     /**
      * @inheritdoc
@@ -64,26 +72,9 @@ class RelatedImages extends Action implements HttpGetActionInterface
                 'message' => __('Get related images finished successfully'),
                 'result' => $relatedImages
             ];
-        } catch (AuthenticationException $exception) {
-            $responseCode = self::HTTP_INTERNAL_ERROR;
-            $responseContent = [
-                'success' => false,
-                'message' => __(
-                    'Failed to authenticate to Adobe Stock API. <br> Please correct the API credentials in '
-                    . '<a href="%url">Configuration → System → Adobe Stock Integration.</a>',
-                    [
-                        'url' => $this->getUrl(
-                            'adminhtml/system_config/edit',
-                            [
-                                'section' => 'system',
-                                '_fragment' => 'system_adobe_stock_integration-link'
-                            ]
-                        )
-                    ]
-                )
-            ];
         } catch (\Exception $exception) {
             $responseCode = self::HTTP_INTERNAL_ERROR;
+            $this->logger->critical($exception);
             $responseContent = [
                 'success' => false,
                 'message' => __('An error occurred on attempt to fetch related images.'),

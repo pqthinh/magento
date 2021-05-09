@@ -19,6 +19,7 @@ $scriptString = <<<script
 
 require([
     'jquery',
+    'jquery-ui-modules/datepicker'
 ], function($){
 
 //<![CDATA[
@@ -38,7 +39,7 @@ require([
             timeText: '{$block->escapeJs(__('Time'))}',
             hourText: '{$block->escapeJs(__('Hour'))}',
             minuteText: '{$block->escapeJs(__('Minute'))}',
-            dateFormat: "D, d M yy", // $.datepicker.RFC_2822
+            dateFormat: $.datepicker.RFC_2822,
             showOn: 'button',
             showAnim: '',
             changeMonth: true,

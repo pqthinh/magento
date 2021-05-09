@@ -49,3 +49,4 @@ class SamsungPayCardDetails extends Instance
 
     }
 }
+class_alias('Braintree\Transaction\SamsungPayCardDetails', 'Braintree_Transaction_SamsungPayCardDetails');

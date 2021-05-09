@@ -25,26 +25,26 @@ class KountPaymentDataBuilderTest extends \PHPUnit\Framework\TestCase
     private $builder;
 
     /**
-     * @var Config|\PHPUnit\Framework\MockObject\MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var Payment|\PHPUnit\Framework\MockObject\MockObject
+     * @var Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentDO;
 
     /**
-     * @var SubjectReader|\PHPUnit\Framework\MockObject\MockObject
+     * @var SubjectReader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectReaderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->paymentDO = $this->createMock(PaymentDataObjectInterface::class);
         $this->configMock = $this->getMockBuilder(Config::class)
@@ -61,12 +61,10 @@ class KountPaymentDataBuilderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
      */
     public function testBuildReadPaymentException()
     {
-        $this->markTestSkipped('Skip this test');
-        $this->expectException(\InvalidArgumentException::class);
-
         $buildSubject = [];
 
         $this->configMock->expects(static::once())
@@ -83,7 +81,6 @@ class KountPaymentDataBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuild()
     {
-        $this->markTestSkipped('Skip this test');
         $additionalData = [
             DataAssignObserver::DEVICE_DATA => self::DEVICE_DATA
         ];

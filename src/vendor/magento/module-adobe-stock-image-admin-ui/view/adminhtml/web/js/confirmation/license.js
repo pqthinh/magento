@@ -73,10 +73,6 @@ define([
             buttons: data.buttons
         });
 
-        if (!data.visible) {
-            $('.adobe-stock-save-preview-prompt').focus();
-        }
-
         return deferred.promise();
     };
 });

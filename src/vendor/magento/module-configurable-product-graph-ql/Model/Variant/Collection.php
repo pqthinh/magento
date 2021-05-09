@@ -13,7 +13,6 @@ use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Pr
 use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\CollectionFactory;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessorInterface;
 use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionPostProcessor;
 
@@ -119,12 +118,11 @@ class Collection
      * Retrieve child products from for passed in parent id.
      *
      * @param int $id
-     * @param ContextInterface|null $context
      * @return array
      */
-    public function getChildProductsByParentId(int $id, ContextInterface $context = null) : array
+    public function getChildProductsByParentId(int $id) : array
     {
-        $childrenMap = $this->fetch($context);
+        $childrenMap = $this->fetch();
 
         if (!isset($childrenMap[$id])) {
             return [];
@@ -136,10 +134,9 @@ class Collection
     /**
      * Fetch all children products from parent id's.
      *
-     * @param ContextInterface|null $context
      * @return array
      */
-    private function fetch(ContextInterface $context = null) : array
+    private function fetch() : array
     {
         if (empty($this->parentProducts) || !empty($this->childrenMap)) {
             return $this->childrenMap;
@@ -153,8 +150,7 @@ class Collection
             $this->collectionProcessor->process(
                 $childCollection,
                 $this->searchCriteriaBuilder->create(),
-                $attributeData,
-                $context
+                $attributeData
             );
             $childCollection->load();
             $this->collectionPostProcessor->process($childCollection, $attributeData);

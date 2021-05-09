@@ -36,7 +36,7 @@ $options = $attribute->getOptions();
 $attributeValues = [];
 $attributeSetId = $installer->getAttributeSetId(Product::ENTITY, 'Default');
 $associatedProductIds = [];
-$idsToReindex = $productIds = [10, 20];
+$productIds = [10, 20];
 array_shift($options); //remove the first option which is empty
 
 foreach ($options as $option) {

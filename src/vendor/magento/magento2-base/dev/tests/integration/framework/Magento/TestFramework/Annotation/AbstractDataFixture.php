@@ -107,6 +107,7 @@ abstract class AbstractDataFixture
      *
      * @param array $fixtures
      * @return void
+     * @throws LocalizedException
      */
     protected function _applyFixtures(array $fixtures)
     {

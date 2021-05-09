@@ -1596,7 +1596,6 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                 }
 
                 $rowSku = $rowData[self::COL_SKU];
-                $rowSkuNormalized = mb_strtolower($rowSku);
 
                 if (null === $rowSku) {
                     $this->getErrorAggregator()->addRowToSkip($rowNum);
@@ -1606,9 +1605,9 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                 $storeId = !empty($rowData[self::COL_STORE])
                     ? $this->getStoreIdByCode($rowData[self::COL_STORE])
                     : Store::DEFAULT_STORE_ID;
-                $rowExistingImages = $existingImages[$storeId][$rowSkuNormalized] ?? [];
+                $rowExistingImages = $existingImages[$storeId][$rowSku] ?? [];
                 $rowStoreMediaGalleryValues = $rowExistingImages;
-                $rowExistingImages += $existingImages[Store::DEFAULT_STORE_ID][$rowSkuNormalized] ?? [];
+                $rowExistingImages += $existingImages[Store::DEFAULT_STORE_ID][$rowSku] ?? [];
 
                 if (self::SCOPE_STORE == $rowScope) {
                     // set necessary data from SCOPE_DEFAULT row
@@ -1764,11 +1763,10 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                             continue;
                         }
 
-                        $uploadedFileNormalized = ltrim($uploadedFile, '/\\');
-                        if (isset($rowExistingImages[$uploadedFileNormalized])) {
-                            $currentFileData = $rowExistingImages[$uploadedFileNormalized];
+                        if (isset($rowExistingImages[$uploadedFile])) {
+                            $currentFileData = $rowExistingImages[$uploadedFile];
                             $currentFileData['store_id'] = $storeId;
-                            $storeMediaGalleryValueExists = isset($rowStoreMediaGalleryValues[$uploadedFileNormalized]);
+                            $storeMediaGalleryValueExists = isset($rowStoreMediaGalleryValues[$uploadedFile]);
                             if (array_key_exists($uploadedFile, $imageHiddenStates)
                                 && $currentFileData['disabled'] != $imageHiddenStates[$uploadedFile]
                             ) {
@@ -3080,9 +3078,6 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         );
 
         if ($this->stockConfiguration->isQty($this->skuProcessor->getNewSku($sku)['type_id'])) {
-            if (isset($rowData['qty']) && $rowData['qty'] == 0) {
-                $row['is_in_stock'] = 0;
-            }
             $stockItemDo->setData($row);
             $row['is_in_stock'] = $row['is_in_stock'] ?? $this->stockStateProvider->verifyStock($stockItemDo);
             if ($this->stockStateProvider->verifyNotification($stockItemDo)) {

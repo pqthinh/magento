@@ -22,17 +22,15 @@ use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Store\Model\StoreManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Helper\Xpath;
 use Magento\TestFramework\Mail\Template\TransportBuilderMock;
 use Magento\TestFramework\Request;
-use Magento\TestFramework\TestCase\AbstractController;
 use Magento\Theme\Controller\Result\MessagePlugin;
 use PHPUnit\Framework\Constraint\StringContains;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AccountTest extends AbstractController
+class AccountTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
      * @var TransportBuilderMock
@@ -56,8 +54,9 @@ class AccountTest extends AbstractController
      */
     protected function login($customerId)
     {
-        /** @var Session $session */
-        $session = Bootstrap::getObjectManager()->get(Session::class);
+        /** @var \Magento\Customer\Model\Session $session */
+        $session = Bootstrap::getObjectManager()
+            ->get(\Magento\Customer\Model\Session::class);
         $session->loginById($customerId);
     }
 
@@ -149,8 +148,8 @@ class AccountTest extends AbstractController
         $customer->setData('confirmation', 'confirmation');
         $customer->save();
 
-        /** @var Session $customer */
-        $session = Bootstrap::getObjectManager()->get(Session::class);
+        /** @var \Magento\Customer\Model\Session $customer */
+        $session = Bootstrap::getObjectManager()->get(\Magento\Customer\Model\Session::class);
         $session->setRpToken($token);
         $session->setRpCustomerId($customer->getId());
 
@@ -405,16 +404,18 @@ class AccountTest extends AbstractController
         $this->assertEquals(200, $this->getResponse()->getHttpResponseCode(), $body);
         $this->assertStringContainsString('<div class="field field-name-firstname required">', $body);
         // Verify the password check box is not checked
-        $checkboxXpath = '//input[@type="checkbox"][@name="change_password"][@id="change-password"][not (@checked)]' .
-            '[@data-role="change-password"][@value="1"][@title="Change Password"][@class="checkbox"]';
-
-        $this->assertEquals(1, Xpath::getElementsCountForXpath($checkboxXpath, $body));
+        $expectedString = <<<EXPECTED_HTML
+<input type="checkbox" name="change_password" id="change-password" data-role="change-password" value="1"
+                   title="Change&#x20;Password"
+                 class="checkbox" />
+EXPECTED_HTML;
+        $this->assertStringContainsString($expectedString, $body);
     }
 
     /**
      * @magentoDataFixture Magento/Customer/_files/customer.php
      */
-    public function testChangePasswordEditAction(): void
+    public function testChangePasswordEditAction()
     {
         $this->login(1);
 
@@ -424,11 +425,12 @@ class AccountTest extends AbstractController
         $this->assertEquals(200, $this->getResponse()->getHttpResponseCode(), $body);
         $this->assertStringContainsString('<div class="field field-name-firstname required">', $body);
         // Verify the password check box is checked
-        $checkboxXpath = '//input[@type="checkbox"][@name="change_password"][@id="change-password"]' .
-            '[@data-role="change-password"][@value="1"][@title="Change Password"][@checked="checked"]' .
-            '[@class="checkbox"]';
-
-        $this->assertEquals(1, Xpath::getElementsCountForXpath($checkboxXpath, $body));
+        $expectedString = <<<EXPECTED_HTML
+<input type="checkbox" name="change_password" id="change-password" data-role="change-password" value="1"
+                   title="Change&#x20;Password"
+                 checked="checked" class="checkbox" />
+EXPECTED_HTML;
+        $this->assertStringContainsString($expectedString, $body);
     }
 
     /**

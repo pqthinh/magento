@@ -210,7 +210,7 @@ class ContactFormTest extends AbstractController
         $this->makePostRequest($postValues);
 
         $this->assertSessionMessages(
-            $this->equalTo(['Something went wrong with reCAPTCHA. Please contact the store owner.']),
+            $this->equalTo(['reCAPTCHA verification failed']),
             MessageInterface::TYPE_ERROR
         );
     }

@@ -20,7 +20,7 @@
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="amOnLogoutPage"/>
+            <amOnPage url="{{AdminLogoutPage.url}}" stepKey="amOnLogoutPage"/>
         </after>
 
         <actionGroup ref="NewCatalogPriceRuleWithInvalidDataActionGroup" stepKey="createNewPriceRule">

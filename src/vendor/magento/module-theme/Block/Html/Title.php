@@ -101,7 +101,7 @@ class Title extends Template
     private function shouldTranslateTitle(): bool
     {
         return $this->scopeConfig->isSetFlag(
-            self::XML_PATH_HEADER_TRANSLATE_TITLE,
+            static::XML_PATH_HEADER_TRANSLATE_TITLE,
             ScopeInterface::SCOPE_STORE
         );
     }

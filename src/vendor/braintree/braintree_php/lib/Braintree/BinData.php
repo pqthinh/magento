@@ -38,3 +38,4 @@ class BinData extends Base
     }
 
 }
+class_alias('Braintree\BinData', 'Braintree_BinData');

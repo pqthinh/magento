@@ -33,7 +33,8 @@
         </before>
         <after>
             <!--Delete Product and Category-->
-            <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="navigateToProductIndex"/>
+            <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="navigateToProductIndex"/>
+            <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
             <actionGroup ref="DeleteProductActionGroup" stepKey="deleteProduct1">
                 <argument name="productName" value="simpleProductWithShortNameAndSku.name"/>
             </actionGroup>

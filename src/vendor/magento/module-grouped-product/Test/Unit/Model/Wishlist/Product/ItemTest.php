@@ -115,29 +115,13 @@ class ItemTest extends TestCase
      */
     public function testBeforeCompareOptionsSameKeys()
     {
-        $infoBuyRequestMock = $this->createPartialMock(
-            \Magento\Catalog\Model\Product\Configuration\Item\Option::class,
-            [
-                'getValue',
-            ]
-        );
-
-        $infoBuyRequestMock->expects($this->atLeastOnce())
-            ->method('getValue')
-            ->willReturn('{"product":"3","action":"add"}');
-        $options1 = [
-            'associated_product_34' => 3,
-            'info_buyRequest' => $infoBuyRequestMock,
-        ];
-        $options2 = [
-            'associated_product_34' => 3,
-            'info_buyRequest' => $infoBuyRequestMock,
-        ];
+        $options1 = ['associated_product_34' => 3];
+        $options2 = ['associated_product_34' => 2];
 
         $res = $this->model->beforeCompareOptions($this->subjectMock, $options1, $options2);
 
-        $this->assertEquals(['info_buyRequest' => $infoBuyRequestMock], $res[0]);
-        $this->assertEquals(['info_buyRequest' => $infoBuyRequestMock], $res[1]);
+        $this->assertEquals([], $res[0]);
+        $this->assertEquals([], $res[1]);
     }
 
     /**
@@ -191,26 +175,16 @@ class ItemTest extends TestCase
     {
         $items = [];
 
-        $associatedProductMock = $this->createPartialMock(
-            \Magento\Catalog\Model\Product\Configuration\Item\Option::class,
-            [
-                'getValue',
-            ]
-        );
-        $infoBuyRequestMock = $this->createPartialMock(
+        $optionMock = $this->createPartialMock(
             \Magento\Catalog\Model\Product\Configuration\Item\Option::class,
             [
                 'getValue',
             ]
         );
 
-        $associatedProductMock->expects($this->once())->method('getValue')->willReturn($initVal);
-        $infoBuyRequestMock->expects($this->once())
-            ->method('getValue')
-            ->willReturn('{"product":"'. $prodId . '","action":"add"}');
+        $optionMock->expects($this->once())->method('getValue')->willReturn($initVal);
 
-        $items['associated_product_' . $prodId] = $associatedProductMock;
-        $items['info_buyRequest'] = $infoBuyRequestMock;
+        $items['associated_product_' . $prodId] = $optionMock;
 
         return $items;
     }

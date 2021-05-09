@@ -26,7 +26,8 @@
         </before>
         <after>
             <!-- Clean up our modifications to the existing color attribute -->
-            <actionGroup ref="AdminOpenProductAttributePageActionGroup" stepKey="goToProductAttributes"/>
+            <amOnPage url="{{AdminProductAttributeGridPage.url}}" stepKey="goToProductAttributes"/>
+            <waitForPageLoad stepKey="waitForProductAttributes"/>
             <fillField selector="{{AdminProductAttributeGridSection.FilterByAttributeCode}}" userInput="color"
                        stepKey="fillFilter"/>
             <click selector="{{AdminProductAttributeGridSection.Search}}" stepKey="clickSearch"/>
@@ -49,7 +50,8 @@
         </after>
 
         <!-- Go to the edit page for the "color" attribute -->
-        <actionGroup ref="AdminOpenProductAttributePageActionGroup" stepKey="goToProductAttributes"/>
+        <amOnPage url="{{AdminProductAttributeGridPage.url}}" stepKey="goToProductAttributes"/>
+        <waitForPageLoad stepKey="waitForProductAttributes"/>
         <fillField selector="{{AdminProductAttributeGridSection.FilterByAttributeCode}}" userInput="color"
                    stepKey="fillFilter"/>
         <click selector="{{AdminProductAttributeGridSection.Search}}" stepKey="clickSearch"/>
@@ -83,7 +85,8 @@
         </actionGroup>
 
         <!-- Create a configurable product to verify the storefront with -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="amOnProductGridPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
+        <waitForPageLoad stepKey="waitForProductGridPage"/>
         <click selector="{{AdminProductGridActionSection.addProductToggle}}" stepKey="clickOnAddProductToggle"/>
         <click selector="{{AdminProductGridActionSection.addConfigurableProduct}}"
                stepKey="clickOnAddConfigurableProduct"/>

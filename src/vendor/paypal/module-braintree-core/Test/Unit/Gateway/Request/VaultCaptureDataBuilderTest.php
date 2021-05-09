@@ -20,21 +20,21 @@ class VaultCaptureDataBuilderTest extends \PHPUnit\Framework\TestCase
     private $builder;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentDO;
 
     /**
-     * @var Payment|\PHPUnit\Framework\MockObject\MockObject
+     * @var Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $payment;
 
     /**
-     * @var SubjectReader|\PHPUnit\Framework\MockObject\MockObject
+     * @var SubjectReader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectReader;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->paymentDO = $this->createMock(PaymentDataObjectInterface::class);
         $this->payment = $this->getMockBuilder(Payment::class)

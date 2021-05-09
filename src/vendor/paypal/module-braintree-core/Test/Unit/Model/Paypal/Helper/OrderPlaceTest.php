@@ -25,27 +25,27 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     const TEST_EMAIL = 'test@test.loc';
 
     /**
-     * @var CartManagementInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var CartManagementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cartManagementMock;
 
     /**
-     * @var AgreementsValidatorInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var AgreementsValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $agreementsValidatorMock;
 
     /**
-     * @var Session|\PHPUnit\Framework\MockObject\MockObject
+     * @var Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var Data|\PHPUnit\Framework\MockObject\MockObject
+     * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $checkoutHelperMock;
 
     /**
-     * @var Address|\PHPUnit\Framework\MockObject\MockObject
+     * @var Address|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAddressMock;
 
@@ -54,7 +54,7 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
      */
     private $orderPlace;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->cartManagementMock = $this->getMockBuilder(CartManagementInterface::class)
             ->getMockForAbstractClass();
@@ -103,9 +103,9 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject $quoteMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $quoteMock
      */
-    private function disabledQuoteAddressValidationStep(\PHPUnit\Framework\MockObject\MockObject $quoteMock)
+    private function disabledQuoteAddressValidationStep(\PHPUnit_Framework_MockObject_MockObject $quoteMock)
     {
         $billingAddressMock = $this->getBillingAddressMock($quoteMock);
         $shippingAddressMock = $this->getMockBuilder(Address::class)
@@ -140,9 +140,9 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject $quoteMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $quoteMock
      */
-    private function getCheckoutMethodStep(\PHPUnit\Framework\MockObject\MockObject $quoteMock)
+    private function getCheckoutMethodStep(\PHPUnit_Framework_MockObject_MockObject $quoteMock)
     {
         $this->customerSessionMock->expects(self::once())
             ->method('isLoggedIn')
@@ -167,9 +167,9 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject $quoteMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $quoteMock
      */
-    private function prepareGuestQuoteStep(\PHPUnit\Framework\MockObject\MockObject $quoteMock)
+    private function prepareGuestQuoteStep(\PHPUnit_Framework_MockObject_MockObject $quoteMock)
     {
         $billingAddressMock = $this->getBillingAddressMock($quoteMock);
 
@@ -199,10 +199,10 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject $quoteMock
-     * @return Address|\PHPUnit\Framework\MockObject\MockObject
+     * @param \PHPUnit_Framework_MockObject_MockObject $quoteMock
+     * @return Address|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getBillingAddressMock(\PHPUnit\Framework\MockObject\MockObject $quoteMock)
+    private function getBillingAddressMock(\PHPUnit_Framework_MockObject_MockObject $quoteMock)
     {
         if (!isset($this->billingAddressMock)) {
             $this->billingAddressMock = $this->getMockBuilder(Address::class)
@@ -219,7 +219,7 @@ class OrderPlaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Quote|\PHPUnit\Framework\MockObject\MockObject
+     * @return Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getQuoteMock()
     {

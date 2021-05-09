@@ -67,7 +67,8 @@
             <argument name="shippingMethodName" value="Best Way"/>
         </actionGroup>
         <!--Proceed to Review and Payments section-->
-        <actionGroup ref="StorefrontCheckoutClickNextOnShippingStepActionGroup" stepKey="clickToSaveShippingInfo"/>
+        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickToSaveShippingInfo"/>
+        <waitForLoadingMaskToDisappear stepKey="waitForLoadingMaskAfterClickNext"/>
         <waitForPageLoad stepKey="waitForReviewAndPaymentsPageIsLoaded"/>
         <!--Place order and assert the message of success-->
         <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="placeOrderProductSuccessful"/>

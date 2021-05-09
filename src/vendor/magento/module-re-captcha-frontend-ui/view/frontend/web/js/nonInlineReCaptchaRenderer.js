@@ -50,7 +50,6 @@ define([
             rendererReCaptcha = $('<div/>', {
                 'id': rendererRecaptchaId
             });
-            rendererReCaptcha.hide();
             $('body').append(rendererReCaptcha);
         }
     };

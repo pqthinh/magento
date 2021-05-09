@@ -132,8 +132,6 @@ class WebBehaviourTracking implements ProductRenderCollectorInterface
         } catch (LocalizedException $e) {
             return $categories;
         }
-
-        return $categories;
     }
 
     /**

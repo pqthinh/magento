@@ -23,7 +23,6 @@ namespace Braintree;
  * @property-read string $email
  * @property-read string $fax
  * @property-read string $firstName
- * @property-read string $graphQLId
  * @property-read string $id
  * @property-read string $lastName
  * @property-read \Braintree\MasterpassCard[] $masterpassCards
@@ -50,7 +49,7 @@ class Customer extends Base
 
     /**
      *
-     * @param array $query
+     * @param string $query
      * @param int[] $ids
      * @return Customer|Customer[]
      */
@@ -149,7 +148,7 @@ class Customer extends Base
     /**
      *
      * @throws InvalidArgumentException
-     * @param array $query
+     * @param string $query
      * @return ResourceCollection
      */
     public static function search($query)
@@ -377,3 +376,4 @@ class Customer extends Base
         return $instance;
     }
 }
+class_alias('Braintree\Customer', 'Braintree_Customer');

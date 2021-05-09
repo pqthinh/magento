@@ -21,29 +21,29 @@ use Magento\Store\Model\StoreManagerInterface;
 class TransactionMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Transaction|\PHPUnit\Framework\MockObject\MockObject
+     * @var Transaction|\PHPUnit_Framework_MockObject_MockObject
      */
     private $transactionStub;
 
     /**
-     * @var AttributeValueFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @var AttributeValueFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeValueFactoryMock;
 
     /**
-     * @var RendererInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var RendererInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $defaultRenderer;
 
     /**
-     * @var RendererInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var RendererInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $rendererMock;
 
     /**
      * Setup
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attributeValueFactoryMock = $this->getMockBuilder(AttributeValueFactory::class)
             ->setMethods(['create'])
@@ -149,7 +149,7 @@ class TransactionMapTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Phrase::setRenderer($this->defaultRenderer);
     }

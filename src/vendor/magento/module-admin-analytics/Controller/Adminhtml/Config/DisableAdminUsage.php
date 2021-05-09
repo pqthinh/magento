@@ -61,7 +61,7 @@ class DisableAdminUsage extends Action implements HttpPostActionInterface
     private function disableAdminUsage()
     {
         $configModel = $this->configFactory->create();
-        $configModel->setDataByPath('admin/usage/enabled', 1);
+        $configModel->setDataByPath('admin/usage/enabled', 0);
         $configModel->save();
     }
 

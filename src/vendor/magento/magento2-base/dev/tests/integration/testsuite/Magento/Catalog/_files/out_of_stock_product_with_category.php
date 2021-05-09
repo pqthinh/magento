@@ -50,5 +50,5 @@ $product->setTypeId(Type::TYPE_SIMPLE)
     ->setCanSaveCustomOptions(true)
     ->setHasOptions(true);
 /** @var ProductRepositoryInterface $productRepositoryFactory */
-$productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
 $productRepository->save($product);

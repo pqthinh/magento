@@ -116,13 +116,16 @@
         <grabTextFrom stepKey="getBeforeOption" selector="{{StorefrontProductInfoMainSection.nthAttributeOnPage('1')}}"/>
 
         <!-- Find the product that we just created using the product grid -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="visitAdminProductPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPage"/>
+        <waitForPageLoad stepKey="waitForAdminProductPageLoad"/>
         <conditionalClick selector="{{AdminProductGridFilterSection.clearFilters}}" dependentSelector="{{AdminProductGridFilterSection.clearFilters}}" visible="true" stepKey="clickClearFiltersInitial"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="findCreatedProduct">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
         <waitForPageLoad stepKey="waitForProductFilterLoad"/>
-        <actionGroup ref="AdminProductGridSectionClickFirstRowActionGroup" stepKey="clickOnProductPage"/>
+
+        <click selector="{{AdminProductGridSection.firstRow}}" stepKey="clickOnProductPage"/>
+        <waitForPageLoad stepKey="waitForProductPageLoad"/>
 
         <!-- change the option on the first attribute -->
         <selectOption stepKey="clickFirstAttribute" selector="{{ModifyAttributes.nthExistingAttribute($$createModifiableProductAttribute.default_frontend_label$$)}}" userInput="option1"/>

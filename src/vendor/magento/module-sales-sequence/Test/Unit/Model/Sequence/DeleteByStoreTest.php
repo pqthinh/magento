@@ -110,7 +110,6 @@ class DeleteByStoreTest extends TestCase
                 }
             );
         $this->resourceMock->method('getConnection')
-            ->with('sales')
             ->willReturn($this->connectionMock);
         $this->connectionMock
             ->method('select')

@@ -133,3 +133,4 @@ class ErrorCollection implements Countable, JsonSerializable
         return $this->_errors->deepAll();
     }
 }
+class_alias('Braintree\Error\ErrorCollection', 'Braintree_Error_ErrorCollection');

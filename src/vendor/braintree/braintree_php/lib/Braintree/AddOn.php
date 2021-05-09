@@ -40,3 +40,4 @@ class AddOn extends Modification
         return Configuration::gateway()->addOn()->all();
     }
 }
+class_alias('Braintree\AddOn', 'Braintree_AddOn');

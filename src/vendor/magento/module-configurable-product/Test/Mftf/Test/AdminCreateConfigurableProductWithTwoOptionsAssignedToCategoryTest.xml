@@ -56,7 +56,8 @@
         </after>
 
         <!-- Create configurable product -->
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="amOnProductGridPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
+        <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
         <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="createConfigurableProduct">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
@@ -101,11 +102,7 @@
         <actionGroup ref="FilterProductGridBySkuAndNameActionGroup" stepKey="findCreatedConfigurableProduct">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
-        <actionGroup ref="AssertAdminProductGridCellActionGroup" stepKey="seeProductTypeInGrid">
-            <argument name="row" value="1"/>
-            <argument name="column" value="Type"/>
-            <argument name="value" value="{{ApiConfigurableProduct.type_id}}"/>
-        </actionGroup>
+        <see selector="{{AdminProductGridSection.productGridCell('1', 'Type')}}" userInput="{{ApiConfigurableProduct.type_id}}" stepKey="seeProductTypeInGrid"/>
         <click selector="{{AdminProductGridFilterSection.clearFilters}}" stepKey="clickClearFiltersAfter"/>
 
         <!-- Flash cache -->

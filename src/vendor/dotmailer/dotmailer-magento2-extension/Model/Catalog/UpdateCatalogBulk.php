@@ -59,6 +59,7 @@ class UpdateCatalogBulk
     /**
      * Process creates or updates a catalog with products
      * @param $bunch
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function processBatch($bunch)
     {

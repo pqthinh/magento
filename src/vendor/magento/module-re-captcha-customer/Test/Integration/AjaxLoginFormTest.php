@@ -218,12 +218,7 @@ class AjaxLoginFormTest extends AbstractController
     {
         $this->makePostRequest($postValues);
 
-        $expected = json_encode(
-            [
-                'errors' => true,
-                'message' => 'Something went wrong with reCAPTCHA. Please contact the store owner.'
-            ]
-        );
+        $expected = json_encode(['errors' => true, 'message' => 'reCAPTCHA verification failed']);
 
         $this->assertEquals(
             $expected,

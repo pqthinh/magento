@@ -151,3 +151,4 @@ class VisaCheckoutCard extends Base
         return $instance;
     }
 }
+class_alias('Braintree\VisaCheckoutCard', 'Braintree_VisaCheckoutCard');

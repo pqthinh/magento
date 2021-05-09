@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
  */
 class FetchMediaStorageFileBatches
 {
+    private const IMAGE_FILE_NAME_PATTERN = '#\.(jpg|jpeg|gif|png)$# i';
+
     /**
      * @var GetAssetsIterator
      */
@@ -37,11 +39,6 @@ class FetchMediaStorageFileBatches
     private $driver;
 
     /**
-     * @var string
-     */
-    private $fileExtensions;
-
-    /**
      * @var LoggerInterface
      */
     private $log;
@@ -58,7 +55,6 @@ class FetchMediaStorageFileBatches
      * @param GetAssetsIterator $assetsIterator
      * @param File $driver
      * @param int $batchSize
-     * @param array $fileExtensions
      */
     public function __construct(
         LoggerInterface $log,
@@ -66,8 +62,7 @@ class FetchMediaStorageFileBatches
         Filesystem $filesystem,
         GetAssetsIterator $assetsIterator,
         File $driver,
-        int $batchSize,
-        array $fileExtensions
+        int $batchSize
     ) {
         $this->log = $log;
         $this->isPathExcluded = $isPathExcluded;
@@ -75,7 +70,6 @@ class FetchMediaStorageFileBatches
         $this->filesystem = $filesystem;
         $this->driver = $driver;
         $this->batchSize = $batchSize;
-        $this->fileExtensions = $fileExtensions;
     }
 
     /**
@@ -89,13 +83,11 @@ class FetchMediaStorageFileBatches
 
         /** @var \SplFileInfo $file */
         foreach ($this->getAssetsIterator->execute($mediaDirectory->getAbsolutePath()) as $file) {
-            $relativePath = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)
-                ->getRelativePath($file->getPathName());
-            if (!$this->isApplicable($relativePath)) {
+            if (!$this->isApplicable($file->getPathName())) {
                 continue;
             }
 
-            $batch[] = $relativePath;
+            $batch[] = $file;
             if (++$i == $this->batchSize) {
                 yield $batch;
                 $i = 0;
@@ -116,9 +108,10 @@ class FetchMediaStorageFileBatches
     private function isApplicable(string $path): bool
     {
         try {
-            return $path
-                && !$this->isPathExcluded->execute($path)
-                && preg_match('#\.(' . implode("|", $this->fileExtensions) . ')$# i', $path);
+            $relativePath = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getRelativePath($path);
+            return $relativePath
+                && !$this->isPathExcluded->execute($relativePath)
+                && preg_match(self::IMAGE_FILE_NAME_PATTERN, $path);
         } catch (\Exception $exception) {
             $this->log->critical($exception);
             return false;

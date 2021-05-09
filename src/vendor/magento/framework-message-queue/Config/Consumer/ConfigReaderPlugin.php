@@ -68,10 +68,7 @@ class ConfigReaderPlugin
                 'consumerInstance' => $consumerData['instance_type'],
                 'handlers' => $handlers,
                 'connection' => $consumerData['connection'],
-                'maxMessages' => $consumerData['max_messages'],
-                'maxIdleTime' => null,
-                'sleep' => null,
-                'onlySpawnWhenMessageAvailable' => null
+                'maxMessages' => $consumerData['max_messages']
             ];
         }
 

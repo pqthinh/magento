@@ -75,17 +75,16 @@ define([
                 content: error,
                 buttons: [{
                     text: $.mage.__('Ok'),
-                    class: 'action-primary action-accept'
-                }],
-                actions: {
+                    class: 'action-primary',
+                    attr: {},
 
                     /**
-                       * Close modal
-                       */
-                    confirm: function (event) {
+                     * Close modal on button click
+                     */
+                    click: function (event) {
                         this.closeModal(event);
                     }
-                }
+                }]
             });
         },
 

@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Check configurable product price displaying
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppIsolation enabled
  * @magentoAppArea frontend
  */

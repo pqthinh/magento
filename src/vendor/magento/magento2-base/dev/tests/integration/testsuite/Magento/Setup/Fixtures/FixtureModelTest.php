@@ -13,8 +13,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 /**
  * Class Application test
  *
- * @magentoDbIsolation disabled
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FixtureModelTest extends \Magento\TestFramework\Indexer\TestCase

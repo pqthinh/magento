@@ -4,36 +4,29 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * Test class for \Magento\Cms\Controller\Page.
+ */
 namespace Magento\Cms\Controller;
 
 use Magento\Cms\Api\GetPageByIdentifierInterface;
-use Magento\Cms\Model\Page\CustomLayoutManagerInterface;
 use Magento\Framework\View\LayoutInterface;
-use Magento\TestFramework\Cms\Model\CustomLayoutManager;
-use Magento\TestFramework\TestCase\AbstractController;
+use Magento\TestFramework\Helper\Bootstrap;
 
-/**
- * Test for \Magento\Cms\Controller\Page\View class.
- */
-class PageTest extends AbstractController
+class PageTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    /**
-     * @var GetPageByIdentifierInterface
-     */
-    private $pageRetriever;
-
     /**
      * @inheritDoc
      */
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->_objectManager->configure([
+        Bootstrap::getObjectManager()->configure([
             'preferences' => [
-                CustomLayoutManagerInterface::class => CustomLayoutManager::class,
+                \Magento\Cms\Model\Page\CustomLayoutManagerInterface::class =>
+                    \Magento\TestFramework\Cms\Model\CustomLayoutManager::class
             ]
         ]);
-        $this->pageRetriever = $this->_objectManager->get(GetPageByIdentifierInterface::class);
+        parent::setUp();
     }
 
     public function testViewAction()
@@ -58,7 +51,9 @@ class PageTest extends AbstractController
     public function testAddBreadcrumbs()
     {
         $this->dispatch('/enable-cookies');
-        $layout = $this->_objectManager->get(LayoutInterface::class);
+        $layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\View\LayoutInterface::class
+        );
         $breadcrumbsBlock = $layout->getBlock('breadcrumbs');
         $this->assertStringContainsString($breadcrumbsBlock->toHtml(), $this->getResponse()->getBody());
     }
@@ -95,10 +90,12 @@ class PageTest extends AbstractController
      */
     public function testCustomHandles(): void
     {
-        $page = $this->pageRetriever->execute('test_custom_layout_page_3', 0);
-        $this->dispatch('/cms/page/view/page_id/' . $page->getId());
+        /** @var GetPageByIdentifierInterface $pageFinder */
+        $pageFinder = Bootstrap::getObjectManager()->get(GetPageByIdentifierInterface::class);
+        $page = $pageFinder->execute('test_custom_layout_page_3', 0);
+        $this->dispatch('/cms/page/view/page_id/' .$page->getId());
         /** @var LayoutInterface $layout */
-        $layout = $this->_objectManager->get(LayoutInterface::class);
+        $layout = Bootstrap::getObjectManager()->get(LayoutInterface::class);
         $handles = $layout->getUpdate()->getHandles();
         $this->assertContains('cms_page_view_selectable_test_custom_layout_page_3_test_selected', $handles);
     }
@@ -114,37 +111,8 @@ class PageTest extends AbstractController
     {
         $this->dispatch('/');
         /** @var LayoutInterface $layout */
-        $layout = $this->_objectManager->get(LayoutInterface::class);
+        $layout = Bootstrap::getObjectManager()->get(LayoutInterface::class);
         $handles = $layout->getUpdate()->getHandles();
         $this->assertContains('cms_page_view_selectable_home_page_custom_layout', $handles);
-    }
-
-    /**
-     * Tests page renders even with unavailable custom page layout.
-     *
-     * @magentoDataFixture Magento/Cms/Fixtures/page_list.php
-     * @dataProvider pageLayoutDataProvider
-     * @param string $pageIdentifier
-     * @return void
-     */
-    public function testPageWithCustomLayout(string $pageIdentifier): void
-    {
-        $page = $this->pageRetriever->execute($pageIdentifier, 0);
-        $this->dispatch('/cms/page/view/page_id/' . $page->getId());
-        $this->assertStringContainsString(
-            '<main id="maincontent" class="page-main">',
-            $this->getResponse()->getBody()
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function pageLayoutDataProvider(): array
-    {
-        return [
-            'Page with 1column layout' => ['page-with-1column-layout'],
-            'Page with unavailable layout' => ['page-with-unavailable-layout']
-        ];
     }
 }

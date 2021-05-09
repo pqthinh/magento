@@ -61,9 +61,6 @@ define([
                     authorization: self.clientToken
                 }, function (clientErr, clientInstance) {
                     if (clientErr) {
-                        alert({
-                            content: $t('Please configure your Braintree Payments account in order to use the virtual terminal.')
-                        });
                         console.error('Error!', clientErr);
                         return self.error(response.clientErr);
                     }

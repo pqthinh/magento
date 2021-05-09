@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Elasticsearch6\Model\Client;
 
 use Magento\AdvancedSearch\Model\Client\ClientInterface;
@@ -51,10 +50,8 @@ class Elasticsearch implements ClientInterface
         $elasticsearchClient = null,
         $fieldsMappingPreprocessors = []
     ) {
-        if (empty($options['hostname'])
-            || ((!empty($options['enableAuth']) && ($options['enableAuth'] == 1))
-                && (empty($options['username']) || empty($options['password'])))
-        ) {
+        if (empty($options['hostname']) || ((!empty($options['enableAuth']) &&
+                    ($options['enableAuth'] == 1)) && (empty($options['username']) || empty($options['password'])))) {
             throw new LocalizedException(
                 __('The search failed because of a search engine misconfiguration.')
             );
@@ -180,23 +177,6 @@ class Elasticsearch implements ClientInterface
     }
 
     /**
-     * Add/update an Elasticsearch index settings.
-     *
-     * @param string $index
-     * @param array $settings
-     * @return void
-     */
-    public function putIndexSettings(string $index, array $settings): void
-    {
-        $this->getClient()->indices()->putSettings(
-            [
-                'index' => $index,
-                'body' => $settings,
-            ]
-        );
-    }
-
-    /**
      * Delete an Elasticsearch index.
      *
      * @param string $index
@@ -303,7 +283,7 @@ class Elasticsearch implements ClientInterface
                                 'match' => 'price_*',
                                 'match_mapping_type' => 'string',
                                 'mapping' => [
-                                    'type' => 'double',
+                                    'type' => 'float',
                                     'store' => true,
                                 ],
                             ],
@@ -325,15 +305,7 @@ class Elasticsearch implements ClientInterface
                                 'mapping' => [
                                     'type' => 'text',
                                     'index' => true,
-                                    'copy_to' => '_search',
-                                ],
-                            ],
-                        ],
-                        [
-                            'integer_mapping' => [
-                                'match_mapping_type' => 'long',
-                                'mapping' => [
-                                    'type' => 'integer',
+                                    'copy_to' => '_search'
                                 ],
                             ],
                         ],
@@ -347,17 +319,6 @@ class Elasticsearch implements ClientInterface
         }
 
         $this->getClient()->indices()->putMapping($params);
-    }
-
-    /**
-     * Get mapping from Elasticsearch index.
-     *
-     * @param array $params
-     * @return array
-     */
-    public function getMapping(array $params): array
-    {
-        return $this->getClient()->indices()->getMapping($params);
     }
 
     /**

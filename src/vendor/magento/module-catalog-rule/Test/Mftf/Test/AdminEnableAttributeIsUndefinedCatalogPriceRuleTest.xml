@@ -49,7 +49,7 @@
         <after>
 
             <!--Delete created data-->
-            <actionGroup ref="AdminOpenCatalogPriceRulePageActionGroup" stepKey="goToCatalogPriceRulePage"/>
+            <amOnPage url="{{CatalogRulePage.url}}" stepKey="goToCatalogPriceRulePage"/>
             <actionGroup ref="deleteEntitySecondaryGrid" stepKey="deletePriceRule">
                 <argument name="name" value="{{CatalogRuleWithAllCustomerGroups.name}}"/>
                 <argument name="searchInput" value="{{AdminSecondaryGridSection.catalogRuleIdentifierSearch}}"/>
@@ -68,7 +68,8 @@
         </after>
 
         <!--Create catalog price rule-->
-        <actionGroup ref="AdminOpenCatalogPriceRulePageActionGroup" stepKey="goToPriceRulePage"/>
+        <amOnPage url="{{CatalogRulePage.url}}" stepKey="goToPriceRulePage"/>
+        <waitForPageLoad stepKey="waitForPriceRulePage"/>
         <actionGroup ref="CreateCatalogPriceRuleActionGroup" stepKey="createCatalogPriceRule">
             <argument name="catalogRule" value="CatalogRuleWithAllCustomerGroups"/>
         </actionGroup>
@@ -106,7 +107,7 @@
 
         <!--Delete previous attribute and Catalog Price Rule-->
         <deleteData createDataKey="createProductAttribute" stepKey="deleteProductAttribute"/>
-        <actionGroup ref="AdminOpenCatalogPriceRulePageActionGroup" stepKey="goToCatalogPriceRulePage"/>
+        <amOnPage url="{{CatalogRulePage.url}}" stepKey="goToCatalogPriceRulePage"/>
         <actionGroup ref="deleteEntitySecondaryGrid" stepKey="deletePriceRule">
             <argument name="name" value="{{CatalogRuleWithAllCustomerGroups.name}}"/>
             <argument name="searchInput" value="{{AdminSecondaryGridSection.catalogRuleIdentifierSearch}}"/>
@@ -118,7 +119,8 @@
         </createData>
 
         <!--Create new Catalog Price Rule-->
-        <actionGroup ref="AdminOpenCatalogPriceRulePageActionGroup" stepKey="goToPriceRulePage1"/>
+        <amOnPage url="{{CatalogRulePage.url}}" stepKey="goToPriceRulePage1"/>
+        <waitForPageLoad stepKey="waitForPriceRulePage1"/>
         <actionGroup ref="CreateCatalogPriceRuleActionGroup" stepKey="createCatalogPriceRule1">
             <argument name="catalogRule" value="CatalogRuleWithAllCustomerGroups"/>
         </actionGroup>

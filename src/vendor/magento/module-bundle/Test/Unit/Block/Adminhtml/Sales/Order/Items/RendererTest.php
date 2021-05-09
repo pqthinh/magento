@@ -17,9 +17,6 @@ use Magento\Sales\Model\Order\Shipment;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Test Renderer order item
- */
 class RendererTest extends TestCase
 {
     /** @var Item|MockObject */
@@ -101,27 +98,25 @@ class RendererTest extends TestCase
             $parentItem = $this->createPartialMock(Item::class, ['getId', '__wakeup']);
             $parentItem->expects($this->any())->method('getId')->willReturn(1);
         }
-        $this->orderItem->method('getOrderItem')->willReturnSelf();
-        $this->orderItem->method('getParentItem')->willReturn($parentItem);
-        $this->orderItem->method('getOrderItemId')->willReturn(2);
-        $this->orderItem->method('getId')->willReturn(1);
+        $this->orderItem->expects($this->any())->method('getOrderItem')->willReturnSelf();
+        $this->orderItem->expects($this->any())->method('getParentItem')->willReturn($parentItem);
+        $this->orderItem->expects($this->any())->method('getOrderItemId')->willReturn(2);
+        $this->orderItem->expects($this->any())->method('getId')->willReturn(1);
 
         $salesModel = $this->createPartialMock(
             Invoice::class,
             ['getAllItems', '__wakeup']
         );
-        $salesModel->method('getAllItems')->willReturn([$this->orderItem]);
+        $salesModel->expects($this->once())->method('getAllItems')->willReturn([$this->orderItem]);
 
         $item = $this->createPartialMock(
             \Magento\Sales\Model\Order\Invoice\Item::class,
-            ['getInvoice', 'getOrderItem', 'getOrderItemId', '__wakeup']
+            ['getInvoice', 'getOrderItem', '__wakeup']
         );
-        $item->method('getInvoice')->willReturn($salesModel);
-        $item->method('getOrderItem')->willReturn($this->orderItem);
-        $item->method('getOrderItemId')->willReturn($this->orderItem->getOrderItemId());
+        $item->expects($this->once())->method('getInvoice')->willReturn($salesModel);
+        $item->expects($this->any())->method('getOrderItem')->willReturn($this->orderItem);
 
-        $orderItem = $this->model->getChildren($item);
-        $this->assertSame([2 => $this->orderItem], $orderItem);
+        $this->assertSame([2 => $this->orderItem], $this->model->getChildren($item));
     }
 
     /**

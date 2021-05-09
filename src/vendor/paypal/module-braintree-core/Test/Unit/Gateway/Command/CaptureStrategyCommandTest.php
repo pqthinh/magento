@@ -35,42 +35,42 @@ class CaptureStrategyCommandTest extends \PHPUnit\Framework\TestCase
     private $strategyCommand;
 
     /**
-     * @var CommandPoolInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var CommandPoolInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commandPool;
 
     /**
-     * @var TransactionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var TransactionRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $transactionRepository;
 
     /**
-     * @var FilterBuilder|\PHPUnit\Framework\MockObject\MockObject
+     * @var FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterBuilder;
 
     /**
-     * @var SearchCriteriaBuilder|\PHPUnit\Framework\MockObject\MockObject
+     * @var SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaBuilder;
 
     /**
-     * @var Payment|\PHPUnit\Framework\MockObject\MockObject
+     * @var Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $payment;
 
     /**
-     * @var GatewayCommand|\PHPUnit\Framework\MockObject\MockObject
+     * @var GatewayCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     private $command;
 
     /**
-     * @var SubjectReader|\PHPUnit\Framework\MockObject\MockObject
+     * @var SubjectReader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectReaderMock;
 
     /**
-     * @var BraintreeAdapter|\PHPUnit\Framework\MockObject\MockObject
+     * @var BraintreeAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $braintreeAdapter;
 
@@ -79,12 +79,12 @@ class CaptureStrategyCommandTest extends \PHPUnit\Framework\TestCase
      */
     private $braintreeSearchAdapter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->commandPool = $this->getMockBuilder(CommandPoolInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', '__wakeup'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->subjectReaderMock = $this->getMockBuilder(SubjectReader::class)
             ->disableOriginalConstructor()
@@ -193,7 +193,7 @@ class CaptureStrategyCommandTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @param string $lastTransactionId
-     * @return \Braintree\ResourceCollection|\PHPUnit\Framework\MockObject\MockObject
+     * @return \Braintree\ResourceCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getNotExpiredExpectedCollection($lastTransactionId)
     {
@@ -310,7 +310,7 @@ class CaptureStrategyCommandTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Create mock for payment data object and order payment
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getPaymentDataObjectMock()
     {
@@ -401,6 +401,6 @@ class CaptureStrategyCommandTest extends \PHPUnit\Framework\TestCase
         $this->transactionRepository = $this->getMockBuilder(TransactionRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getList', 'getTotalCount', 'delete', 'get', 'save', 'create', '__wakeup'])
-            ->getMockForAbstractClass();
+            ->getMock();
     }
 }

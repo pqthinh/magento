@@ -10,8 +10,6 @@ namespace Magento\TestModuleOverrideConfig\Model;
 
 /**
  * Class represent simple container to save data
- *
- * phpcs:disable Generic.Classes.DuplicateClassName
  */
 class FixtureCallStorage
 {
@@ -32,11 +30,11 @@ class FixtureCallStorage
      * Get fixture position in storage
      *
      * @param string $fixture
-     * @return null|int
+     * @return false|int
      */
-    public function getFixturePosition(string $fixture): ?int
+    public function getFixturePosition(string $fixture)
     {
-        return array_search($fixture, $this->storage) ?: null;
+        return array_search($fixture, $this->storage);
     }
 
     /**

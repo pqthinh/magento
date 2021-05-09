@@ -81,7 +81,7 @@
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin1"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="amOnLogoutPage"/>
+            <amOnPage url="{{AdminLogoutPage.url}}" stepKey="amOnLogoutPage"/>
             <deleteData createDataKey="simple1Handle" stepKey="deleteSimple1"/>
             <deleteData createDataKey="simple2Handle" stepKey="deleteSimple2"/>
             <deleteData createDataKey="childProductHandle1" stepKey="deleteChild1"/>
@@ -95,7 +95,8 @@
         </after>
 
         <comment userInput="Filter and edit simple product 1" stepKey="filterAndEditComment1"/>
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="productIndexPage"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="productIndexPage"/>
+        <waitForPageLoad time="30" stepKey="waitForPageLoad1"/>
         <actionGroup ref="ResetProductGridToDefaultViewActionGroup" stepKey="resetProductGridColumnsInitial"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterProductGridSimple">
             <argument name="product" value="$$simple1Handle$$"/>
@@ -139,7 +140,8 @@
         </actionGroup>
 
         <comment userInput="Filter and edit config product" stepKey="filterAndEditComment2"/>
-        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="productIndexPage2"/>
+        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="productIndexPage2"/>
+        <waitForPageLoad time="30" stepKey="waitForPageLoad5"/>
         <actionGroup ref="ResetProductGridToDefaultViewActionGroup" stepKey="resetProductGridColumnsInitial2"/>
         <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterProductGridConfig">
             <argument name="product" value="$$baseConfigProductHandle$$"/>

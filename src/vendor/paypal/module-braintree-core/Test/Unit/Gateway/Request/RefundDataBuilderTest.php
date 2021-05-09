@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 class RefundDataBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SubjectReader | \PHPUnit\Framework\MockObject\MockObject
+     * @var SubjectReader | \PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectReader;
 
@@ -31,7 +31,7 @@ class RefundDataBuilderTest extends \PHPUnit\Framework\TestCase
      */
     private $dataBuilder;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->subjectReader = $this->getMockBuilder(
             SubjectReader::class
