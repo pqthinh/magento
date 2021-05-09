@@ -3,7 +3,7 @@
  * See COPYING.txt for license details.
  */
 namespace Learning\HelloPage\Controller\Page;
-class View extends \Magento\Framework\App\Action\Action
+class Helloworld extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
