@@ -1,4 +1,4 @@
-### Laptop Shop (Magento framework)
+### Laptop Shop24h (Magento framework)
 
 1: requirement
 ``` command
@@ -21,3 +21,9 @@
 
 #### 2: note in implement magento2
 `https://github.com/pqthinh/magento.test/blob/main/remind.md`
+
+api weather app :
+`https://home.openweathermap.org/api_keys`
+
+### weather infomation
+`https://magento2.test/novo`

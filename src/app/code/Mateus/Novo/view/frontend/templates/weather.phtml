@@ -1,0 +1,44 @@
+<?php
+/** @var \Mateus\Novo\Block\WeatherBlock $block */
+?>
+<?php
+    $result = $block->getWeatherInformation();
+    $main = $result->weather[0]['main'];
+    $description = $result->weather[0]['description'];
+    $temp = $result->main['temp']- 273.15;
+    $temp_min = $result->main['temp_min']- 273.15;
+    $temp_max = $result->main['temp_max'] - 273.15;
+    $umid = $result->main['humidity'];
+?>
+<h1 id="label_try"><?php echo $block->getLabel(); ?> </h1>
+
+<button id="weather_button">Weather today</button>
+<div id="show_weather"></div>
+<script type="text/javascript">
+    require(["jquery"],function($) {
+        $(document).ready(function() {
+            $('#weather_button').click(function(){
+                var info = '<?php echo "The weather in Hanoi is $main, probably with $description." . '<br>' .
+                    "The temperatutur now is $temp °C, with minimun for today of $temp_min °C and maximun $temp_max °C." . '<br>' .
+                    "The humidity is $umid%"; ?>';
+
+                $('#show_weather').html(info);
+            });
+        });
+    });
+</script>
+
+<!-- <?php $weather = $block->getWeather(); ?>
+
+<?php if(null !== $weather): ?>
+<h2><?php echo $weather->getCity(); ?></h2>
+<p>updated on <?php echo $weather->getCreatedAt(); ?></p>
+<hr>
+<ul>
+    <li>temperature: <strong><?php echo $weather->getTemperature(); ?>℃</strong></li>
+    <li>pressure: <strong><?php echo $weather->getPressure(); ?>hPa</strong></li>
+    <li>humidity: <strong><?php echo $weather->getHumidity(); ?>%</strong></li>
+</ul>
+<?php else: ?>
+<h2>Data not found</h2>
+<?php endif; ?> -->

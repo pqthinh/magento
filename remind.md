@@ -68,3 +68,9 @@ sudo chmod -R ugo+rw int3506
 
 sudo bin/mysqldump > backups/magento.sql
 sudo bin/mysql < backups/magento.sql
+
+### Giai phap khac phuc mat anh tam thoi
+copy folder catalog tu magento.test/cache -> merge vao admin:///var/lib/docker/volumes/magentotest_appdata/_data/pub/media
+
+Mat anh do thieu folder tren may thu 2
+volume ko pull dc cai nay tu image docker

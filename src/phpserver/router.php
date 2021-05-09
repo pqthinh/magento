@@ -69,6 +69,8 @@ if (php_sapi_name() === 'cli-server') {
     ) {
         $origFile = $magentoPackagePubDir.'/'.$route;
 
+        echo $origFile
+        
         if (strpos($route, 'static/version') === 0) {
             $route = preg_replace('#static/(version\d+/)?#', 'static/', $route, 1);
         }
@@ -79,7 +81,7 @@ if (php_sapi_name() === 'cli-server') {
         if (file_exists($origFile) || file_exists($file)) {
             if (file_exists($origFile)) {
                 $file = $origFile;
-            }
+            } 
 
             $debug('file exists');
             $mimeTypes = [
