@@ -24,3 +24,6 @@
 
 api weather app :
 `https://home.openweathermap.org/api_keys`
+
+### weather infomation
+`https://magento2.test/novo`
