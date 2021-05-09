@@ -310,10 +310,7 @@ return [
         'Klarna_Onsitemessaging' => 1,
         'Klarna_KpGraphQl' => 1,
         'Learning_HelloPage' => 1,
-<<<<<<< HEAD
         'Mateus_Novo' => 1,
-=======
->>>>>>> 7417752d5cd11d4a445ebbb485f0400730da487a
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeGraphQl' => 1,
         'Temando_ShippingRemover' => 1,
