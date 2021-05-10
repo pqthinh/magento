@@ -301,6 +301,7 @@ return [
         'Amazon_Core' => 1,
         'Amazon_Login' => 1,
         'Amazon_Payment' => 1,
+        'Boolfly_MomoWallet' => 1,
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Klarna_Core' => 1,
@@ -309,13 +310,13 @@ return [
         'Klarna_Onsitemessaging' => 1,
         'Klarna_KpGraphQl' => 1,
         'Learning_HelloPage' => 1,
-        'LiveChat_LiveChat' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeGraphQl' => 1,
         'Temando_ShippingRemover' => 1,
         'Vertex_Tax' => 1,
         'Vertex_AddressValidationApi' => 1,
         'Vertex_AddressValidation' => 1,
+        'Vnpayment_VNPAY' => 1,
         'Yotpo_Yotpo' => 1
     ]
 ];
