@@ -1,2 +1,9 @@
 {
+    "require": {
+        "mageplaza/module-banner-slider": "^4.0",
+        "avada/module-proofo": "^1.0",
+        "mageplaza/module-core": "^1.4",
+        "mageplaza/magento-2-blog-extension": "^4.1",
+        "magiccart/magicslider": "^1.0"
+    }
 }
