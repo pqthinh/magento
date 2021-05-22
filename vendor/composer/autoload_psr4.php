@@ -6,5 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+<<<<<<< HEAD
     'Boolfly\\MomoWallet\\' => array($vendorDir . '/boolfly/module-momo-wallet'),
+=======
+    'Magiccart\\Magicslider\\' => array($vendorDir . '/magiccart/magicslider'),
+    'Magiccart\\Community\\' => array($vendorDir . '/magiccart/community'),
+    'Mageplaza\\Core\\' => array($vendorDir . '/mageplaza/module-core'),
+    'Mageplaza\\Blog\\' => array($vendorDir . '/mageplaza/magento-2-blog-extension'),
+    'Mageplaza\\BannerSlider\\' => array($vendorDir . '/mageplaza/module-banner-slider'),
+    'Avada\\Proofo\\' => array($vendorDir . '/avada/module-proofo'),
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
 );

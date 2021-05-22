@@ -6,5 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+<<<<<<< HEAD
     '826c7b85a9f366d8dd43c93a8b88c6e6' => $vendorDir . '/boolfly/module-momo-wallet/registration.php',
+=======
+    '6b5b87bda6fedcf6ef8605219c8b67f2' => $vendorDir . '/mageplaza/module-core/registration.php',
+    'f920ec6c34b8b96726b37fbf1950b488' => $vendorDir . '/magiccart/community/registration.php',
+    '6f9ea3bbd052477d54bfc87e527b0210' => $vendorDir . '/avada/module-proofo/registration.php',
+    '581f45ff6bb127be51c88ab337760d97' => $vendorDir . '/mageplaza/magento-2-blog-extension/registration.php',
+    '3da90505d6bf137118710bda11c7434c' => $vendorDir . '/mageplaza/module-banner-slider/registration.php',
+    '4bd31e4e543aed7961e1e7a1c7965fa3' => $vendorDir . '/magiccart/magicslider/registration.php',
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
 );

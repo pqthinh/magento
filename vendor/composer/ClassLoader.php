@@ -37,11 +37,21 @@ namespace Composer\Autoload;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Jordi Boggiano <j.boggiano@seld.be>
+<<<<<<< HEAD
  * @see    http://www.php-fig.org/psr/psr-0/
  * @see    http://www.php-fig.org/psr/psr-4/
  */
 class ClassLoader
 {
+=======
+ * @see    https://www.php-fig.org/psr/psr-0/
+ * @see    https://www.php-fig.org/psr/psr-4/
+ */
+class ClassLoader
+{
+    private $vendorDir;
+
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
     // PSR-4
     private $prefixLengthsPsr4 = array();
     private $prefixDirsPsr4 = array();
@@ -57,10 +67,24 @@ class ClassLoader
     private $missingClasses = array();
     private $apcuPrefix;
 
+<<<<<<< HEAD
     public function getPrefixes()
     {
         if (!empty($this->prefixesPsr0)) {
             return call_user_func_array('array_merge', $this->prefixesPsr0);
+=======
+    private static $registeredLoaders = array();
+
+    public function __construct($vendorDir = null)
+    {
+        $this->vendorDir = $vendorDir;
+    }
+
+    public function getPrefixes()
+    {
+        if (!empty($this->prefixesPsr0)) {
+            return call_user_func_array('array_merge', array_values($this->prefixesPsr0));
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
         }
 
         return array();
@@ -300,6 +324,20 @@ class ClassLoader
     public function register($prepend = false)
     {
         spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+<<<<<<< HEAD
+=======
+
+        if (null === $this->vendorDir) {
+            return;
+        }
+
+        if ($prepend) {
+            self::$registeredLoaders = array($this->vendorDir => $this) + self::$registeredLoaders;
+        } else {
+            unset(self::$registeredLoaders[$this->vendorDir]);
+            self::$registeredLoaders[$this->vendorDir] = $this;
+        }
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
     }
 
     /**
@@ -308,6 +346,13 @@ class ClassLoader
     public function unregister()
     {
         spl_autoload_unregister(array($this, 'loadClass'));
+<<<<<<< HEAD
+=======
+
+        if (null !== $this->vendorDir) {
+            unset(self::$registeredLoaders[$this->vendorDir]);
+        }
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
     }
 
     /**
@@ -367,6 +412,19 @@ class ClassLoader
         return $file;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Returns the currently registered loaders indexed by their corresponding vendor directories.
+     *
+     * @return self[]
+     */
+    public static function getRegisteredLoaders()
+    {
+        return self::$registeredLoaders;
+    }
+
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
     private function findFileWithExtension($class, $ext)
     {
         // PSR-4 lookup

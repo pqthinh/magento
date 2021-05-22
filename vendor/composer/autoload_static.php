@@ -4,6 +4,7 @@
 
 namespace Composer\Autoload;
 
+<<<<<<< HEAD
 class ComposerStaticInite17e6c718ee8451eb15cf91e2b8b49fe
 {
     public static $files = array (
@@ -14,21 +15,83 @@ class ComposerStaticInite17e6c718ee8451eb15cf91e2b8b49fe
         'B' => 
         array (
             'Boolfly\\MomoWallet\\' => 19,
+=======
+class ComposerStaticInit445e2a8a59647c40d13014d15a920d7c
+{
+    public static $files = array (
+        '6b5b87bda6fedcf6ef8605219c8b67f2' => __DIR__ . '/..' . '/mageplaza/module-core/registration.php',
+        'f920ec6c34b8b96726b37fbf1950b488' => __DIR__ . '/..' . '/magiccart/community/registration.php',
+        '6f9ea3bbd052477d54bfc87e527b0210' => __DIR__ . '/..' . '/avada/module-proofo/registration.php',
+        '581f45ff6bb127be51c88ab337760d97' => __DIR__ . '/..' . '/mageplaza/magento-2-blog-extension/registration.php',
+        '3da90505d6bf137118710bda11c7434c' => __DIR__ . '/..' . '/mageplaza/module-banner-slider/registration.php',
+        '4bd31e4e543aed7961e1e7a1c7965fa3' => __DIR__ . '/..' . '/magiccart/magicslider/registration.php',
+    );
+
+    public static $prefixLengthsPsr4 = array (
+        'M' => 
+        array (
+            'Magiccart\\Magicslider\\' => 22,
+            'Magiccart\\Community\\' => 20,
+            'Mageplaza\\Core\\' => 15,
+            'Mageplaza\\Blog\\' => 15,
+            'Mageplaza\\BannerSlider\\' => 23,
+        ),
+        'A' => 
+        array (
+            'Avada\\Proofo\\' => 13,
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+<<<<<<< HEAD
         'Boolfly\\MomoWallet\\' => 
         array (
             0 => __DIR__ . '/..' . '/boolfly/module-momo-wallet',
         ),
+=======
+        'Magiccart\\Magicslider\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/magiccart/magicslider',
+        ),
+        'Magiccart\\Community\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/magiccart/community',
+        ),
+        'Mageplaza\\Core\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mageplaza/module-core',
+        ),
+        'Mageplaza\\Blog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mageplaza/magento-2-blog-extension',
+        ),
+        'Mageplaza\\BannerSlider\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mageplaza/module-banner-slider',
+        ),
+        'Avada\\Proofo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/avada/module-proofo',
+        ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+<<<<<<< HEAD
             $loader->prefixLengthsPsr4 = ComposerStaticInite17e6c718ee8451eb15cf91e2b8b49fe::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInite17e6c718ee8451eb15cf91e2b8b49fe::$prefixDirsPsr4;
+=======
+            $loader->prefixLengthsPsr4 = ComposerStaticInit445e2a8a59647c40d13014d15a920d7c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit445e2a8a59647c40d13014d15a920d7c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit445e2a8a59647c40d13014d15a920d7c::$classMap;
+>>>>>>> 2d1c2228b901c817b361d98bc4434f9288c6c371
 
         }, null, ClassLoader::class);
     }
