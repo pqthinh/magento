@@ -320,6 +320,7 @@ return [
         'Solwin_Cpanel' => 1,
         'Solwin_ScrolltoTop' => 1,
         'Solwin_Soldout' => 1,
+        'Sparsh_MostViewedProducts' => 1,
         'Temando_ShippingRemover' => 1,
         'Vertex_Tax' => 1,
         'Vertex_AddressValidationApi' => 1,
