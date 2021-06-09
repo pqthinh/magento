@@ -1,7 +1,85 @@
+<style>
+  @media screen and (max-width: 980px) {
+    #wrapper__currency--table {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  table,
+  tr,
+  th,
+  td {
+    background-color: #F0F0F0;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    text-align: center;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  th {
+    background-color: #55A516;
+    color: #ffffff;
+    font-weight: "700";
+  }
+
+  #convert-currency {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  #money--before {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+  }
+
+  #money--before select {
+    height: 30px;
+  }
+
+  #money--after {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 20px;
+  }
+
+
+  input.money_input {
+    width: 80px;
+    height: 30px;
+    margin: 2px;
+  }
+
+  #money--after select {
+    height: 30px;
+  }
+
+  table {
+    padding: 20px;
+  }
+
+  .block-content {
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 980px) {
+    .block-content {
+      padding: 10px;
+    }
+  }
+</style>
+
 <?php if ($block->getData('title')) : ?>
-  <div class="hb-wrapper above-padding below-padding" style="background: #ffffff;">
+  <div class="hb-wrapper above-padding below-padding" id="wrapper__currency--table">
     <div class="page-title-main">
-      <!-- <strong><?php echo $block->getData('title'); ?> </strong> -->
+      <!-- <?php echo $block->getData('title'); ?> -->
+
     </div>
     <div class="block-content">
       <?php
@@ -20,70 +98,107 @@
       $xml = simplexml_load_string($res);
       $json = json_encode($xml);
       $rs = json_decode($json, TRUE);
-      echo '<table style="width: 100%" id="currency">';
-      echo  "<thead>
-      <th>Mã tiền tệ</th>
-      <th>Tên tiền tệ</th>
-      <th>Giá mua</th>
-      <th>Giá bán</th>
-      </tr></thead>";
-      ?>
-      <style>
-        table,
-        tr,
-        th,
-        td {
-          background-color: #F0F0F0;
-          border: 1px solid gray;
-          border-collapse: collapse;
-          text-align: center;
-          font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
-        }
-        th{
-          background-color: #55A516;
-          color: #ffffff;
-        }
-        .link-currency>a{
-            text-decoration: none;
-            background-color: #badc58;
-            color: #ffffff;
-            position: fixed;
-            border-radius: 5px 0px 0px 5px;
-            right: 0px;
-            top: 200px;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 10px 10px 10px 5px;
-            width: 100px;
-            z-index: 2;
-        }
-        .link-currency>a:hover{
-            background-color: #f1c40f;
-        }
-
-      </style>
-      <!-- <div class="link-currency">
-        <a href="#currency">Currency</a>
-      </div> -->
-      <?php
-      foreach ($rs["Exrate"] as $r) {
-        $r = $r["@attributes"];
-        echo "<tr>";
-        echo "<td>";
-        echo $r["CurrencyCode"];
-        echo "</td>";
-        echo "<td>";
-        echo $r["CurrencyName"];
-        echo "</td>";
-        echo "<td>";
-        echo $r["Buy"];
-        echo "</td>";
-        echo "<td>";
-        echo $r["Sell"];
-        echo "</td>";
-        echo "</tr>";
+      $array_currency = array();
+      for ($i = 0; $i < count($rs["Exrate"]); $i++) {
+        $array_currency[$i] = $rs["Exrate"][$i]["@attributes"];
       }
-      echo "</table>";
       ?>
-    </div>
-  <?php endif; ?>
+
+      <h1>Convert</h1>
+      <div id="convert-currency">
+        <div id="money--before">
+          <label for="cars">Convert: </label>
+          <input type="number" maxlength="10" name="money" class="money_input" oninput="javascript:calcMoney(this)" />
+
+          <select id="type-money">
+            <?php
+            foreach ($array_currency as $r) {
+              echo "<option value= '";
+              echo $r["Sell"];
+              echo "'> ";
+              echo $r["CurrencyCode"];
+              echo  "</option>";
+            }
+            ?>
+          </select>
+        </div>
+        <div id="money--after">
+          <label for="cars"> ==> </label>
+          <!-- <input type="number" maxlength="10" name="money" class="money_input" /> -->
+          <span id="result"> VND</span>
+          <!-- <span>VND</span> -->
+          <!-- <select id="type-money">
+            <?php
+            // foreach ($array_currency as $r) {
+            //   echo "<option value= '";
+            //   echo $r["Sell"];
+            //   echo "'> ";
+            //   echo $r["CurrencyCode"];
+            //   echo  "</option>";
+            // }
+            ?>
+          </select> -->
+        </div>
+        <div style="overflow-x:auto; width: 100%">
+
+          <table class="table table-dark" id="currency">
+            <thead>
+              <th scope="col">Mã tiền tệ</th>
+              <th scope="col">Tên tiền tệ</th>
+              <th scope="col">Giá mua</th>
+              <th scope="col">Giá bán</th>
+              <th scope="col">giao dich</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <?php
+              foreach ($rs["Exrate"] as $r) {
+                $r = $r["@attributes"];
+                echo "<tr><td scope='row'>";
+                echo $r["CurrencyCode"];
+                "</td>";
+                echo "<td>";
+                echo $r["CurrencyName"];
+                "</td>";
+                echo "<td>";
+                echo $r["Buy"];
+                "</td>";
+                echo "<td>";
+                echo $r["Sell"];
+                "</td>";
+                echo "<td>";
+                echo $r["Transfer"];
+                "</td></tr>";
+              };
+
+              ?>
+            </tbody>
+          </table>
+        </div>
+      <?php endif; ?>
+      <script>
+        // $(document).ready(function() {
+        //   // let before = $("#money--before #type-money").value()
+        //   // let after = $("#money--after #type-money").value()
+        //   alert(1)
+        //   const before = document.getElementById("money--before").getElementsByTagName("input").value
+        //   const price = document.getElementById("type-money").value
+
+        //   document.getElementById("money--before").getElementsByTagName("input").addEventListener('input', function() {
+        //     document.getElementById("type-money").innerHTML = before * price
+        //   })
+        //   console.log(before, price)
+
+        // })
+
+        function calcMoney(e) {
+          let before = e.value
+          const price = document.getElementById("type-money").value
+
+          document.getElementById("result").innerHTML = before * price + " VND"
+
+          console.log(before, price)
+        }
+      </script>
