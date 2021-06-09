@@ -302,6 +302,7 @@ return [
         'Amazon_Login' => 1,
         'Amazon_Payment' => 1,
         'Boolfly_MomoWallet' => 1,
+        'Currency_CustomWidget' => 1,
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Hiddentechies_Base' => 1,
