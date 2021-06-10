@@ -198,7 +198,7 @@ git clone https://github.com/pqthinh/magento.git
 cd magento
 ```
 
-2 Pull image docker
+2 Cài đặt project trên localhost
 
 ```
 # Create a DNS host entry for the site:
@@ -217,7 +217,7 @@ bin/magento app:config:import
 bin/restart
 ```
 
-3 Phát triển module
+3 Các lệnh thường sử dụng cho việc phát triển module
 
 reindex cache: 
 `bin/magento indexer:reindex`
@@ -247,5 +247,4 @@ Here you can find our [shop24h](https://www.facebook.com/pqthinh.uet/)
 
 ### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
-
+Having trouble with Pages? Check out our [shop24h](https://www.facebook.com/pqthinh.uet/) or [pqthinh](https://www.facebook.com/pqthinh.uet/) and we’ll help you sort it out.
