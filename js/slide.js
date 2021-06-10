@@ -1,6 +1,6 @@
 var slideIndex = 1;
 showSlides(slideIndex, "mySlides");
-showSlides(slideIndex, "mySlidesAdmin");
+showSlides(slideIndex + 1, "mySlidesAdmin");
 
 function plusSlides(n, classBlockSlide) {
   showSlides((slideIndex += n), classBlockSlide);

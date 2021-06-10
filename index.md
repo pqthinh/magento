@@ -14,7 +14,7 @@ Công nghệ sử dụng [**Magento**](https://magento.com/)
 <div class="slideshow-container">
 <div class="mySlides fade">
   <div class="numbertext">1</div>
-  <img class="slide-show" src="https://user-images.githubusercontent.com/50290559/121354839-7c52b700-c959-11eb-80c5-22b82ea34159.png" style="width:100%">
+  <img class="slide-show" src="https://user-images.githubusercontent.com/50290559/121562471-ae404800-ca43-11eb-8302-d3a5f317a433.png" style="width:100%">
   <div class="text">Giao dien trang khach hang</div>
 </div>
 
@@ -228,6 +228,13 @@ flush cache:
 build code: 
 `bin/magento setup:update`
 
+
+4: Tài khoản admin
+
+```
+username : admin
+password : admin123
+```
 
 ## Reporting bugs
 
