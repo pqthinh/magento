@@ -67,7 +67,7 @@ class ClassesScanner implements ClassesScannerInterface
     public function getList($path)
     {
         // phpcs:ignore
-        $realPath = realpath($path);
+        $realPath = str_replace('\\', '/', realpath($path));
         $isGeneration = strpos($realPath, $this->generationDirectory) === 0;
 
         // Generation folders should not have their results cached since they may actually change during compile
